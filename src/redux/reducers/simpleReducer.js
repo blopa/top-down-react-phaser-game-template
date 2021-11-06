@@ -6,11 +6,11 @@ const simpleReducer = (state = defaultState, action) => {
     switch (action.type) {
         case 'SIMPLE_ACTION':
             return {
-                number: state.number + 1
-            }
+                number: state.number + 1,
+            };
         default:
-            return state
+            return state;
     }
-}
+};
 
 export default simpleReducer;
