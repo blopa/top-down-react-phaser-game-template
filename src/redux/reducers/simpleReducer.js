@@ -1,4 +1,4 @@
-export default (state = {}, action) => {
+const simpleReducer = (state = {}, action) => {
     switch (action.type) {
         case 'SIMPLE_ACTION':
             return {
@@ -8,3 +8,5 @@ export default (state = {}, action) => {
             return state
     }
 }
+
+export default simpleReducer;
