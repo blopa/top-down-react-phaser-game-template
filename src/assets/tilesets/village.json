@@ -1,0 +1,15 @@
+{
+  "columns": 57,
+  "image": "village.png",
+  "imageheight": 526,
+  "imagewidth": 968,
+  "margin": 0,
+  "name": "village",
+  "spacing": 1,
+  "tilecount": 1767,
+  "tiledversion": "1.7.2",
+  "tileheight": 16,
+  "tilewidth": 16,
+  "type": "tileset",
+  "version": "1.6"
+}
