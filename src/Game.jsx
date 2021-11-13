@@ -8,27 +8,38 @@ import './Game.css';
 
 // Actions
 import { simpleAction } from './redux/actions/simpleAction';
+import { calculateGameSize } from './utils';
+
+// Game Scenes
+import TestScene from './game/scenes/TestScene';
 
 function Game() {
     const number = useSelector((state) => state.simple.number);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const { width, height, zoom } = calculateGameSize(400, 224, 16);
+        // console.log(width, height, zoom);
+        // console.log(Phaser.Scale.LANDSCAPE, Phaser.Scale.PORTRAIT);
+
         const game = new Phaser.Game({
             type: Phaser.AUTO,
             title: 'some-game-title',
             parent: 'game-content',
             orientation: Phaser.Scale.LANDSCAPE,
             localStorageName: 'some-game-title',
-            // width,
-            // height,
+            width,
+            height,
+            zoom,
             autoRound: true,
             pixelArt: true,
             scale: {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.ENVELOP,
             },
-            scene: [],
+            scene: [
+                TestScene,
+            ],
             physics: {
                 default: 'arcade',
             },
@@ -41,7 +52,19 @@ function Game() {
                     },
                 ],
             },
-            backgroundColor: '#000000',
+            backgroundColor: '#FF0000',
+        });
+
+        let timeOutFunctionId;
+        const workAfterResizeIsDone = () => {
+            const { width, height, zoom } = calculateGameSize(400, 224, 16);
+            game.scale.resize(width, height);
+            game.scale.setZoom(zoom);
+            console.log('resized', { width, height, zoom });
+        };
+        window.addEventListener('resize', () => {
+            clearTimeout(timeOutFunctionId);
+            timeOutFunctionId = setTimeout(workAfterResizeIsDone, 500);
         });
 
         // window.phaserGame = game;
