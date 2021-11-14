@@ -7,9 +7,9 @@ import { calculateGameSize } from './utils';
 
 // Constants
 import {
+    RESIZE_THRESHOLD,
     MIN_GAME_HEIGHT,
     MIN_GAME_WIDTH,
-    RESIZE_THRESHOLD,
     TILE_HEIGHT,
     TILE_WIDTH,
 } from './constants';
