@@ -35,7 +35,7 @@ function Game() {
             pixelArt: true,
             scale: {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
-                mode: Phaser.Scale.ENVELOP,
+                mode: Phaser.Scale.NONE,
             },
             scene: [
                 TestScene,
