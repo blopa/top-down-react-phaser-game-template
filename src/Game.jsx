@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Phaser from 'phaser';
 import GridEngine from 'grid-engine';
@@ -8,21 +8,37 @@ import './Game.css';
 
 // Actions
 import { simpleAction } from './redux/actions/simpleAction';
-import { calculateGameSize } from './utils';
+import { calculateGameSize, isObjectNotEmpty } from './utils';
 
 // Game Scenes
 import TestScene from './game/scenes/TestScene';
 
+// Constants
+import {
+    MIN_GAME_HEIGHT,
+    MIN_GAME_WIDTH,
+    RESIZE_THRESHOLD,
+    TILE_HEIGHT,
+    TILE_WIDTH,
+} from './constants';
+
 function Game() {
+    const [game, setGame] = useState(null);
     const number = useSelector((state) => state.simple.number);
     const dispatch = useDispatch();
+    const { width, height, zoom } = calculateGameSize(
+        MIN_GAME_WIDTH,
+        MIN_GAME_HEIGHT,
+        TILE_WIDTH,
+        TILE_HEIGHT
+    );
 
     useEffect(() => {
-        const { width, height, zoom } = calculateGameSize(400, 224, 16);
-        // console.log(width, height, zoom);
-        // console.log(Phaser.Scale.LANDSCAPE, Phaser.Scale.PORTRAIT);
+        if (game) {
+            return;
+        }
 
-        const game = new Phaser.Game({
+        const phaserGame = new Phaser.Game({
             type: Phaser.AUTO,
             title: 'some-game-title',
             parent: 'game-content',
@@ -57,23 +73,31 @@ function Game() {
 
         let timeOutFunctionId;
         const workAfterResizeIsDone = () => {
-            const { width, height, zoom } = calculateGameSize(400, 224, 16);
-            game.scale.resize(width, height);
-            game.scale.setZoom(zoom);
-            console.log('resized', { width, height, zoom });
+            const gameSize = calculateGameSize(
+                MIN_GAME_WIDTH,
+                MIN_GAME_HEIGHT,
+                TILE_WIDTH,
+                TILE_HEIGHT
+            );
+
+            phaserGame.scale.resize(gameSize.width, gameSize.height);
+            phaserGame.scale.setZoom(gameSize.zoom);
         };
+
         window.addEventListener('resize', () => {
             clearTimeout(timeOutFunctionId);
-            timeOutFunctionId = setTimeout(workAfterResizeIsDone, 500);
+            timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
         });
 
+        setGame(phaserGame);
         // window.phaserGame = game;
-    }, []);
+    }, [game, width, height, zoom]);
 
     return (
         <div className="App">
             <div
                 id="game-content"
+                key="game-content"
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
