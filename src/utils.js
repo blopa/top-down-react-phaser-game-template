@@ -27,3 +27,9 @@ export const calculateGameSize = (
         height: Math.min(newHeight, Math.floor((height * (1 + threshold)) / tileHeight) * tileHeight),
     };
 };
+
+// Thanks yannick @ https://phaser.discourse.group/t/loading-audio/1306/4
+export const asyncLoader = (loaderPlugin) => new Promise((resolve) => {
+    loaderPlugin.on('filecomplete', resolve).on('loaderror', resolve);
+    loaderPlugin.start();
+});
