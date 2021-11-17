@@ -22,13 +22,17 @@ export default class LoadAssetsScene extends Scene {
         } = this.initData.assets;
         const { getState, dispatch } = store;
 
+        // Pre-load all the fonts needed for the scene
+        // so Phaser can render them properly
         fonts?.forEach((font) => {
             const loadedFonts = selectFonts(getState());
 
+            // If a font is already loaded, then skip this
             if (loadedFonts.includes(font)) {
                 return;
             }
 
+            // Set font as already loaded in the redux store
             dispatch(addLoadedFontAction(font));
             const color = this.game.config.backgroundColor;
             this.add.text(
@@ -42,16 +46,19 @@ export default class LoadAssetsScene extends Scene {
             );
         });
 
+        // Load all the atlases needed for the next scene
         // eslint-disable-next-line no-restricted-syntax
         for (const atlas of atlases) {
             // TODO
         }
 
+        // Load all the images needed for the next scene
         // eslint-disable-next-line no-restricted-syntax
         for (const image of images) {
             // TODO
         }
 
+        // Load the Tiled map needed for the next scene
         if (mapKey) {
             const { default: mapJson } = await import(`../../assets/maps/${mapKey}.json`);
             const tilesets = mapJson.tilesets.map((tileset) =>
@@ -69,7 +76,6 @@ export default class LoadAssetsScene extends Scene {
                     await asyncLoader(this.load.image(tilesetName, tilesetImage));
                     // eslint-disable-next-line no-await-in-loop
                     await asyncLoader(this.load.json(tilesetName, tilesetJson));
-                    // const data = this.cache.json.get(tilesetName);
 
                     mapJson.tilesets = mapJson.tilesets.map((tileset) => {
                         if (tileset.source?.includes(`/${tilesetName}.json`)) {
@@ -85,40 +91,39 @@ export default class LoadAssetsScene extends Scene {
                         return tileset;
                     });
 
-                    this.initData.initData = {
-                        ...this.initData.initData,
-                        mapData: {
-                            ...this.initData.initData.mapData,
-                            tilesetName,
-                        },
-                    };
+                    const savedTilesets = this.data.get('tilesets') || [];
+                    this.data.set('tilesets', [...savedTilesets, tilesetName]);
                 }
             }
 
             // Load map with pre-loaded tilesets
             await asyncLoader(this.load.tilemapTiledJSON(mapKey, mapJson));
-
-            // TODO add this to redux?
-            this.initData.initData = {
-                ...this.initData.initData,
-                mapData: {
-                    ...this.initData.initData.mapData,
-                    mapKey,
-                },
-            };
+            this.data.set('mapKey', mapKey);
         }
 
+        // Prepare data and call next scene
+        const sceneData = {
+            ...this.initData.sceneData,
+            mapData: {
+                ...this.initData.sceneData.mapData,
+                mapKey: this.data.get('mapKey'),
+                tilesets: this.data.get('tilesets'),
+            },
+        };
+
+        // If we have fonts, then wait for them to be loaded before calling the next scene...
         if (fonts.length > 0) {
             document.fonts.ready.then((fontFace) => {
                 this.scene.start(
                     this.initData.nextScene,
-                    this.initData.initData
+                    sceneData
                 );
             });
         } else {
+            // ... otherwise just call the next scene already
             this.scene.start(
                 this.initData.nextScene,
-                this.initData.initData
+                sceneData
             );
         }
     }

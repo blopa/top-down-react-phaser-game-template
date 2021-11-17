@@ -15,7 +15,7 @@ import {
 } from './constants';
 
 // Game Scenes
-import TestScene from './game/scenes/TestScene';
+import GameScene from './game/scenes/GameScene';
 import BootScene from './game/scenes/BootScene';
 import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 
@@ -28,6 +28,8 @@ function Game() {
         TILE_HEIGHT
     );
 
+    // Create the game inside a useEffect
+    // to create it only once
     useEffect(() => {
         if (game) {
             return;
@@ -51,7 +53,7 @@ function Game() {
             scene: [
                 BootScene,
                 LoadAssetsScene,
-                TestScene,
+                GameScene,
             ],
             physics: {
                 default: 'arcade',
@@ -68,6 +70,8 @@ function Game() {
             backgroundColor: '#FF0000',
         });
 
+        // Create listener to resize the game
+        // when the window is resized
         let timeOutFunctionId;
         const workAfterResizeIsDone = () => {
             const gameSize = calculateGameSize(

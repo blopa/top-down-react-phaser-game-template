@@ -3,6 +3,7 @@ const {
     loaderByName,
 } = require('@craco/craco');
 
+// Use craco to force create-react-app to load images as files and not base64
 module.exports = {
     webpack: {
         configure: (webpackConfig, { paths }) => {

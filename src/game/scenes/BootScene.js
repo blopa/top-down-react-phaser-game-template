@@ -11,8 +11,8 @@ export default class BootScene extends Scene {
 
     create() {
         this.scene.start('LoadAssetsScene', {
-            nextScene: 'TestScene',
-            initData: {
+            nextScene: 'GameScene',
+            sceneData: {
                 heroData: {},
                 mapData: {},
             },
@@ -20,7 +20,6 @@ export default class BootScene extends Scene {
                 fonts: ['"Press Start 2P"'],
                 atlases: [],
                 images: [],
-                // tilesets: ['village'],
                 mapKey: 'sample_map',
             },
         });
