@@ -12,7 +12,8 @@ export const calculateGameSize = (
     height,
     tileWidth,
     tileHeight,
-    threshold = 0.5
+    widthThreshold = 0.5,
+    heightThreshold = 0.5
 ) => {
     const widthScale = Math.floor(window.innerWidth / width);
     const heightScale = Math.floor(window.innerHeight / height);
@@ -23,8 +24,8 @@ export const calculateGameSize = (
 
     return {
         zoom,
-        width: Math.min(newWidth, Math.floor((width * (1 + threshold)) / tileWidth) * tileWidth),
-        height: Math.min(newHeight, Math.floor((height * (1 + threshold)) / tileHeight) * tileHeight),
+        width: Math.min(newWidth, Math.floor((width * (1 + widthThreshold)) / tileWidth) * tileWidth),
+        height: Math.min(newHeight, Math.floor((height * (1 + heightThreshold)) / tileHeight) * tileHeight),
     };
 };
 
