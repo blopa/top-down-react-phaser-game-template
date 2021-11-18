@@ -14,6 +14,10 @@ export default class GameScene extends Scene {
         const { game } = this.sys;
         const { heroData, mapData } = this.sceneData;
         const { mapKey, tilesets } = mapData;
+        const {
+            initialFrame,
+            initialPosition,
+        } = heroData;
 
         // Create the map
         const map = this.make.tilemap({ key: mapKey });
@@ -27,6 +31,24 @@ export default class GameScene extends Scene {
 
         map.objects.forEach((objectLayerData, index) => {
             // TODO
+        });
+
+        // Create hero sprite
+        this.heroSprite = this.physics.add
+            .sprite(0, 0, 'hero', initialFrame)
+            .setDepth(1);
+
+        // Grid Engine
+        this.gridEngine.create(map, {
+            characterCollisionStrategy: 'BLOCK_TWO_TILES', // default
+            collisionTilePropertyName: 'ge_collide', // default
+            numberOfDirections: 4, // default
+            characters: [{
+                id: 'hero',
+                offsetY: 4,
+                sprite: this.heroSprite,
+                startPosition: initialPosition,
+            }],
         });
 
         // Configure the main camera

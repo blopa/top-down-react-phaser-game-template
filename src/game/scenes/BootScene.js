@@ -13,12 +13,19 @@ export default class BootScene extends Scene {
         this.scene.start('LoadAssetsScene', {
             nextScene: 'GameScene',
             sceneData: {
-                heroData: {},
-                mapData: {},
+                heroData: {
+                    facingDirection: 'down',
+                    initialPosition: { x: 30, y: 42 },
+                    previousPosition: { x: 30, y: 42 },
+                    initialFrame: 'hero_idle_down_01',
+                },
+                mapData: {
+                    mapKey: 'sample_map',
+                },
             },
             assets: {
                 fonts: ['"Press Start 2P"'],
-                atlases: [],
+                atlases: ['hero'],
                 images: [],
                 mapKey: 'sample_map',
             },

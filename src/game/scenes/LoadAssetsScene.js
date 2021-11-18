@@ -46,24 +46,23 @@ export default class LoadAssetsScene extends Scene {
             );
         });
 
-        // Load all the atlases needed for the next scene
-        // eslint-disable-next-line no-restricted-syntax
-        for (const atlas of atlases) {
-            // TODO
-        }
-
-        // Load all the images needed for the next scene
-        // eslint-disable-next-line no-restricted-syntax
-        for (const image of images) {
-            // TODO
-        }
-
         // Load the Tiled map needed for the next scene
         if (mapKey) {
             const { default: mapJson } = await import(`../../assets/maps/${mapKey}.json`);
             const tilesets = mapJson.tilesets.map((tileset) =>
                 // the string will be something like "../tilesets/village.json" or "../tilesets/village.png"
                 tileset.source?.split('/').pop().split('.')[0] || tileset.image?.split('/').pop().split('.')[0]);
+
+            const objectLayers = mapJson.layers.filter((layer) => layer.type === 'objectgroup');
+            objectLayers.forEach((layer) => {
+                layer.objects.forEach((object) => {
+                    const { gid, properties } = object;
+
+                    properties.forEach((property) => {
+                        const { name, type, value } = property;
+                    });
+                });
+            });
 
             // eslint-disable-next-line no-restricted-syntax
             for (const tilesetName of tilesets) {
@@ -72,6 +71,7 @@ export default class LoadAssetsScene extends Scene {
                     const { default: tilesetJson } = await import(`../../assets/tilesets/${tilesetName}.json`);
                     // eslint-disable-next-line no-await-in-loop
                     const { default: tilesetImage } = await import(`../../assets/tilesets/${tilesetJson.image}`);
+
                     // eslint-disable-next-line no-await-in-loop
                     await asyncLoader(this.load.image(tilesetName, tilesetImage));
                     // eslint-disable-next-line no-await-in-loop
@@ -99,6 +99,28 @@ export default class LoadAssetsScene extends Scene {
             // Load map with pre-loaded tilesets
             await asyncLoader(this.load.tilemapTiledJSON(mapKey, mapJson));
             this.data.set('mapKey', mapKey);
+        }
+
+        // Load all the atlases needed for the next scene
+        // eslint-disable-next-line no-restricted-syntax
+        for (const atlas of atlases) {
+            // eslint-disable-next-line no-await-in-loop
+            const { default: jsonPath } = await import(`../../assets/atlases/generated/${atlas}.json`);
+            // eslint-disable-next-line no-await-in-loop
+            const { default: imagePath } = await import(`../../assets/atlases/generated/${atlas}.png`);
+            // TODO for some reason the image above is loaded as base64 :(
+
+            // eslint-disable-next-line no-await-in-loop
+            await asyncLoader(this.load.atlas(atlas, imagePath, jsonPath));
+        }
+
+        // Load all the images needed for the next scene
+        // eslint-disable-next-line no-restricted-syntax
+        for (const image of images) {
+            // eslint-disable-next-line no-await-in-loop
+            const { default: imagePath } = await import(`../../assets/images/${image}.png`);
+            // eslint-disable-next-line no-await-in-loop
+            await asyncLoader(this.load.image(image, imagePath));
         }
 
         // Prepare data and call next scene
