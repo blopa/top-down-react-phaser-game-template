@@ -1,8 +1,16 @@
 import { Scene, Display } from 'phaser';
+
+// Store
 import store from '../../redux/store';
+
+// Actions
 import { addLoadedFontAction } from '../../redux/actions/addLoadedFontAction';
+
+// Selectors
 import { selectFonts } from '../../redux/selectors/selectAssets';
-import { asyncLoader } from '../../utils';
+
+// Utils
+import { asyncLoader } from '../../utils/utils';
 
 export default class LoadAssetsScene extends Scene {
     constructor() {
@@ -108,7 +116,6 @@ export default class LoadAssetsScene extends Scene {
             const { default: jsonPath } = await import(`../../assets/atlases/generated/${atlas}.json`);
             // eslint-disable-next-line no-await-in-loop
             const { default: imagePath } = await import(`../../assets/atlases/generated/${atlas}.png`);
-            // TODO for some reason the image above is loaded as base64 :(
 
             // eslint-disable-next-line no-await-in-loop
             await asyncLoader(this.load.atlas(atlas, imagePath, jsonPath));

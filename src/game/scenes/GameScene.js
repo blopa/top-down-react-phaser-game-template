@@ -1,4 +1,10 @@
-import { Scene } from 'phaser';
+import { Scene, Input } from 'phaser';
+
+// Constants
+import { HERO_SPRITE_NAME } from '../../constants';
+
+// Utils
+import { createWalkingAnimation } from '../../utils/sceneHelpers';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -10,6 +16,7 @@ export default class GameScene extends Scene {
     }
 
     create() {
+        // Base data
         const camera = this.cameras.main;
         const { game } = this.sys;
         const { heroData, mapData } = this.sceneData;
@@ -18,6 +25,18 @@ export default class GameScene extends Scene {
             initialFrame,
             initialPosition,
         } = heroData;
+
+        // Controls
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.wasd = this.input.keyboard.addKeys({
+            up: Input.Keyboard.KeyCodes.W,
+            down: Input.Keyboard.KeyCodes.S,
+            left: Input.Keyboard.KeyCodes.A,
+            right: Input.Keyboard.KeyCodes.D,
+        });
+
+        // Game groups
+        this.sprites = this.add.group();
 
         // Create the map
         const map = this.make.tilemap({ key: mapKey });
@@ -35,8 +54,9 @@ export default class GameScene extends Scene {
 
         // Create hero sprite
         this.heroSprite = this.physics.add
-            .sprite(0, 0, 'hero', initialFrame)
+            .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
             .setDepth(1);
+        this.sprites.add(this.heroSprite);
 
         // Grid Engine
         this.gridEngine.create(map, {
@@ -44,7 +64,7 @@ export default class GameScene extends Scene {
             collisionTilePropertyName: 'ge_collide', // default
             numberOfDirections: 4, // default
             characters: [{
-                id: 'hero',
+                id: HERO_SPRITE_NAME,
                 offsetY: 4,
                 sprite: this.heroSprite,
                 startPosition: initialPosition,
@@ -52,8 +72,8 @@ export default class GameScene extends Scene {
         });
 
         // Configure the main camera
-        // camera.startFollow(this.heroSprite, true);
-        // camera.setFollowOffset(-this.heroSprite.width, -this.heroSprite.height);
+        camera.startFollow(this.heroSprite, true);
+        camera.setFollowOffset(-this.heroSprite.width, -this.heroSprite.height);
         camera.setBounds(
             0,
             0,
@@ -72,6 +92,47 @@ export default class GameScene extends Scene {
                 camera.x,
                 (game.scale.gameSize.height - map.heightInPixels) / 2
             );
+        }
+
+        // Animations
+        ['up', 'down', 'left', 'right'].forEach((direction) => {
+            createWalkingAnimation(
+                this,
+                HERO_SPRITE_NAME,
+                `walk_${direction}`,
+                3
+            );
+        });
+
+        // Movement started
+        this.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
+            const char = this.sprites.getChildren().find((sprite) => sprite.texture.key === charId);
+
+            if (char) {
+                char.anims.play(`${charId}_walk_${direction}`);
+            }
+        });
+
+        // Movement ended
+        this.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
+            const char = this.sprites.getChildren().find((sprite) => sprite.texture.key === charId);
+
+            if (char) {
+                char.anims.stop();
+                char.setFrame(`walk_${direction}_02`);
+            }
+        });
+    }
+
+    update() {
+        if (this.cursors.left.isDown || this.wasd.left.isDown) {
+            this.gridEngine.move(HERO_SPRITE_NAME, 'left');
+        } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
+            this.gridEngine.move(HERO_SPRITE_NAME, 'right');
+        } else if (this.cursors.up.isDown || this.wasd.up.isDown) {
+            this.gridEngine.move(HERO_SPRITE_NAME, 'up');
+        } else if (this.cursors.down.isDown || this.wasd.down.isDown) {
+            this.gridEngine.move(HERO_SPRITE_NAME, 'down');
         }
     }
 }

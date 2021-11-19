@@ -1,6 +1,6 @@
 const {
-    addBeforeLoader,
     loaderByName,
+    addAfterLoader,
 } = require('@craco/craco');
 
 // Use craco to force create-react-app to load images as files and not base64
@@ -16,7 +16,7 @@ module.exports = {
                 },
             };
 
-            const { isAdded } = addBeforeLoader(
+            const { isAdded } = addAfterLoader(
                 webpackConfig,
                 loaderByName('url-loader'),
                 imageLoader

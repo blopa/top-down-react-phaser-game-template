@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import GridEngine from 'grid-engine';
 
 // Utils
-import { calculateGameSize } from './utils';
+import { calculateGameSize } from './utils/utils';
 
 // Constants
 import {

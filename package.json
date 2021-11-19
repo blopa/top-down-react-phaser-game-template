@@ -20,7 +20,7 @@
     "eslint-plugin-jest": "^25.2.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.27.0",
+    "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-unicorn": "^38.0.1",
     "eslint-plugin-unused-imports": "^1.1.5",
@@ -29,7 +29,7 @@
     "npm-check-updates": "^12.0.2"
   },
   "dependencies": {
-    "@craco/craco": "^6.4.0",
+    "@craco/craco": "^6.4.1",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/core": "^5.0.0-alpha.54",
@@ -51,9 +51,9 @@
   "scripts": {
     "generate-atlases": "node scripts/generate-atlas-files.js",
     "copy-tileset-data": "node scripts/copy-tileset-data.js",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "bump": "ncu -u -t minor"
   },

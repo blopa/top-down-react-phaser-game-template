@@ -17,7 +17,7 @@ export default class BootScene extends Scene {
                     facingDirection: 'down',
                     initialPosition: { x: 30, y: 42 },
                     previousPosition: { x: 30, y: 42 },
-                    initialFrame: 'hero_idle_down_01',
+                    initialFrame: 'walk_down_02',
                 },
                 mapData: {
                     mapKey: 'sample_map',
