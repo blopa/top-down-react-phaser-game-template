@@ -8,6 +8,7 @@ import {
     ENEMY,
     CRYSTAL,
     TILE_WIDTH,
+    IDLE_FRAME,
     TILE_HEIGHT,
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
@@ -93,7 +94,7 @@ export default class GameScene extends Scene {
                     case ENEMY: {
                         const name = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                         const enemy = this.physics.add
-                            .sprite(x, y, ENEMY_SPRITE_NAME, 'walk_down_02')
+                            .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', 'down'))
                             .setName(name)
                             .setDepth(1);
 
@@ -229,7 +230,16 @@ export default class GameScene extends Scene {
 
             if (char) {
                 char.anims.stop();
-                char.setFrame(`walk_${direction}_02`);
+                char.setFrame(IDLE_FRAME.replace('position', direction));
+            }
+        });
+
+        // Direction changed
+        this.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
+            const char = this.sprites.getChildren().find((sprite) => sprite.name === charId);
+
+            if (char) {
+                char.setFrame(IDLE_FRAME.replace('position', direction));
             }
         });
     }

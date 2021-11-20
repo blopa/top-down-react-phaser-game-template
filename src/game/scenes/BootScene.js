@@ -1,5 +1,8 @@
 import { Scene } from 'phaser';
 
+// Constants
+import { IDLE_FRAME } from '../../constants';
+
 export default class BootScene extends Scene {
     constructor() {
         super('BootScene');
@@ -17,7 +20,7 @@ export default class BootScene extends Scene {
                     facingDirection: 'down',
                     initialPosition: { x: 30, y: 42 },
                     previousPosition: { x: 30, y: 42 },
-                    initialFrame: 'walk_down_02',
+                    initialFrame: IDLE_FRAME.replace('position', 'down'),
                 },
                 mapData: {
                     mapKey: 'sample_map',
