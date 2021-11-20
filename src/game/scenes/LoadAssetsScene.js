@@ -11,7 +11,18 @@ import { selectFonts } from '../../redux/selectors/selectAssets';
 
 // Utils
 import { asyncLoader } from '../../utils/utils';
-import { COIN, CRYSTAL, ENEMY, HEART, KEY } from '../../constants';
+import {
+    KEY,
+    COIN,
+    ENEMY,
+    HEART,
+    CRYSTAL,
+    KEY_SPRITE_NAME,
+    COIN_SPRITE_NAME,
+    ENEMY_SPRITE_NAME,
+    HEART_SPRITE_NAME,
+    CRYSTAL_SPRITE_NAME,
+} from '../../constants';
 
 export default class LoadAssetsScene extends Scene {
     constructor() {
@@ -74,38 +85,38 @@ export default class LoadAssetsScene extends Scene {
                             const { default: imagePath } = await import('../../assets/atlases/generated/enemy.png');
 
                             // eslint-disable-next-line no-await-in-loop
-                            await asyncLoader(this.load.atlas('enemy', imagePath, jsonPath));
+                            await asyncLoader(this.load.atlas(ENEMY_SPRITE_NAME, imagePath, jsonPath));
                             break;
                         }
                         case COIN: {
                             // eslint-disable-next-line no-await-in-loop
-                            const { default: jsonPath } = await import('../../assets/atlases/generated/enemy.json');
+                            const { default: jsonPath } = await import('../../assets/atlases/generated/coin.json');
                             // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } = await import('../../assets/atlases/generated/enemy.png');
+                            const { default: imagePath } = await import('../../assets/atlases/generated/coin.png');
 
                             // eslint-disable-next-line no-await-in-loop
-                            await asyncLoader(this.load.atlas('coin', imagePath, jsonPath));
+                            await asyncLoader(this.load.atlas(COIN_SPRITE_NAME, imagePath, jsonPath));
                             break;
                         }
                         case HEART: {
                             // eslint-disable-next-line no-await-in-loop
                             const { default: imagePath } = await import('../../assets/images/heart_full.png');
 
-                            await asyncLoader(this.load.image('heart', imagePath));
+                            await asyncLoader(this.load.image(HEART_SPRITE_NAME, imagePath));
                             break;
                         }
                         case CRYSTAL: {
                             // eslint-disable-next-line no-await-in-loop
                             const { default: imagePath } = await import('../../assets/images/crystal.png');
 
-                            await asyncLoader(this.load.image('crystal', imagePath));
+                            await asyncLoader(this.load.image(CRYSTAL_SPRITE_NAME, imagePath));
                             break;
                         }
                         case KEY: {
                             // eslint-disable-next-line no-await-in-loop
                             const { default: imagePath } = await import('../../assets/images/key.png');
 
-                            await asyncLoader(this.load.image('key', imagePath));
+                            await asyncLoader(this.load.image(KEY_SPRITE_NAME, imagePath));
                             break;
                         }
                         default: {

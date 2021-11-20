@@ -1,7 +1,21 @@
 import { Scene, Input } from 'phaser';
 
 // Constants
-import { HERO_SPRITE_NAME } from '../../constants';
+import {
+    KEY,
+    COIN,
+    HEART,
+    ENEMY,
+    CRYSTAL,
+    TILE_WIDTH,
+    TILE_HEIGHT,
+    KEY_SPRITE_NAME,
+    HERO_SPRITE_NAME,
+    COIN_SPRITE_NAME,
+    ENEMY_SPRITE_NAME,
+    HEART_SPRITE_NAME,
+    CRYSTAL_SPRITE_NAME,
+} from '../../constants';
 
 // Utils
 import { createWalkingAnimation } from '../../utils/sceneHelpers';
@@ -37,6 +51,8 @@ export default class GameScene extends Scene {
 
         // Game groups
         this.sprites = this.add.group();
+        this.enemies = this.add.group();
+        this.items = this.add.group();
 
         // Create the map
         const map = this.make.tilemap({ key: mapKey });
@@ -48,13 +64,10 @@ export default class GameScene extends Scene {
             const layer = map.createLayer(layerData.name, tilesets, 0, 0);
         });
 
-        map.objects.forEach((objectLayerData, index) => {
-            // TODO
-        });
-
         // Create hero sprite
         this.heroSprite = this.physics.add
             .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
+            .setName(HERO_SPRITE_NAME)
             .setDepth(1);
         this.sprites.add(this.heroSprite);
 
@@ -69,6 +82,103 @@ export default class GameScene extends Scene {
                 sprite: this.heroSprite,
                 startPosition: initialPosition,
             }],
+        });
+
+        // Load game objects like items, enemies, etc
+        map.objects.forEach((objectLayerData, layerIndex) => {
+            objectLayerData?.objects?.forEach((object, objectIndex) => {
+                const { gid, properties, x, y } = object;
+
+                switch (gid) {
+                    case ENEMY: {
+                        const name = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                        const enemy = this.physics.add
+                            .sprite(x, y, ENEMY_SPRITE_NAME, 'walk_down_02')
+                            .setName(name)
+                            .setDepth(1);
+
+                        this.sprites.add(enemy);
+                        this.enemies.add(enemy);
+                        this.gridEngine.addCharacter({
+                            id: name,
+                            offsetY: 0, // default
+                            sprite: enemy,
+                            startPosition: {
+                                x: Math.floor(x / TILE_WIDTH),
+                                y: Math.floor(y / TILE_HEIGHT),
+                            },
+                        });
+
+                        break;
+                    }
+                    case COIN: {
+                        const name = `${COIN_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                        const coin = this.physics.add
+                            .sprite(x, y, COIN_SPRITE_NAME, 'coin_idle_01')
+                            .setOrigin(0, 0)
+                            .setName(name)
+                            .setDepth(1);
+
+                        const animationKey = `${COIN_SPRITE_NAME}_idle`;
+                        if (!this.anims.exists(animationKey)) {
+                            this.anims.create({
+                                key: animationKey,
+                                frames: Array.from({ length: 2 }).map((n, index) => ({
+                                    key: COIN_SPRITE_NAME,
+                                    frame: `${COIN_SPRITE_NAME}_idle_${(index + 1).toString().padStart(2, '0')}`,
+                                })),
+                                frameRate: 3,
+                                repeat: -1,
+                                yoyo: false,
+                            });
+                        }
+
+                        coin.anims.play(animationKey);
+                        this.items.add(coin);
+
+                        break;
+                    }
+                    case HEART: {
+                        const name = `${HEART_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                        const heart = this.physics.add
+                            .image(x, y, HEART_SPRITE_NAME)
+                            .setOrigin(0, 0)
+                            .setName(name)
+                            .setDepth(1);
+
+                        this.items.add(heart);
+
+                        break;
+                    }
+                    case CRYSTAL: {
+                        const name = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                        const crystal = this.physics.add
+                            .image(x, y, CRYSTAL_SPRITE_NAME)
+                            .setOrigin(0, 0)
+                            .setName(name)
+                            .setDepth(1);
+
+                        this.items.add(crystal);
+
+                        break;
+                    }
+                    case KEY: {
+                        const name = `${KEY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                        const key = this.physics.add
+                            .image(x, y, KEY_SPRITE_NAME)
+                            .setOrigin(0, 0)
+                            .setName(name)
+                            .setDepth(1);
+
+                        this.items.add(key);
+
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            });
         });
 
         // Configure the main camera
@@ -106,16 +216,16 @@ export default class GameScene extends Scene {
 
         // Movement started
         this.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
-            const char = this.sprites.getChildren().find((sprite) => sprite.texture.key === charId);
+            const char = this.sprites.getChildren().find((sprite) => sprite.name === charId);
 
             if (char) {
-                char.anims.play(`${charId}_walk_${direction}`);
+                char.anims.play(`${char.texture.key}_walk_${direction}`);
             }
         });
 
         // Movement ended
         this.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
-            const char = this.sprites.getChildren().find((sprite) => sprite.texture.key === charId);
+            const char = this.sprites.getChildren().find((sprite) => sprite.name === charId);
 
             if (char) {
                 char.anims.stop();
