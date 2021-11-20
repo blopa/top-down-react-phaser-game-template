@@ -21,6 +21,7 @@ export default class BootScene extends Scene {
                 },
                 mapData: {
                     mapKey: 'sample_map',
+                    // mapKey: 'sample_indoor',
                 },
             },
             assets: {
@@ -28,6 +29,7 @@ export default class BootScene extends Scene {
                 atlases: ['hero'],
                 images: [],
                 mapKey: 'sample_map',
+                // mapKey: 'sample_indoor',
             },
         });
     }

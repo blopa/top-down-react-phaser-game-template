@@ -57,6 +57,7 @@ export default class LoadAssetsScene extends Scene {
         // Load the Tiled map needed for the next scene
         if (mapKey) {
             const { default: mapJson } = await import(`../../assets/maps/${mapKey}.json`);
+            debugger;
             const tilesets = mapJson.tilesets.map((tileset) =>
                 // the string will be something like "../tilesets/village.json" or "../tilesets/village.png"
                 tileset.source?.split('/').pop().split('.')[0] || tileset.image?.split('/').pop().split('.')[0]);
@@ -65,8 +66,9 @@ export default class LoadAssetsScene extends Scene {
             objectLayers.forEach((layer) => {
                 layer.objects.forEach((object) => {
                     const { gid, properties } = object;
+                    debugger;
 
-                    properties.forEach((property) => {
+                    properties?.forEach((property) => {
                         const { name, type, value } = property;
                     });
                 });

@@ -75,3 +75,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 Assets:
 https://www.kenney.nl/assets/rpg-urban-pack
 https://www.kenney.nl/assets/roguelike-rpg-pack
+https://www.kenney.nl/assets/pixel-platformer

@@ -65,7 +65,7 @@ export default class GameScene extends Scene {
             numberOfDirections: 4, // default
             characters: [{
                 id: HERO_SPRITE_NAME,
-                offsetY: 4,
+                offsetY: 0, // default
                 sprite: this.heroSprite,
                 startPosition: initialPosition,
             }],
