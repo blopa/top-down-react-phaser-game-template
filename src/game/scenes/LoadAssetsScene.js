@@ -11,6 +11,7 @@ import { selectFonts } from '../../redux/selectors/selectAssets';
 
 // Utils
 import { asyncLoader } from '../../utils/utils';
+import { COIN, CRYSTAL, ENEMY, HEART, KEY } from '../../constants';
 
 export default class LoadAssetsScene extends Scene {
     constructor() {
@@ -57,18 +58,63 @@ export default class LoadAssetsScene extends Scene {
         // Load the Tiled map needed for the next scene
         if (mapKey) {
             const { default: mapJson } = await import(`../../assets/maps/${mapKey}.json`);
-            debugger;
             const tilesets = mapJson.tilesets.map((tileset) =>
                 // the string will be something like "../tilesets/village.json" or "../tilesets/village.png"
                 tileset.source?.split('/').pop().split('.')[0] || tileset.image?.split('/').pop().split('.')[0]);
 
             const objectLayers = mapJson.layers.filter((layer) => layer.type === 'objectgroup');
             objectLayers.forEach((layer) => {
-                layer.objects.forEach((object) => {
+                layer.objects.forEach(async (object) => {
                     const { gid, properties } = object;
-                    debugger;
+                    switch (gid) {
+                        case ENEMY: {
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: jsonPath } = await import('../../assets/atlases/generated/enemy.json');
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: imagePath } = await import('../../assets/atlases/generated/enemy.png');
+
+                            // eslint-disable-next-line no-await-in-loop
+                            await asyncLoader(this.load.atlas('enemy', imagePath, jsonPath));
+                            break;
+                        }
+                        case COIN: {
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: jsonPath } = await import('../../assets/atlases/generated/enemy.json');
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: imagePath } = await import('../../assets/atlases/generated/enemy.png');
+
+                            // eslint-disable-next-line no-await-in-loop
+                            await asyncLoader(this.load.atlas('coin', imagePath, jsonPath));
+                            break;
+                        }
+                        case HEART: {
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: imagePath } = await import('../../assets/images/heart_full.png');
+
+                            await asyncLoader(this.load.image('heart', imagePath));
+                            break;
+                        }
+                        case CRYSTAL: {
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: imagePath } = await import('../../assets/images/crystal.png');
+
+                            await asyncLoader(this.load.image('crystal', imagePath));
+                            break;
+                        }
+                        case KEY: {
+                            // eslint-disable-next-line no-await-in-loop
+                            const { default: imagePath } = await import('../../assets/images/key.png');
+
+                            await asyncLoader(this.load.image('key', imagePath));
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    }
 
                     properties?.forEach((property) => {
+                        // TODO
                         const { name, type, value } = property;
                     });
                 });
@@ -77,6 +123,7 @@ export default class LoadAssetsScene extends Scene {
             // eslint-disable-next-line no-restricted-syntax
             for (const tilesetName of tilesets) {
                 if (tilesetName) {
+                    // TODO make sure the firstgid value is the same
                     // eslint-disable-next-line no-await-in-loop
                     const { default: tilesetJson } = await import(`../../assets/tilesets/${tilesetName}.json`);
                     // eslint-disable-next-line no-await-in-loop
