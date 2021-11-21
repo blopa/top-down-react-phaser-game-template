@@ -14,7 +14,7 @@ const defaultState = {
     jsons: [],
 };
 
-const assetsReducer = (state = defaultState, action) => {
+const loadedAssetsReducer = (state = defaultState, action) => {
     switch (action.type) {
         case ADD_LOADED_FONT: {
             return {
@@ -71,4 +71,4 @@ const assetsReducer = (state = defaultState, action) => {
     }
 };
 
-export default assetsReducer;
+export default loadedAssetsReducer;

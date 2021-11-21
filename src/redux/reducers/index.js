@@ -1,6 +1,12 @@
 import { combineReducers } from 'redux';
-import assetsReducer from './assetsReducer';
+
+// Reducers
+import loadedAssetsReducer from './loadedAssetsReducer';
+import heroDataReducer from './heroDataReducer';
+import mapDataReducer from './mapDataReducer';
 
 export default combineReducers({
-    assets: assetsReducer,
+    loadedAssets: loadedAssetsReducer,
+    heroData: heroDataReducer,
+    mapData: mapDataReducer,
 });

@@ -16,7 +16,7 @@ import {
     selectImages,
     selectJSONs,
     selectMaps,
-} from '../../redux/selectors/selectAssets';
+} from '../../redux/selectors/selectloadedAssets';
 
 // Utils
 import { asyncLoader } from '../../utils/utils';
