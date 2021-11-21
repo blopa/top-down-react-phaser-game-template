@@ -1,0 +1,5 @@
+export const ADD_LOADED_FONT = 'ADD_LOADED_FONT';
+export const ADD_LOADED_ATLAS = 'ADD_LOADED_ATLAS';
+export const ADD_LOADED_IMAGE = 'ADD_LOADED_IMAGE';
+export const ADD_LOADED_MAP = 'ADD_LOADED_MAPS';
+export const ADD_LOADED_JSON = 'ADD_LOADED_JSON';

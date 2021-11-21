@@ -1,5 +1,8 @@
-/* eslint-disable import/prefer-default-export */
-export const addLoadedFontAction = (payload) => (dispatch) => dispatch({
-    type: 'ADD_LOADED_FONT',
+import { ADD_LOADED_FONT } from '../constants';
+
+const addLoadedFontAction = (payload) => (dispatch) => dispatch({
+    type: ADD_LOADED_FONT,
     payload,
 });
+
+export default addLoadedFontAction;

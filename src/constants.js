@@ -21,3 +21,11 @@ export const CRYSTAL = 4;
 export const KEY = 5;
 
 export const IDLE_FRAME = 'walk_position_02';
+
+// Directions
+export const RIGHT_DIRECTION = 'right';
+export const LEFT_DIRECTION = 'left';
+export const UP_DIRECTION = 'up';
+export const DOWN_DIRECTION = 'down';
+
+export const IGNORED_TILESETS = ['objects'];

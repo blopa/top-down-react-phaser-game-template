@@ -10,6 +10,10 @@ import {
     TILE_WIDTH,
     IDLE_FRAME,
     TILE_HEIGHT,
+    UP_DIRECTION,
+    DOWN_DIRECTION,
+    LEFT_DIRECTION,
+    RIGHT_DIRECTION,
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
@@ -94,7 +98,7 @@ export default class GameScene extends Scene {
                     case ENEMY: {
                         const name = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                         const enemy = this.physics.add
-                            .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', 'down'))
+                            .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
                             .setName(name)
                             .setDepth(1);
 
@@ -206,7 +210,7 @@ export default class GameScene extends Scene {
         }
 
         // Animations
-        ['up', 'down', 'left', 'right'].forEach((direction) => {
+        [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION].forEach((direction) => {
             createWalkingAnimation(
                 this,
                 HERO_SPRITE_NAME,
@@ -246,13 +250,13 @@ export default class GameScene extends Scene {
 
     update() {
         if (this.cursors.left.isDown || this.wasd.left.isDown) {
-            this.gridEngine.move(HERO_SPRITE_NAME, 'left');
+            this.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
         } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
-            this.gridEngine.move(HERO_SPRITE_NAME, 'right');
+            this.gridEngine.move(HERO_SPRITE_NAME, RIGHT_DIRECTION);
         } else if (this.cursors.up.isDown || this.wasd.up.isDown) {
-            this.gridEngine.move(HERO_SPRITE_NAME, 'up');
+            this.gridEngine.move(HERO_SPRITE_NAME, UP_DIRECTION);
         } else if (this.cursors.down.isDown || this.wasd.down.isDown) {
-            this.gridEngine.move(HERO_SPRITE_NAME, 'down');
+            this.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
         }
     }
 }
