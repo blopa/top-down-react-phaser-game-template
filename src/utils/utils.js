@@ -35,6 +35,8 @@ export const asyncLoader = (loaderPlugin) => new Promise((resolve) => {
     loaderPlugin.start();
 });
 
+// TODO make a loader function for each folder, like assets/maps etc
+// This doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
 // eslint-disable-next-line consistent-return
 export const loadModule = (modulePath) => {
     try {
@@ -45,3 +47,14 @@ export const loadModule = (modulePath) => {
 
     return new Promise();
 };
+
+// This doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
+export const moduleIsAvailable = (path) => {
+    try {
+        require.resolve(path);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
