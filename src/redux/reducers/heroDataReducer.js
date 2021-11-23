@@ -1,5 +1,5 @@
 import {
-    SET_FACING_DIRECTION,
+    SET_FACING_DIRECTION, SET_INITIAL_FRAME, SET_INITIAL_POSITION, SET_PREVIOUS_POSITION,
 } from '../constants';
 
 const defaultState = {
@@ -15,6 +15,27 @@ const heroDataReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 facingDirection: action.payload,
+            };
+        }
+
+        case SET_INITIAL_POSITION: {
+            return {
+                ...state,
+                initialPosition: action.payload,
+            };
+        }
+
+        case SET_PREVIOUS_POSITION: {
+            return {
+                ...state,
+                previousPosition: action.payload,
+            };
+        }
+
+        case SET_INITIAL_FRAME: {
+            return {
+                ...state,
+                initialFrame: action.payload,
             };
         }
 

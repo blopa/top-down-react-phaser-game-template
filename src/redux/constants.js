@@ -7,7 +7,7 @@ export const ADD_LOADED_JSON = 'ADD_LOADED_JSON';
 
 // Map data
 export const SET_MAP_KEY = 'SET_MAP_KEY';
-export const SET_TILESETS = 'SET_TILESETS';
+export const ADD_TILESET = 'SET_TILESET';
 
 // Hero data
 export const SET_FACING_DIRECTION = 'SET_FACING_DIRECTION';

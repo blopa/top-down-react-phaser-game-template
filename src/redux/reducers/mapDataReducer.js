@@ -1,4 +1,5 @@
 import {
+    ADD_TILESET,
     SET_MAP_KEY,
 } from '../constants';
 
@@ -13,6 +14,16 @@ const mapDataReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 mapKey: action.payload,
+            };
+        }
+
+        case ADD_TILESET: {
+            return {
+                ...state,
+                tilesets: [
+                    ...state.tilesets,
+                    action.payload,
+                ],
             };
         }
 

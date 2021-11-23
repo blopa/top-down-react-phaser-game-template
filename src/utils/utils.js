@@ -34,3 +34,14 @@ export const asyncLoader = (loaderPlugin) => new Promise((resolve) => {
     loaderPlugin.on('filecomplete', resolve).on('loaderror', resolve);
     loaderPlugin.start();
 });
+
+// eslint-disable-next-line consistent-return
+export const loadModule = (modulePath) => {
+    try {
+        return import(modulePath);
+    } catch {
+        console.error(`Unable to import module ${modulePath}`);
+    }
+
+    return new Promise();
+};

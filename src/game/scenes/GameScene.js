@@ -25,6 +25,17 @@ import {
 // Utils
 import { createWalkingAnimation } from '../../utils/sceneHelpers';
 
+// Store
+import store from '../../redux/store';
+
+// Selectors
+import { selectMapKey, selectTilesets } from '../../redux/selectors/selectMapData';
+import {
+    selectHeroInitialFrame,
+    selectHeroFacingDirection,
+    selectHeroInitialPosition,
+} from '../../redux/selectors/selectHeroData';
+
 export default class GameScene extends Scene {
     constructor() {
         super('GameScene');
@@ -35,15 +46,22 @@ export default class GameScene extends Scene {
     }
 
     create() {
-        // Base data
+        // Store stuff
+        const { getState, dispatch } = store;
+        const state = getState();
+
+        // Game variables
         const camera = this.cameras.main;
         const { game } = this.sys;
-        const { heroData, mapData } = this.sceneData;
-        const { mapKey, tilesets } = mapData;
-        const {
-            initialFrame,
-            initialPosition,
-        } = heroData;
+
+        // Map data
+        const mapKey = selectMapKey(state);
+        const tilesets = selectTilesets(state);
+
+        // Hero data
+        const initialFrame = selectHeroInitialFrame(state);
+        const initialPosition = selectHeroInitialPosition(state);
+        const facingDirection = selectHeroFacingDirection(state);
 
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -86,6 +104,7 @@ export default class GameScene extends Scene {
                 offsetY: 0, // default
                 sprite: this.heroSprite,
                 startPosition: initialPosition,
+                facingDirection,
             }],
         });
 
