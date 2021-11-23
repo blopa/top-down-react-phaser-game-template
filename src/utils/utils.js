@@ -51,7 +51,7 @@ export const loadModule = (modulePath) => {
 // This doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
 export const moduleIsAvailable = (path) => {
     try {
-        require.resolve(path);
+        require.resolve(path); // better with require.resolveWeak(path);
         return true;
     } catch {
         return false;
