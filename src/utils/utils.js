@@ -35,23 +35,39 @@ export const asyncLoader = (loaderPlugin) => new Promise((resolve) => {
     loaderPlugin.start();
 });
 
-// TODO make a loader function for each folder, like assets/maps etc
-// This doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
-// eslint-disable-next-line consistent-return
-export const loadModule = (modulePath) => {
+// Functions to check if a file exists within Webpack modules
+// This might look dumb, but due to the way Webpack works, this is the only way to properly check
+// Using a full path as a variable doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
+export const isMapFileAvailable = (file) => {
     try {
-        return import(modulePath);
+        require.resolveWeak(`../assets/maps/${file}`);
+        return true;
     } catch {
-        console.error(`Unable to import module ${modulePath}`);
+        return false;
     }
-
-    return new Promise();
 };
 
-// This doesn't work because: https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
-export const moduleIsAvailable = (path) => {
+export const isImageFileAvailable = (file) => {
     try {
-        require.resolve(path); // better with require.resolveWeak(path);
+        require.resolveWeak(`../assets/images/${file}`);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+export const isTilesetFileAvailable = (file) => {
+    try {
+        require.resolveWeak(`../assets/tilesets/${file}`);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+export const isGeneratedAtlasFileAvailable = (file) => {
+    try {
+        require.resolveWeak(`../assets/atlases/generated/${file}`);
         return true;
     } catch {
         return false;

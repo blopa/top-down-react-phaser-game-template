@@ -21,7 +21,13 @@ import {
 } from '../../redux/selectors/selectLoadedAssets';
 
 // Utils
-import { asyncLoader } from '../../utils/utils';
+import {
+    asyncLoader,
+    isMapFileAvailable,
+    isImageFileAvailable,
+    isTilesetFileAvailable,
+    isGeneratedAtlasFileAvailable,
+} from '../../utils/utils';
 
 // Constants
 import {
@@ -60,6 +66,7 @@ export default class LoadAssetsScene extends Scene {
 
         // Pre-load all the fonts needed for the scene
         // so Phaser can render them properly
+        let newFontsCount = 0;
         fonts?.forEach((font) => {
             const loadedFonts = selectLoadedFonts(state);
 
@@ -70,6 +77,7 @@ export default class LoadAssetsScene extends Scene {
 
             // Set font as already loaded in the redux store
             dispatch(addLoadedFontAction(font));
+            newFontsCount += 1;
             const color = this.game.config.backgroundColor;
             this.add.text(
                 0,
@@ -86,7 +94,11 @@ export default class LoadAssetsScene extends Scene {
         const loadedImages = selectLoadedImages(state);
         const loadedMaps = selectLoadedMaps(state);
         // Load the Tiled map needed for the next scene
-        if (mapKey && !loadedMaps.includes(mapKey)) {
+        if (
+            mapKey
+            && !loadedMaps.includes(mapKey)
+            && isMapFileAvailable(`${mapKey}.json`)
+        ) {
             const { default: mapJson } = await import(`../../assets/maps/${mapKey}.json`);
             const tilesets = mapJson.tilesets.map((tileset) =>
                 // the string will be something like "../tilesets/village.json" or "../tilesets/village.png"
@@ -99,74 +111,85 @@ export default class LoadAssetsScene extends Scene {
                     const { gid, properties } = object;
                     switch (gid) {
                         case ENEMY: {
-                            if (loadedAtlases.includes(ENEMY_SPRITE_NAME)) {
-                                break;
+                            if (
+                                isGeneratedAtlasFileAvailable(`${ENEMY_SPRITE_NAME}.json`)
+                                && isGeneratedAtlasFileAvailable(`${ENEMY_SPRITE_NAME}.png`)
+                                && !loadedAtlases.includes(ENEMY_SPRITE_NAME)
+                            ) {
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: jsonPath } =
+                                    await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.json`);
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: imagePath } =
+                                    await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.png`);
+
+                                dispatch(addLoadedAtlasAction(ENEMY_SPRITE_NAME));
+                                await asyncLoader(this.load.atlas(ENEMY_SPRITE_NAME, imagePath, jsonPath));
                             }
 
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: jsonPath } =
-                                await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.json`);
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } =
-                                await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.png`);
-
-                            dispatch(addLoadedAtlasAction(ENEMY_SPRITE_NAME));
-                            await asyncLoader(this.load.atlas(ENEMY_SPRITE_NAME, imagePath, jsonPath));
                             break;
                         }
                         case COIN: {
-                            if (loadedAtlases.includes(COIN_SPRITE_NAME)) {
-                                break;
-                            }
+                            if (
+                                isGeneratedAtlasFileAvailable(`${COIN_SPRITE_NAME}.json`)
+                                && isGeneratedAtlasFileAvailable(`${COIN_SPRITE_NAME}.png`)
+                            && !loadedAtlases.includes(COIN_SPRITE_NAME)
+                            ) {
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: jsonPath } =
+                                    await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.json`);
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: imagePath } =
+                                    await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.png`);
 
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: jsonPath } =
-                                await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.json`);
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } =
-                                await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.png`);
-
-                            if (imagePath) {
                                 dispatch(addLoadedAtlasAction(COIN_SPRITE_NAME));
                                 await asyncLoader(this.load.atlas(COIN_SPRITE_NAME, imagePath, jsonPath));
                             }
+
                             break;
                         }
                         case HEART: {
-                            if (loadedImages.includes(HEART_SPRITE_NAME)) {
-                                break;
+                            if (
+                                isImageFileAvailable('heart_full.png')
+                                && !loadedImages.includes(HEART_SPRITE_NAME)
+                            ) {
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${HEART_SPRITE_NAME}.png`
+
+                                dispatch(addLoadedImageAction(HEART_SPRITE_NAME));
+                                await asyncLoader(this.load.image(HEART_SPRITE_NAME, imagePath));
                             }
 
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${HEART_SPRITE_NAME}.png`
-
-                            dispatch(addLoadedImageAction(HEART_SPRITE_NAME));
-                            await asyncLoader(this.load.image(HEART_SPRITE_NAME, imagePath));
                             break;
                         }
                         case CRYSTAL: {
-                            if (loadedImages.includes(CRYSTAL_SPRITE_NAME)) {
-                                break;
+                            if (
+                                isImageFileAvailable(`${CRYSTAL_SPRITE_NAME}.png`)
+                                && !loadedImages.includes(CRYSTAL_SPRITE_NAME)
+                            ) {
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: imagePath } =
+                                    await import(`../../assets/images/${CRYSTAL_SPRITE_NAME}.png`);
+
+                                dispatch(addLoadedImageAction(CRYSTAL_SPRITE_NAME));
+                                await asyncLoader(this.load.image(CRYSTAL_SPRITE_NAME, imagePath));
                             }
 
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } =
-                                await import(`../../assets/images/${CRYSTAL_SPRITE_NAME}.png`);
-
-                            dispatch(addLoadedImageAction(CRYSTAL_SPRITE_NAME));
-                            await asyncLoader(this.load.image(CRYSTAL_SPRITE_NAME, imagePath));
                             break;
                         }
                         case KEY: {
-                            if (loadedImages.includes(KEY_SPRITE_NAME)) {
-                                break;
+                            if (
+                                isImageFileAvailable(`${CRYSTAL_SPRITE_NAME}.png`)
+                                && !loadedImages.includes(KEY_SPRITE_NAME)
+                            ) {
+                                // eslint-disable-next-line no-await-in-loop
+                                const { default: imagePath } =
+                                    await import(`../../assets/images/${KEY_SPRITE_NAME}.png`);
+
+                                dispatch(addLoadedImageAction(KEY_SPRITE_NAME));
+                                await asyncLoader(this.load.image(KEY_SPRITE_NAME, imagePath));
                             }
 
-                            // eslint-disable-next-line no-await-in-loop
-                            const { default: imagePath } = await import(`../../assets/images/${KEY_SPRITE_NAME}.png`);
-
-                            dispatch(addLoadedImageAction(KEY_SPRITE_NAME));
-                            await asyncLoader(this.load.image(KEY_SPRITE_NAME, imagePath));
                             break;
                         }
                         default: {
@@ -186,7 +209,7 @@ export default class LoadAssetsScene extends Scene {
             for (const tilesetName of tilesets) {
                 if (tilesetName && !IGNORED_TILESETS.includes(tilesetName)) {
                     let tilesetJson = {};
-                    if (!loadedJSONs.includes(tilesetName)) {
+                    if (!loadedJSONs.includes(tilesetName) && isTilesetFileAvailable(`${tilesetName}.json`)) {
                         // eslint-disable-next-line no-await-in-loop
                         const { default: jsonResult } = await import(`../../assets/tilesets/${tilesetName}.json`);
                         tilesetJson = jsonResult;
@@ -198,7 +221,7 @@ export default class LoadAssetsScene extends Scene {
                         tilesetJson = this.cache.json.get(tilesetName);
                     }
 
-                    if (!loadedImages.includes(tilesetName)) {
+                    if (!loadedImages.includes(tilesetName) && isTilesetFileAvailable(tilesetJson.image)) {
                         // eslint-disable-next-line no-await-in-loop
                         const { default: tilesetImage } = await import(`../../assets/tilesets/${tilesetJson.image}`);
 
@@ -207,22 +230,25 @@ export default class LoadAssetsScene extends Scene {
                         await asyncLoader(this.load.image(tilesetName, tilesetImage));
                     }
 
-                    mapJson.tilesets = mapJson.tilesets.map((tileset) => {
-                        if (tileset.source?.includes(`/${tilesetName}.json`)) {
-                            const imageExtension = tilesetJson.image.split('.').pop();
-                            const imagePath = tileset.source.replace('.json', `.${imageExtension}`);
-                            // eslint-disable-next-line no-param-reassign
-                            delete tileset.source;
+                    mapJson.tilesets = mapJson.tilesets
+                        .filter(
+                            (tileset) => !IGNORED_TILESETS.includes(tileset.source?.split('/')?.pop()?.split('.')?.[0])
+                        ).map((tileset) => {
+                            if (tileset.source?.includes(`/${tilesetName}.json`)) {
+                                const imageExtension = tilesetJson.image.split('.').pop();
+                                const imagePath = tileset.source.replace('.json', `.${imageExtension}`);
+                                // eslint-disable-next-line no-param-reassign
+                                delete tileset.source;
 
-                            return {
-                                ...tileset,
-                                ...tilesetJson,
-                                image: imagePath, // not really necessary but why not
-                            };
-                        }
+                                return {
+                                    ...tileset,
+                                    ...tilesetJson,
+                                    image: imagePath, // not really necessary but why not
+                                };
+                            }
 
-                        return tileset;
-                    });
+                            return tileset;
+                        });
 
                     dispatch(addTilesetAction(tilesetName));
                 }
@@ -236,7 +262,10 @@ export default class LoadAssetsScene extends Scene {
         // Load all the atlases needed for the next scene
         // eslint-disable-next-line no-restricted-syntax
         for (const atlas of atlases) {
-            if (loadedAtlases.includes(atlas)) {
+            if (
+                !isGeneratedAtlasFileAvailable(`${atlas}.json`)
+                || loadedAtlases.includes(atlas)
+            ) {
                 // eslint-disable-next-line no-continue
                 continue;
             }
@@ -244,7 +273,7 @@ export default class LoadAssetsScene extends Scene {
             // eslint-disable-next-line no-await-in-loop
             const { default: jsonPath } = await import(`../../assets/atlases/generated/${atlas}.json`);
             const imageName = jsonPath.textures.find((texture) => texture.image.includes(atlas)).image;
-            if (!imageName) {
+            if (!imageName || !isGeneratedAtlasFileAvailable(imageName)) {
                 // eslint-disable-next-line no-continue
                 continue;
             }
@@ -260,7 +289,10 @@ export default class LoadAssetsScene extends Scene {
         // Load all the images needed for the next scene
         // eslint-disable-next-line no-restricted-syntax
         for (const image of images) {
-            if (loadedImages.includes(image)) {
+            if (
+                isImageFileAvailable(`${image}.png`)
+                || loadedImages.includes(image)
+            ) {
                 // eslint-disable-next-line no-continue
                 continue;
             }
@@ -274,7 +306,7 @@ export default class LoadAssetsScene extends Scene {
         }
 
         // If we have fonts, then wait for them to be loaded before calling the next scene...
-        if (fonts.length > 0) {
+        if (newFontsCount > 0) {
             document.fonts.ready.then((fontFace) => {
                 this.scene.start(
                     this.initData.nextScene
