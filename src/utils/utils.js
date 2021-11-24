@@ -30,8 +30,8 @@ export const calculateGameSize = (
 };
 
 // Thanks yannick @ https://phaser.discourse.group/t/loading-audio/1306/4
-export const asyncLoader = (loaderPlugin) => new Promise((resolve) => {
-    loaderPlugin.on('filecomplete', resolve).on('loaderror', resolve);
+export const asyncLoader = (loaderPlugin) => new Promise((resolve, reject) => {
+    loaderPlugin.on('filecomplete', resolve).on('loaderror', reject);
     loaderPlugin.start();
 });
 
@@ -43,6 +43,7 @@ export const isMapFileAvailable = (file) => {
         require.resolveWeak(`../assets/maps/${file}`);
         return true;
     } catch {
+        console.error(`Error loading file ${file}`);
         return false;
     }
 };
@@ -52,6 +53,7 @@ export const isImageFileAvailable = (file) => {
         require.resolveWeak(`../assets/images/${file}`);
         return true;
     } catch {
+        console.error(`Error loading file ${file}`);
         return false;
     }
 };
@@ -61,6 +63,7 @@ export const isTilesetFileAvailable = (file) => {
         require.resolveWeak(`../assets/tilesets/${file}`);
         return true;
     } catch {
+        console.error(`Error loading file ${file}`);
         return false;
     }
 };
@@ -70,6 +73,7 @@ export const isGeneratedAtlasFileAvailable = (file) => {
         require.resolveWeak(`../assets/atlases/generated/${file}`);
         return true;
     } catch {
+        console.error(`Error loading file ${file}`);
         return false;
     }
 };

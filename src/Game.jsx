@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Phaser from 'phaser';
 import GridEngine from 'grid-engine';
+import { useDispatch } from 'react-redux';
 
 // Utils
 import { calculateGameSize } from './utils/utils';
@@ -19,7 +20,13 @@ import GameScene from './game/scenes/GameScene';
 import BootScene from './game/scenes/BootScene';
 import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 
+// Actions
+import setGameHeightAction from './redux/actions/setGameHeightAction';
+import setGameWidthAction from './redux/actions/setGameWidthAction';
+import setGameZoomAction from './redux/actions/setGameZoomAction';
+
 function Game() {
+    const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const { width, height, zoom } = calculateGameSize(
         MIN_GAME_WIDTH,
@@ -27,6 +34,16 @@ function Game() {
         TILE_WIDTH,
         TILE_HEIGHT
     );
+
+    const updateGameReduxState = useCallback((
+        gameHeight,
+        gameWidth,
+        gameZoom
+    ) => {
+        dispatch(setGameHeightAction(gameHeight));
+        dispatch(setGameWidthAction(gameWidth));
+        dispatch(setGameZoomAction(gameZoom));
+    }, [dispatch]);
 
     // Create the game inside a useEffect
     // to create it only once
@@ -70,6 +87,8 @@ function Game() {
             backgroundColor: '#FF0000',
         });
 
+        updateGameReduxState(width, height, zoom);
+
         // Create listener to resize the game
         // when the window is resized
         let timeOutFunctionId;
@@ -81,6 +100,7 @@ function Game() {
                 TILE_HEIGHT
             );
 
+            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
             phaserGame.scale.resize(gameSize.width, gameSize.height);
             phaserGame.scale.setZoom(gameSize.zoom);
         };
@@ -92,7 +112,13 @@ function Game() {
 
         setGame(phaserGame);
         // window.phaserGame = game;
-    }, [game, width, height, zoom]);
+    }, [
+        game,
+        width,
+        height,
+        zoom,
+        updateGameReduxState,
+    ]);
 
     return (
         <div>
