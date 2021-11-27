@@ -68,10 +68,10 @@ export default class GameScene extends Scene {
         this.actionKey = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys({
-            up: Input.Keyboard.KeyCodes.W,
-            down: Input.Keyboard.KeyCodes.S,
-            left: Input.Keyboard.KeyCodes.A,
-            right: Input.Keyboard.KeyCodes.D,
+            [UP_DIRECTION]: Input.Keyboard.KeyCodes.W,
+            [DOWN_DIRECTION]: Input.Keyboard.KeyCodes.S,
+            [LEFT_DIRECTION]: Input.Keyboard.KeyCodes.A,
+            [RIGHT_DIRECTION]: Input.Keyboard.KeyCodes.D,
         });
 
         // Game groups
@@ -350,13 +350,13 @@ export default class GameScene extends Scene {
     }
 
     update(time, delta) {
-        if (this.cursors.left.isDown || this.wasd.left.isDown) {
+        if (this.cursors.left.isDown || this.wasd[LEFT_DIRECTION].isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
-        } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
+        } else if (this.cursors.right.isDown || this.wasd[RIGHT_DIRECTION].isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, RIGHT_DIRECTION);
-        } else if (this.cursors.up.isDown || this.wasd.up.isDown) {
+        } else if (this.cursors.up.isDown || this.wasd[UP_DIRECTION].isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, UP_DIRECTION);
-        } else if (this.cursors.down.isDown || this.wasd.down.isDown) {
+        } else if (this.cursors.down.isDown || this.wasd[DOWN_DIRECTION].isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
         }
 

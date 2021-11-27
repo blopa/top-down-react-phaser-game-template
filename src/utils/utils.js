@@ -1,4 +1,4 @@
-import {GameObjects} from 'phaser';
+import { GameObjects } from 'phaser';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
