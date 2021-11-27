@@ -4,7 +4,7 @@ import { Scene } from 'phaser';
 import {
     handleCreateMap,
     handleCreateHero,
-    handleAnimations,
+    handleCreateHeroAnimations,
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
@@ -42,7 +42,7 @@ export default class GameScene extends Scene {
         handleConfigureCamera(this);
 
         // Animations
-        handleAnimations(this);
+        handleCreateHeroAnimations(this);
 
         // Handle characters movements
         handleCreateCharactersMovements(this);

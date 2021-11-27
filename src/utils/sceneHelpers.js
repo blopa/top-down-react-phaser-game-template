@@ -368,7 +368,7 @@ export const handleConfigureCamera = (scene) => {
     }
 };
 
-export const handleAnimations = (scene) => {
+export const handleCreateHeroAnimations = (scene) => {
     // Animations
     [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION].forEach((direction) => {
         createWalkingAnimation(
