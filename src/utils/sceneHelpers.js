@@ -25,6 +25,25 @@ import {
 // Utils
 import { createInteractiveGameObject } from './utils';
 
+// Store
+import store from '../redux/store';
+
+// Selectors
+import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
+import {
+    selectHeroInitialFrame,
+    selectHeroFacingDirection,
+    selectHeroInitialPosition,
+} from '../redux/selectors/selectHeroData';
+
+export const getSelectorData = (selector) => {
+    const { getState } = store;
+
+    return selector(getState());
+};
+
+export const getDispatch = () => store.dispatch;
+
 /**
  * @param scene
  * @param assetKey
@@ -50,10 +69,10 @@ export const createWalkingAnimation = (
     });
 };
 
-export const handleCharactersMovements = (gridEngine, sprites) => {
+export const handleCreateCharactersMovements = (scene) => {
     // Movement started
-    gridEngine.movementStarted().subscribe(({ charId, direction }) => {
-        const char = sprites.getChildren().find((sprite) => sprite.name === charId);
+    scene.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
+        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
 
         if (char) {
             char.anims.play(`${char.texture.key}_walk_${direction}`);
@@ -61,8 +80,8 @@ export const handleCharactersMovements = (gridEngine, sprites) => {
     });
 
     // Movement ended
-    gridEngine.movementStopped().subscribe(({ charId, direction }) => {
-        const char = sprites.getChildren().find((sprite) => sprite.name === charId);
+    scene.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
+        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
 
         if (char) {
             char.anims.stop();
@@ -71,8 +90,8 @@ export const handleCharactersMovements = (gridEngine, sprites) => {
     });
 
     // Direction changed
-    gridEngine.directionChanged().subscribe(({ charId, direction }) => {
-        const char = sprites.getChildren().find((sprite) => sprite.name === charId);
+    scene.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
+        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
 
         if (char) {
             char.setFrame(IDLE_FRAME.replace('position', direction));
@@ -80,11 +99,35 @@ export const handleCharactersMovements = (gridEngine, sprites) => {
     });
 };
 
-export const handleCreateMap = (
-    scene,
-    mapKey,
-    tilesets
-) => {
+export const handleCreateControls = (scene) => {
+    // Controls
+    // eslint-disable-next-line no-param-reassign
+    scene.actionKey = scene.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
+    // eslint-disable-next-line no-param-reassign
+    scene.cursors = scene.input.keyboard.createCursorKeys();
+    // eslint-disable-next-line no-param-reassign
+    scene.wasd = scene.input.keyboard.addKeys({
+        [UP_DIRECTION]: Input.Keyboard.KeyCodes.W,
+        [DOWN_DIRECTION]: Input.Keyboard.KeyCodes.S,
+        [LEFT_DIRECTION]: Input.Keyboard.KeyCodes.A,
+        [RIGHT_DIRECTION]: Input.Keyboard.KeyCodes.D,
+    });
+};
+
+export const handleCreateGroups = (scene) => {
+    // Game groups
+    // eslint-disable-next-line no-param-reassign
+    scene.sprites = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.enemies = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.items = scene.add.group();
+};
+
+export const handleCreateMap = (scene) => {
+    const mapKey = getSelectorData(selectMapKey);
+    const tilesets = getSelectorData(selectTilesets);
+
     // Create the map
     const map = scene.make.tilemap({ key: mapKey });
     tilesets.forEach((tilesetName) => {
@@ -95,13 +138,13 @@ export const handleCreateMap = (
         const layer = map.createLayer(layerData.name, tilesets, 0, 0);
     });
 
-    return map;
+    // eslint-disable-next-line no-param-reassign
+    scene.map = map;
 };
 
-export const handleCreateHero = (
-    scene,
-    initialFrame
-) => {
+export const handleCreateHero = (scene) => {
+    const initialFrame = getSelectorData(selectHeroInitialFrame);
+
     // Create hero sprite
     const heroSprite = scene.physics.add
         .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
@@ -174,19 +217,14 @@ export const handleCreateHero = (
         }
     };
 
-    return heroSprite;
+    // eslint-disable-next-line no-param-reassign
+    scene.heroSprite = heroSprite;
+    scene.sprites.add(heroSprite);
 };
 
-export const handleObjectsLayer = (
-    scene,
-    objectsLayer,
-    heroSprite,
-    spritesGroups,
-    enemiesGroups,
-    itemsGroups
-) => {
+export const handleObjectsLayer = (scene) => {
     // Load game objects like items, enemies, etc
-    objectsLayer.forEach((objectLayerData, layerIndex) => {
+    scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y } = object;
 
@@ -198,8 +236,8 @@ export const handleObjectsLayer = (
                         .setName(name)
                         .setDepth(1);
 
-                    spritesGroups.add(enemy);
-                    enemiesGroups.add(enemy);
+                    scene.sprites.add(enemy);
+                    scene.enemies.add(enemy);
                     scene.gridEngine.addCharacter({
                         id: name,
                         offsetY: 0, // default
@@ -212,7 +250,7 @@ export const handleObjectsLayer = (
 
                     const enemyActionHeroCollider = scene.physics.add.collider(
                         enemy,
-                        heroSprite.actionCollider,
+                        scene.heroSprite.actionCollider,
                         (e, a) => {
                             if (Input.Keyboard.JustDown(scene.actionKey)) {
                                 enemyActionHeroCollider.active = false;
@@ -251,7 +289,7 @@ export const handleObjectsLayer = (
                     }
 
                     coin.anims.play(animationKey);
-                    itemsGroups.add(coin);
+                    scene.items.add(coin);
 
                     break;
                 }
@@ -264,7 +302,7 @@ export const handleObjectsLayer = (
                         .setName(name)
                         .setDepth(1);
 
-                    itemsGroups.add(heart);
+                    scene.items.add(heart);
 
                     break;
                 }
@@ -277,7 +315,7 @@ export const handleObjectsLayer = (
                         .setName(name)
                         .setDepth(1);
 
-                    itemsGroups.add(crystal);
+                    scene.items.add(crystal);
 
                     break;
                 }
@@ -290,7 +328,7 @@ export const handleObjectsLayer = (
                         .setName(name)
                         .setDepth(1);
 
-                    itemsGroups.add(key);
+                    scene.items.add(key);
 
                     break;
                 }
@@ -302,32 +340,30 @@ export const handleObjectsLayer = (
     });
 };
 
-export const handleConfigureCamera = (
-    heroSprite,
-    camera,
-    map,
-    game
-) => {
+export const handleConfigureCamera = (scene) => {
+    const { game } = scene.sys;
+    const camera = scene.cameras.main;
+
     // Configure the main camera
-    camera.startFollow(heroSprite, true);
-    camera.setFollowOffset(-heroSprite.width, -heroSprite.height);
+    camera.startFollow(scene.heroSprite, true);
+    camera.setFollowOffset(-scene.heroSprite.width, -scene.heroSprite.height);
     camera.setBounds(
         0,
         0,
-        Math.max(map.widthInPixels, game.scale.gameSize.width),
-        Math.max(map.heightInPixels, game.scale.gameSize.height)
+        Math.max(scene.map.widthInPixels, game.scale.gameSize.width),
+        Math.max(scene.map.heightInPixels, game.scale.gameSize.height)
     );
 
-    if (map.widthInPixels < game.scale.gameSize.width) {
+    if (scene.map.widthInPixels < game.scale.gameSize.width) {
         camera.setPosition(
-            (game.scale.gameSize.width - map.widthInPixels) / 2
+            (game.scale.gameSize.width - scene.map.widthInPixels) / 2
         );
     }
 
-    if (map.heightInPixels < game.scale.gameSize.height) {
+    if (scene.map.heightInPixels < game.scale.gameSize.height) {
         camera.setPosition(
             camera.x,
-            (game.scale.gameSize.height - map.heightInPixels) / 2
+            (game.scale.gameSize.height - scene.map.heightInPixels) / 2
         );
     }
 };
@@ -342,4 +378,35 @@ export const handleAnimations = (scene) => {
             3
         );
     });
+};
+
+export const handleConfigureGridEngine = (scene) => {
+    const initialPosition = getSelectorData(selectHeroInitialPosition);
+    const facingDirection = getSelectorData(selectHeroFacingDirection);
+
+    // Grid Engine
+    scene.gridEngine.create(scene.map, {
+        characterCollisionStrategy: 'BLOCK_TWO_TILES', // default
+        collisionTilePropertyName: 'ge_collide', // default
+        numberOfDirections: 4, // default
+        characters: [{
+            id: HERO_SPRITE_NAME,
+            offsetY: 0, // default
+            sprite: scene.heroSprite,
+            startPosition: initialPosition,
+            facingDirection,
+        }],
+    });
+};
+
+export const handleHeroMovement = (scene) => {
+    if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
+        scene.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
+    } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
+        scene.gridEngine.move(HERO_SPRITE_NAME, RIGHT_DIRECTION);
+    } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
+        scene.gridEngine.move(HERO_SPRITE_NAME, UP_DIRECTION);
+    } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
+        scene.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
+    }
 };
