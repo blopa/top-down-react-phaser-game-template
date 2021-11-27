@@ -65,6 +65,7 @@ export default class GameScene extends Scene {
         const facingDirection = selectHeroFacingDirection(state);
 
         // Controls
+        this.actionKey = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys({
             up: Input.Keyboard.KeyCodes.W,
@@ -198,6 +199,21 @@ export default class GameScene extends Scene {
                                 y: Math.floor(y / TILE_HEIGHT),
                             },
                         });
+
+                        const enemyActionHeroCollider = this.physics.add.collider(
+                            enemy,
+                            this.heroSprite.actionCollider,
+                            (e, a) => {
+                                if (Input.Keyboard.JustDown(this.actionKey)) {
+                                    enemyActionHeroCollider.active = false;
+                                    console.log('action button pressed');
+
+                                    this.time.delayedCall(0, () => {
+                                        enemyActionHeroCollider.active = true;
+                                    });
+                                }
+                            }
+                        );
 
                         break;
                     }
