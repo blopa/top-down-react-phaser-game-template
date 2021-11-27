@@ -25,19 +25,25 @@ import setGameHeightAction from './redux/actions/setGameHeightAction';
 import setGameWidthAction from './redux/actions/setGameWidthAction';
 import setGameZoomAction from './redux/actions/setGameZoomAction';
 
+// Components
+import DialogBox from './components/DialogBox';
+import setDialogMessagesAction from './redux/actions/setDialogMessagesAction';
+import setDialogCharacterNameAction from './redux/actions/setDialogCharacterNameAction';
+import setDialogActionAction from './redux/actions/setDialogActionAction';
+
 function Game() {
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
-    const { width, height, zoom } = calculateGameSize(
-        MIN_GAME_WIDTH,
-        MIN_GAME_HEIGHT,
-        TILE_WIDTH,
-        TILE_HEIGHT
-    );
+
+    const handleMessageIsDone = useCallback(() => {
+        dispatch(setDialogCharacterNameAction(''));
+        dispatch(setDialogMessagesAction([]));
+        dispatch(setDialogActionAction(null));
+    }, [dispatch]);
 
     const updateGameReduxState = useCallback((
-        gameHeight,
         gameWidth,
+        gameHeight,
         gameZoom
     ) => {
         dispatch(setGameHeightAction(gameHeight));
@@ -51,6 +57,13 @@ function Game() {
         if (game) {
             return;
         }
+
+        const { width, height, zoom } = calculateGameSize(
+            MIN_GAME_WIDTH,
+            MIN_GAME_HEIGHT,
+            TILE_WIDTH,
+            TILE_HEIGHT
+        );
 
         const phaserGame = new Phaser.Game({
             type: Phaser.AUTO,
@@ -117,9 +130,6 @@ function Game() {
         // window.phaserGame = game;
     }, [
         game,
-        width,
-        height,
-        zoom,
         updateGameReduxState,
     ]);
 
@@ -131,6 +141,7 @@ function Game() {
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
+            <DialogBox onDone={handleMessageIsDone} />
         </div>
     );
 }

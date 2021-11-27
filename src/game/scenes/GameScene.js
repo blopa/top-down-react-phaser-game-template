@@ -20,6 +20,8 @@ export default class GameScene extends Scene {
     }
 
     create() {
+        // All of these functions need to be called in order
+
         // Create controls
         handleCreateControls(this);
 

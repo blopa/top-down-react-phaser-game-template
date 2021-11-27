@@ -35,6 +35,12 @@ import {
     selectHeroFacingDirection,
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
+import { selectDialogMessages } from '../redux/selectors/selectDialog';
+
+// Actions
+import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
+import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
+import setDialogActionAction from '../redux/actions/setDialogActionAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
@@ -224,6 +230,7 @@ export const handleCreateHero = (scene) => {
 
 export const handleObjectsLayer = (scene) => {
     // Load game objects like items, enemies, etc
+    const dispatch = getDispatch();
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y } = object;
@@ -253,12 +260,27 @@ export const handleObjectsLayer = (scene) => {
                         scene.heroSprite.actionCollider,
                         (e, a) => {
                             if (Input.Keyboard.JustDown(scene.actionKey)) {
-                                enemyActionHeroCollider.active = false;
-                                console.log('action button pressed');
+                                const messages = getSelectorData(selectDialogMessages);
 
-                                scene.time.delayedCall(0, () => {
-                                    enemyActionHeroCollider.active = true;
-                                });
+                                if (messages.length === 0) {
+                                    enemyActionHeroCollider.active = false;
+                                    dispatch(setDialogCharacterNameAction('monster'));
+                                    dispatch(setDialogMessagesAction([
+                                        'hello world',
+                                        'hello world 2',
+                                        'hello world 23',
+                                    ]));
+                                    dispatch(setDialogActionAction(() => {
+                                        // Do this to not trigger the message again
+                                        // Because whenever you call JustDown once, the second time
+                                        // you call it, it will be false
+                                        Input.Keyboard.JustDown(scene.actionKey);
+                                    }));
+
+                                    scene.time.delayedCall(0, () => {
+                                        enemyActionHeroCollider.active = true;
+                                    });
+                                }
                             }
                         }
                     );
