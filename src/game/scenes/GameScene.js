@@ -35,6 +35,7 @@ import {
     selectHeroFacingDirection,
     selectHeroInitialPosition,
 } from '../../redux/selectors/selectHeroData';
+import { createInteractiveGameObject } from '../../utils/utils';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -92,6 +93,71 @@ export default class GameScene extends Scene {
             .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
             .setName(HERO_SPRITE_NAME)
             .setDepth(1);
+
+        const actionColliderSizeOffset = 2;
+        this.heroSprite.actionCollider = createInteractiveGameObject(
+            this,
+            0,
+            0,
+            TILE_WIDTH - actionColliderSizeOffset,
+            TILE_HEIGHT - actionColliderSizeOffset,
+            true
+        );
+
+        this.heroSprite.update = (time, delta) => {
+            const facingDirection = this.gridEngine.getFacingDirection(HERO_SPRITE_NAME);
+
+            switch (facingDirection) {
+                case DOWN_DIRECTION: {
+                    this.heroSprite.actionCollider.setX(
+                        this.heroSprite.x + (actionColliderSizeOffset / 2)
+                    );
+                    this.heroSprite.actionCollider.setY(
+                        this.heroSprite.y + TILE_HEIGHT
+                    );
+
+                    break;
+                }
+
+                case UP_DIRECTION: {
+                    this.heroSprite.actionCollider.setX(
+                        this.heroSprite.x + (actionColliderSizeOffset / 2)
+                    );
+                    this.heroSprite.actionCollider.setY(
+                        this.heroSprite.y - TILE_HEIGHT + (actionColliderSizeOffset / 2)
+                    );
+
+                    break;
+                }
+
+                case LEFT_DIRECTION: {
+                    this.heroSprite.actionCollider.setX(
+                        this.heroSprite.x - TILE_HEIGHT + (actionColliderSizeOffset / 2)
+                    );
+                    this.heroSprite.actionCollider.setY(
+                        this.heroSprite.y + (actionColliderSizeOffset / 2)
+                    );
+
+                    break;
+                }
+
+                case RIGHT_DIRECTION: {
+                    this.heroSprite.actionCollider.setX(
+                        this.heroSprite.x + TILE_WIDTH + (actionColliderSizeOffset / 2)
+                    );
+                    this.heroSprite.actionCollider.setY(
+                        this.heroSprite.y + (actionColliderSizeOffset / 2)
+                    );
+
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+        };
+
         this.sprites.add(this.heroSprite);
 
         // Grid Engine
@@ -267,7 +333,7 @@ export default class GameScene extends Scene {
         });
     }
 
-    update() {
+    update(time, delta) {
         if (this.cursors.left.isDown || this.wasd.left.isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
         } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
@@ -277,5 +343,7 @@ export default class GameScene extends Scene {
         } else if (this.cursors.down.isDown || this.wasd.down.isDown) {
             this.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
         }
+
+        this.heroSprite.update(time, delta);
     }
 }

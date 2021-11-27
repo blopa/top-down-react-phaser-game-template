@@ -74,6 +74,9 @@ function Game() {
             ],
             physics: {
                 default: 'arcade',
+                arcade: {
+                    debug: process?.env?.NODE_ENV !== 'production',
+                },
             },
             plugins: {
                 scene: [

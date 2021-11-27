@@ -30,13 +30,13 @@
   },
   "dependencies": {
     "@craco/craco": "^6.4.2",
-    "@emotion/react": "^11.6.0",
+    "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@mui/core": "^5.0.0-alpha.54",
     "@mui/icons-material": "^5.2.0",
-    "@mui/lab": "^5.0.0-alpha.56",
-    "@mui/material": "^5.2.0",
-    "@mui/styles": "^5.2.0",
+    "@mui/lab": "^5.0.0-alpha.57",
+    "@mui/material": "^5.2.1",
+    "@mui/styles": "^5.2.1",
     "classnames": "^2.3.1",
     "grid-engine": "^2.11.0",
     "phaser": "^3.55.2",
@@ -46,7 +46,7 @@
     "react-redux": "^7.2.6",
     "react-scripts": "4.0.3",
     "redux": "^4.1.2",
-    "redux-thunk": "^2.4.0"
+    "redux-thunk": "^2.4.1"
   },
   "scripts": {
     "generate-atlases": "node scripts/generate-atlas-files.js",
