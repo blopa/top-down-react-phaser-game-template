@@ -24,14 +24,15 @@ import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 import setGameHeightAction from './redux/actions/setGameHeightAction';
 import setGameWidthAction from './redux/actions/setGameWidthAction';
 import setGameZoomAction from './redux/actions/setGameZoomAction';
-
-// Components
-import DialogBox from './components/DialogBox';
 import setDialogMessagesAction from './redux/actions/setDialogMessagesAction';
 import setDialogCharacterNameAction from './redux/actions/setDialogCharacterNameAction';
 import setDialogActionAction from './redux/actions/setDialogActionAction';
 
-function Game() {
+// Components
+import DialogBox from './components/DialogBox';
+import VirtualGamepad from './components/VirtualGamepad';
+
+const Game = () => {
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
 
@@ -54,6 +55,8 @@ function Game() {
     // Create the game inside a useEffect
     // to create it only once
     useEffect(() => {
+        // do this otherwise development hot-reload
+        // will create a bunch of Phaser instances
         if (game) {
             return;
         }
@@ -142,8 +145,9 @@ function Game() {
                 {/* this is where the game canvas will be rendered */}
             </div>
             <DialogBox onDone={handleMessageIsDone} />
+            <VirtualGamepad />
         </div>
     );
-}
+};
 
 export default Game;

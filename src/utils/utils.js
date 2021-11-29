@@ -9,6 +9,30 @@ export const isObjectEmpty = (obj) =>
 export const isObjectNotEmpty = (obj) =>
     isObject(obj) && Object.keys(obj).length > 0;
 
+/**
+ * source https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2
+ * Simulate a key event.
+ * @param {String} code The code of the key to simulate
+ * @param {String} type (optional) The type of event : down, up or press. The default is down
+ */
+export const simulateKeyEvent = (code, type = 'down') => {
+    const keysMap = {
+        Enter: 13,
+        Space: 32,
+        ArrowLeft: 37,
+        ArrowUp: 38,
+        ArrowRight: 39,
+        ArrowDown: 40,
+    };
+
+    const event = document.createEvent('HTMLEvents');
+    event.initEvent(`key${type}`, true, false);
+    event.code = code;
+    event.keyCode = keysMap[code];
+
+    document.dispatchEvent(event);
+};
+
 export const calculateGameSize = (
     width,
     height,
