@@ -11,21 +11,40 @@ import bButton from '../assets/images/b_button.png';
 
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+
+// Utils
 import { simulateKeyEvent } from '../utils/utils';
 
+// Constants
+import {
+    ARROW_DOWN_KEY,
+    ARROW_LEFT_KEY,
+    ARROW_RIGHT_KEY,
+    ARROW_UP_KEY,
+    ENTER_KEY,
+    SPACE_KEY,
+} from '../constants';
+
 const useStyles = makeStyles((theme) => ({
-    buttonsWrapper: ({ zoom }) => ({
+    buttonsWrapper: ({ zoom, height }) => ({
         display: 'flex',
         justifyContent: 'space-between',
         padding: `0 ${15 * zoom}px`,
-        marginTop: `-${85 * zoom}px`,
+        // marginTop: `-${85 * zoom}px`,
+        marginTop: `${Math.ceil(window.innerHeight - (height * zoom) - (100 * zoom))}px`,
         position: 'relative',
+        userSelect: 'none',
+        userDrag: 'none',
         zIndex: 10,
     }),
     button: ({ zoom, width }) => ({
         pointerEvents: 'none',
         '-webkit-touch-callout': 'none',
         userSelect: 'none',
+        userDrag: 'none',
+        '&.is-touched': {
+            filter: 'saturate(300%) brightness(70%)',
+        },
     }),
     aButton: ({ zoom, width }) => ({
         width: `${40 * zoom}px`,
@@ -82,6 +101,7 @@ const VirtualGamepad = () => {
     const dPadDownRef = useRef(null);
     const aButtonRef = useRef(null);
     const bButtonRef = useRef(null);
+    const eventRef = useRef({});
 
     const wasAButtonClicked = useCallback((x, y) => {
         const { width, x: elX, y: elY } = aButtonRef.current.getBoundingClientRect();
@@ -161,38 +181,32 @@ const VirtualGamepad = () => {
         return polygon.contains(x, y);
     }, [dPadDownRef]);
 
-    const handleButtonPressed = useCallback((event, type) => {
-        const { x, y } = event;
-
+    const getPressedButton = useCallback((x, y) => {
         if (wasLeftButtonClicked(x, y)) {
-            simulateKeyEvent('ArrowLeft', type);
-            console.log('left pressed');
+            return [ARROW_LEFT_KEY, dPadLeftRef];
         }
 
         if (wasRightButtonClicked(x, y)) {
-            simulateKeyEvent('ArrowRight', type);
-            console.log('right pressed');
+            return [ARROW_RIGHT_KEY, dPadRightRef];
         }
 
         if (wasUpButtonClicked(x, y)) {
-            simulateKeyEvent('ArrowUp', type);
-            console.log('up pressed');
+            return [ARROW_UP_KEY, dPadUpRef];
         }
 
         if (wasDownButtonClicked(x, y)) {
-            simulateKeyEvent('ArrowDown', type);
-            console.log('down pressed');
+            return [ARROW_DOWN_KEY, dPadDownRef];
         }
 
         if (wasAButtonClicked(x, y)) {
-            simulateKeyEvent('Space', type);
-            console.log('a pressed');
+            return [SPACE_KEY, aButtonRef];
         }
 
         if (wasBButtonClicked(x, y)) {
-            simulateKeyEvent('Enter', type);
-            console.log('b pressed');
+            return [ENTER_KEY, bButtonRef];
         }
+
+        return [];
     }, [
         wasAButtonClicked,
         wasBButtonClicked,
@@ -202,19 +216,36 @@ const VirtualGamepad = () => {
         wasRightButtonClicked,
     ]);
 
+    const handleButtonPressed = useCallback((event, type) => {
+        const { x, y } = event;
+
+        const [pressedButton, element] = getPressedButton(x, y);
+        if (pressedButton && element) {
+            simulateKeyEvent(pressedButton, type);
+            if (type === 'down') {
+                element.current.classList.add('is-touched');
+            } else {
+                element.current.classList.remove('is-touched');
+            }
+        }
+    }, [getPressedButton]);
+
     useEffect(() => {
         document.addEventListener('pointerdown', (event) => {
+            eventRef.current = event;
             handleButtonPressed(event, 'down');
         });
 
         document.addEventListener('pointerup', (event) => {
-            handleButtonPressed(event, 'up');
+            handleButtonPressed(eventRef.current, 'up');
+            eventRef.current = {};
         });
 
-        document.addEventListener('pointerout', (event) => {
-            handleButtonPressed(event, 'up');
-        });
-    }, [handleButtonPressed]);
+        // document.addEventListener('pointerout', (event) => {
+        //     handleButtonPressed(eventRef.current, 'up');
+        //     eventRef.current = {};
+        // });
+    }, []);
 
     const handleContextMenuCallback = useCallback((event) => {
         event.preventDefault();

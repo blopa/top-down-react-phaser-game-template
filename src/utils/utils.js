@@ -1,4 +1,12 @@
 import { GameObjects } from 'phaser';
+import {
+    ARROW_DOWN_KEY,
+    ARROW_LEFT_KEY,
+    ARROW_RIGHT_KEY,
+    ARROW_UP_KEY,
+    ENTER_KEY,
+    SPACE_KEY,
+} from '../constants';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
@@ -17,12 +25,12 @@ export const isObjectNotEmpty = (obj) =>
  */
 export const simulateKeyEvent = (code, type = 'down') => {
     const keysMap = {
-        Enter: 13,
-        Space: 32,
-        ArrowLeft: 37,
-        ArrowUp: 38,
-        ArrowRight: 39,
-        ArrowDown: 40,
+        [ENTER_KEY]: 13,
+        [SPACE_KEY]: 32,
+        [ARROW_LEFT_KEY]: 37,
+        [ARROW_UP_KEY]: 38,
+        [ARROW_RIGHT_KEY]: 39,
+        [ARROW_DOWN_KEY]: 40,
     };
 
     const event = document.createEvent('HTMLEvents');

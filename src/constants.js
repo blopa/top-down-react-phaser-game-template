@@ -29,3 +29,11 @@ export const UP_DIRECTION = 'up';
 export const DOWN_DIRECTION = 'down';
 
 export const IGNORED_TILESETS = ['objects'];
+
+// Keys
+export const ENTER_KEY = 'Enter';
+export const SPACE_KEY = 'Space';
+export const ARROW_LEFT_KEY = 'ArrowLeft';
+export const ARROW_UP_KEY = 'ArrowUp';
+export const ARROW_RIGHT_KEY = 'ArrowRight';
+export const ARROW_DOWN_KEY = 'ArrowDown';
