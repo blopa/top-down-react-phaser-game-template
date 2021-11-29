@@ -2,6 +2,8 @@
 
 This project came from this Medium post: https://javascript.plainenglish.io/i-made-a-top-down-game-version-of-my-blog-with-phaser-and-react-faf5c28cf768
 
+<img src="/sources/game_sample.gif?raw=true" width="890px" />
+
 # Features
 - Create React App
 - Phaser 3
