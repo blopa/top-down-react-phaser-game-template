@@ -10,6 +10,11 @@ export default class BootScene extends Scene {
     }
 
     create() {
-        this.scene.start('MainMenuScene');
+        this.scene.start('LoadAssetsScene', {
+            nextScene: 'MainMenuScene',
+            assets: {
+                fonts: ['"Press Start 2P"'],
+            },
+        });
     }
 }

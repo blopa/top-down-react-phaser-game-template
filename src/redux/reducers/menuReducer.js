@@ -16,21 +16,21 @@ const menuReducer = (state = defaultState, action) => {
         case SET_MENU_ITEMS: {
             return {
                 ...state,
-                items: action.items,
+                items: action.payload,
             };
         }
 
         case SET_MENU_ON_SELECT: {
             return {
                 ...state,
-                onSelect: action.items,
+                onSelect: action.payload,
             };
         }
 
         case SET_MENU_POSITION: {
             return {
                 ...state,
-                position: action.position,
+                position: action.payload,
             };
         }
 
