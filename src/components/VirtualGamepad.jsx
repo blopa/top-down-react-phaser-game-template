@@ -11,6 +11,7 @@ import bButton from '../assets/images/b_button.png';
 
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { simulateKeyEvent } from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     buttonsWrapper: ({ zoom }) => ({
@@ -160,42 +161,60 @@ const VirtualGamepad = () => {
         return polygon.contains(x, y);
     }, [dPadDownRef]);
 
-    useEffect(() => {
-        document.addEventListener('pointerdown', (event) => {
-            const { x, y } = event;
+    const handleButtonPressed = useCallback((event, type) => {
+        const { x, y } = event;
 
-            if (wasLeftButtonClicked(x, y)) {
-                console.log('left pressed');
-            }
+        if (wasLeftButtonClicked(x, y)) {
+            simulateKeyEvent('ArrowLeft', type);
+            console.log('left pressed');
+        }
 
-            if (wasRightButtonClicked(x, y)) {
-                console.log('right pressed');
-            }
+        if (wasRightButtonClicked(x, y)) {
+            simulateKeyEvent('ArrowRight', type);
+            console.log('right pressed');
+        }
 
-            if (wasUpButtonClicked(x, y)) {
-                console.log('up pressed');
-            }
+        if (wasUpButtonClicked(x, y)) {
+            simulateKeyEvent('ArrowUp', type);
+            console.log('up pressed');
+        }
 
-            if (wasDownButtonClicked(x, y)) {
-                console.log('down pressed');
-            }
+        if (wasDownButtonClicked(x, y)) {
+            simulateKeyEvent('ArrowDown', type);
+            console.log('down pressed');
+        }
 
-            if (wasAButtonClicked(x, y)) {
-                console.log('a pressed');
-            }
+        if (wasAButtonClicked(x, y)) {
+            simulateKeyEvent('Space', type);
+            console.log('a pressed');
+        }
 
-            if (wasBButtonClicked(x, y)) {
-                console.log('b pressed');
-            }
-        });
+        if (wasBButtonClicked(x, y)) {
+            simulateKeyEvent('Enter', type);
+            console.log('b pressed');
+        }
     }, [
         wasAButtonClicked,
         wasBButtonClicked,
+        wasUpButtonClicked,
         wasDownButtonClicked,
         wasLeftButtonClicked,
         wasRightButtonClicked,
-        wasUpButtonClicked,
     ]);
+
+    useEffect(() => {
+        document.addEventListener('pointerdown', (event) => {
+            handleButtonPressed(event, 'down');
+        });
+
+        document.addEventListener('pointerup', (event) => {
+            handleButtonPressed(event, 'up');
+        });
+
+        document.addEventListener('pointerout', (event) => {
+            handleButtonPressed(event, 'up');
+        });
+    }, [handleButtonPressed]);
 
     const handleContextMenuCallback = useCallback((event) => {
         event.preventDefault();
