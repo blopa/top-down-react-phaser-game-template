@@ -20,6 +20,7 @@ import {
 import GameScene from './game/scenes/GameScene';
 import BootScene from './game/scenes/BootScene';
 import LoadAssetsScene from './game/scenes/LoadAssetsScene';
+import MainMenuScene from './game/scenes/MainMenuScene';
 
 // Actions
 import setGameHeightAction from './redux/actions/setGameHeightAction';
@@ -96,6 +97,7 @@ const Game = () => {
                 BootScene,
                 LoadAssetsScene,
                 GameScene,
+                MainMenuScene,
             ],
             physics: {
                 default: 'arcade',
