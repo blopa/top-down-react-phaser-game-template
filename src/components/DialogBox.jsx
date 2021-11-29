@@ -9,6 +9,9 @@ import Message from './Message';
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
 import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../redux/selectors/selectDialog';
 
+// Constants
+import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
+
 const useStyles = makeStyles((theme) => ({
     dialogWindow: ({ width, height, zoom }) => ({
         imageRendering: 'pixelated',
@@ -40,9 +43,7 @@ const useStyles = makeStyles((theme) => ({
     }),
 }));
 
-const DialogBox = ({
-    onDone,
-}) => {
+const DialogBox = () => {
     const dialogMessages = useSelector(selectDialogMessages);
     const dialogAction = useSelector(selectDialogAction);
     const gameWidth = useSelector(selectGameWidth);
@@ -67,18 +68,17 @@ const DialogBox = ({
                 setCurrentMessage(currentMessage + 1);
             } else {
                 setCurrentMessage(0);
-                onDone();
                 dialogAction?.();
             }
         } else {
             setMessageEnded(true);
             setForceShowFullMessage(true);
         }
-    }, [dialogAction, currentMessage, messageEnded, dialogMessages.length, onDone]);
+    }, [dialogAction, currentMessage, messageEnded, dialogMessages.length]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
-            if (['Enter', 'Space', 'Escape'].includes(e.code)) {
+            if ([ENTER_KEY, SPACE_KEY, ESCAPE_KEY].includes(e.code)) {
                 handleClick();
             }
         };

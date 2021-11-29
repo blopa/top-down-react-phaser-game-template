@@ -9,11 +9,11 @@ import { calculateGameSize } from './utils/utils';
 
 // Constants
 import {
-    RESIZE_THRESHOLD,
-    MIN_GAME_HEIGHT,
-    MIN_GAME_WIDTH,
-    TILE_HEIGHT,
     TILE_WIDTH,
+    TILE_HEIGHT,
+    MIN_GAME_WIDTH,
+    MIN_GAME_HEIGHT,
+    RESIZE_THRESHOLD,
 } from './constants';
 
 // Game Scenes
@@ -26,9 +26,6 @@ import MainMenuScene from './game/scenes/MainMenuScene';
 import setGameHeightAction from './redux/actions/setGameHeightAction';
 import setGameWidthAction from './redux/actions/setGameWidthAction';
 import setGameZoomAction from './redux/actions/setGameZoomAction';
-import setDialogMessagesAction from './redux/actions/setDialogMessagesAction';
-import setDialogCharacterNameAction from './redux/actions/setDialogCharacterNameAction';
-import setDialogActionAction from './redux/actions/setDialogActionAction';
 
 // Components
 import DialogBox from './components/DialogBox';
@@ -44,13 +41,6 @@ const Game = () => {
     const [game, setGame] = useState(null);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
-
-    // TODO move this to Phaser callback
-    const handleMessageIsDone = useCallback(() => {
-        dispatch(setDialogCharacterNameAction(''));
-        dispatch(setDialogMessagesAction([]));
-        dispatch(setDialogActionAction(null));
-    }, [dispatch]);
 
     const updateGameReduxState = useCallback((
         gameWidth,
@@ -156,7 +146,7 @@ const Game = () => {
                 {/* this is where the game canvas will be rendered */}
             </div>
             {dialogMessages.length > 0 && (
-                <DialogBox onDone={handleMessageIsDone} />
+                <DialogBox />
             )}
             {menuItems.length > 0 && (
                 <GameMenu />

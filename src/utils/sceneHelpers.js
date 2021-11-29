@@ -266,15 +266,18 @@ export const handleObjectsLayer = (scene) => {
                                     enemyActionHeroCollider.active = false;
                                     dispatch(setDialogCharacterNameAction('monster'));
                                     dispatch(setDialogMessagesAction([
-                                        'hello world',
-                                        'hello world 2',
-                                        'hello world 23',
+                                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                                        'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
+                                        'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
                                     ]));
                                     dispatch(setDialogActionAction(() => {
                                         // Do this to not trigger the message again
                                         // Because whenever you call JustDown once, the second time
                                         // you call it, it will be false
                                         Input.Keyboard.JustDown(scene.actionKey);
+                                        dispatch(setDialogCharacterNameAction(''));
+                                        dispatch(setDialogMessagesAction([]));
+                                        dispatch(setDialogActionAction(null));
                                     }));
 
                                     scene.time.delayedCall(0, () => {

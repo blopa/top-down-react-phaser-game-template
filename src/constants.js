@@ -33,6 +33,7 @@ export const IGNORED_TILESETS = ['objects'];
 // Keys
 export const ENTER_KEY = 'Enter';
 export const SPACE_KEY = 'Space';
+export const ESCAPE_KEY = 'Escape';
 export const ARROW_LEFT_KEY = 'ArrowLeft';
 export const ARROW_UP_KEY = 'ArrowUp';
 export const ARROW_RIGHT_KEY = 'ArrowRight';
