@@ -4,13 +4,13 @@ import { Scene } from 'phaser';
 import {
     handleCreateMap,
     handleCreateHero,
-    handleCreateHeroAnimations,
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
     handleCreateControls,
     handleConfigureCamera,
     handleConfigureGridEngine,
+    handleCreateHeroAnimations,
     handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 

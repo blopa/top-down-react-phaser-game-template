@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: '"Press Start 2P"',
         fontSize: `${6 * zoom}px`,
         textTransform: 'uppercase',
+        lineHeight: `${8 * zoom}px`,
     }),
 }));
 

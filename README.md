@@ -1,78 +1,73 @@
-# Getting Started with Create React App
+# Top-Down Phaser Game with React UI Template
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project came from this Medium post: https://javascript.plainenglish.io/i-made-a-top-down-game-version-of-my-blog-with-phaser-and-react-faf5c28cf768
 
-## Available Scripts
+# Features
+- Create React App
+- Phaser 3
+- Redux
+- React 17 as game UI
+- Arcade physics
+- Grid Engine for grid movements
+- Automatically resize game when browser window change size
+- Automatically load Tilesets into Tiled maps
+- Automatically pre-load assets with the `LoadAssetsScene` scene
+- Automatically load items and enemies from Tiled objects layer
+- Script to automatically generate atlases sheets
+- Adjustable tile sizes
+- Integration between Phaser and React via Redux
+- Dialog system (with React)
+- Game menu (with React)
+- Virtual Gamepad for mobile (with React)
+- Free 2D assets by Kenney.nl (assets God)
 
-In the project directory, you can run:
+# How to use it
 
-### `yarn start`
+## Maps
+Add your Tiled tilesets JSON and images to `/src/assets/tilesets` and your Tiled maps to `/src/assets/maps`. Then call the `LoadAssetsScene` scene like:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```javascript
+this.scene.start('LoadAssetsScene', {
+    nextScene: 'GameScene', // scene to be loaded after the assets are loaded
+    assets: {
+        mapKey: 'sample_map', // name of your map, like sample_map.json in this case
+    },
+});
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Any tileset inside your `sample_map.json` will be automatically loaded, as long as they are in the `/src/assets/tilesets` directory.
 
-### `yarn test`
+## Other assets
+To load any other asset, call the `LoadAssetsScene` with a list of the assets you need it to be automatically loaded.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```javascript
+this.scene.start('LoadAssetsScene', {
+    nextScene: 'GameScene', // scene to be loaded after the assets are loaded
+    assets: {
+        fonts: ['"Press Start 2P"'], // fonts to be loaded
+        atlases: ['hero'], // atlases to be loaded, must be in `/src/assets/atlases/generated/` as hero.json and hero.png
+        images: ['background'], // images to be loaded, must be in `/src/assets/images` as background.png
+    },
+});
+```
 
-### `yarn build`
+## The 'GameScene'
+This file is where the game map is rendered, with all items, enemies, etc. The `create` function is split into smaller functions that can be found in the `sceneHelpers.js` file.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Virtual Gamepad
+The Virtual Gamepad will be loaded automatically if the game is being run in a mobile device. The Virtual Gamepad is a React component that simulate keyboard keys to control que game, using the function `simulateKeyEvent` found in [this GitHub Gist](https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Dialog System
+A dialog box will automatically show up whenever the `state.dialog.messages` variable is filled with messages. You can call the `setDialogMessagesAction` Redux action to do this.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```javascript
+dispatch(setDialogMessagesAction(['hello world', 'hello world 2']));
+```
 
-### `yarn eject`
+# CRACO
+This project uses [CRACO](https://github.com/gsoft-inc/craco) to force Webpack to load images as files and not as base64 strings, which are not supported by Phaser.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-
-
-# TODO
-Assets:
+# Assets by Kenney.nl:
 https://www.kenney.nl/assets/rpg-urban-pack
 https://www.kenney.nl/assets/roguelike-rpg-pack
 https://www.kenney.nl/assets/pixel-platformer

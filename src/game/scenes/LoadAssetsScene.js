@@ -14,8 +14,8 @@ import addTilesetAction from '../../redux/actions/addTilesetAction';
 // Selectors
 import {
     selectLoadedAtlases,
-    selectLoadedFonts,
     selectLoadedImages,
+    selectLoadedFonts,
     selectLoadedJSONs,
     selectLoadedMaps,
 } from '../../redux/selectors/selectLoadedAssets';

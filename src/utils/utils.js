@@ -1,11 +1,11 @@
 import { GameObjects } from 'phaser';
 import {
+    ENTER_KEY,
+    SPACE_KEY,
+    ARROW_UP_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
     ARROW_RIGHT_KEY,
-    ARROW_UP_KEY,
-    ENTER_KEY,
-    SPACE_KEY,
 } from '../constants';
 
 export const isObject = (obj) =>
