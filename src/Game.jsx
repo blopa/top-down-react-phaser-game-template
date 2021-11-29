@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
 import Phaser from 'phaser';
 import GridEngine from 'grid-engine';
-import { useDispatch } from 'react-redux';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import isMobile from 'is-mobile';
 
 // Utils
 import { calculateGameSize } from './utils/utils';
@@ -31,11 +32,19 @@ import setDialogActionAction from './redux/actions/setDialogActionAction';
 // Components
 import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
+import GameMenu from './components/GameMenu';
+
+// Selectors
+import { selectDialogMessages } from './redux/selectors/selectDialog';
+import { selectMenuItems } from './redux/selectors/selectMenu';
 
 const Game = () => {
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
+    const dialogMessages = useSelector(selectDialogMessages);
+    const menuItems = useSelector(selectMenuItems);
 
+    // TODO move this to Phaser callback
     const handleMessageIsDone = useCallback(() => {
         dispatch(setDialogCharacterNameAction(''));
         dispatch(setDialogMessagesAction([]));
@@ -103,7 +112,7 @@ const Game = () => {
                     },
                 ],
             },
-            backgroundColor: '#FF0000',
+            backgroundColor: '#000000',
         });
 
         updateGameReduxState(width, height, zoom);
@@ -144,8 +153,15 @@ const Game = () => {
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
-            <DialogBox onDone={handleMessageIsDone} />
-            <VirtualGamepad />
+            {dialogMessages.length > 0 && (
+                <DialogBox onDone={handleMessageIsDone} />
+            )}
+            {menuItems.length > 0 && (
+                <GameMenu />
+            )}
+            {isMobile() && (
+                <VirtualGamepad />
+            )}
         </div>
     );
 };

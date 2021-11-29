@@ -231,20 +231,22 @@ const VirtualGamepad = () => {
     }, [getPressedButton]);
 
     useEffect(() => {
-        document.addEventListener('pointerdown', (event) => {
+        const handlePointerDown = (event) => {
             eventRef.current = event;
             handleButtonPressed(event, 'down');
-        });
+        };
+        document.addEventListener('pointerdown', handlePointerDown);
 
-        document.addEventListener('pointerup', (event) => {
+        const handlePointerUp = (event) => {
             handleButtonPressed(eventRef.current, 'up');
             eventRef.current = {};
-        });
+        };
+        document.addEventListener('pointerup', handlePointerUp);
 
-        // document.addEventListener('pointerout', (event) => {
-        //     handleButtonPressed(eventRef.current, 'up');
-        //     eventRef.current = {};
-        // });
+        return () => {
+            window.removeEventListener('pointerdown', handlePointerDown);
+            window.removeEventListener('pointerup', handlePointerUp);
+        };
     }, []);
 
     const handleContextMenuCallback = useCallback((event) => {

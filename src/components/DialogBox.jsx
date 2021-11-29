@@ -77,10 +77,6 @@ const DialogBox = ({
     }, [dialogAction, currentMessage, messageEnded, dialogMessages.length, onDone]);
 
     useEffect(() => {
-        if (dialogMessages.length === 0) {
-            return null;
-        }
-
         const handleKeyPressed = (e) => {
             if (['Enter', 'Space', 'Escape'].includes(e.code)) {
                 handleClick();
@@ -90,10 +86,6 @@ const DialogBox = ({
 
         return () => window.removeEventListener('keydown', handleKeyPressed);
     }, [dialogMessages.length, handleClick]);
-
-    if (dialogMessages.length === 0) {
-        return null;
-    }
 
     return (
         <div className={classes.dialogWindow}>
