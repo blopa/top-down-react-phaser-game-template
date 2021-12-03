@@ -4,8 +4,6 @@ const {
     loaderByName,
     addAfterLoader,
 } = require('@craco/craco');
-const { copyFileSync } = require('fs');
-const path = require('path');
 
 [
     'favicon.ico',
