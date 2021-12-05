@@ -1,0 +1,2 @@
+(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[11],{67:function(e,t,a){"use strict";a.r(t),t.default=a.p+"static/media/coin.badb90ed.png"}}]);
+//# sourceMappingURL=11.b4e4ad0e.chunk.js.map
