@@ -1,5 +1,6 @@
 {
   "name": "top-down-react-phaser-game-template",
+  "homepage": ".",
   "version": "0.1.0",
   "private": false,
   "devDependencies": {
