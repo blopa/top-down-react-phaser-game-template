@@ -1,27 +1,7 @@
-const path = require('path');
-const { copyFileSync, mkdirSync } = require('fs');
 const {
     loaderByName,
     addAfterLoader,
 } = require('@craco/craco');
-
-// Create the public dir
-mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
-
-// Copy all template files to the public folder
-[
-    'favicon.ico',
-    'index.html',
-    'logo192.png',
-    'logo512.png',
-    'manifest.json',
-    'robots.txt',
-].forEach((file) => {
-    copyFileSync(
-        path.resolve(__dirname, 'template', file),
-        path.resolve(__dirname, 'public', file)
-    );
-});
 
 // Use craco to force create-react-app to load images as files and not base64
 module.exports = {
