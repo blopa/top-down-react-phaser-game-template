@@ -111,6 +111,9 @@ export default class LoadAssetsScene extends Scene {
                     const { gid, properties } = object;
                     switch (gid) {
                         case ENEMY: {
+                            // for some reason, if I don't assign this constant to a local variable
+                            // webpack production build do something that the code doesn't work properly
+                            // on the browser
                             const spriteName = ENEMY_SPRITE_NAME;
 
                             if (
@@ -132,64 +135,71 @@ export default class LoadAssetsScene extends Scene {
                             break;
                         }
                         case COIN: {
+                            const spriteName = COIN_SPRITE_NAME;
+
                             if (
-                                isGeneratedAtlasFileAvailable(`${COIN_SPRITE_NAME}.json`)
-                                && isGeneratedAtlasFileAvailable(`${COIN_SPRITE_NAME}.png`)
-                            && !loadedAtlases.includes(COIN_SPRITE_NAME)
+                                isGeneratedAtlasFileAvailable(`${spriteName}.json`)
+                                && isGeneratedAtlasFileAvailable(`${spriteName}.png`)
+                            && !loadedAtlases.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: jsonPath } =
-                                    await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.json`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/atlases/generated/${COIN_SPRITE_NAME}.png`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
 
-                                dispatch(addLoadedAtlasAction(COIN_SPRITE_NAME));
-                                await asyncLoader(this.load.atlas(COIN_SPRITE_NAME, imagePath, jsonPath));
+                                dispatch(addLoadedAtlasAction(spriteName));
+                                await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
                             }
 
                             break;
                         }
                         case HEART: {
+                            const spriteName = HEART_SPRITE_NAME;
                             if (
                                 isImageFileAvailable('heart_full.png')
-                                && !loadedImages.includes(HEART_SPRITE_NAME)
+                                && !loadedImages.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
-                                const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${HEART_SPRITE_NAME}.png`
+                                const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
 
-                                dispatch(addLoadedImageAction(HEART_SPRITE_NAME));
-                                await asyncLoader(this.load.image(HEART_SPRITE_NAME, imagePath));
+                                dispatch(addLoadedImageAction(spriteName));
+                                await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
                             break;
                         }
                         case CRYSTAL: {
+                            const spriteName = CRYSTAL_SPRITE_NAME;
+
                             if (
-                                isImageFileAvailable(`${CRYSTAL_SPRITE_NAME}.png`)
-                                && !loadedImages.includes(CRYSTAL_SPRITE_NAME)
+                                isImageFileAvailable(`${spriteName}.png`)
+                                && !loadedImages.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/images/${CRYSTAL_SPRITE_NAME}.png`);
+                                    await import(`../../assets/images/${spriteName}.png`);
 
-                                dispatch(addLoadedImageAction(CRYSTAL_SPRITE_NAME));
-                                await asyncLoader(this.load.image(CRYSTAL_SPRITE_NAME, imagePath));
+                                dispatch(addLoadedImageAction(spriteName));
+                                await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
                             break;
                         }
                         case KEY: {
+                            const spriteName = KEY_SPRITE_NAME;
+
                             if (
-                                isImageFileAvailable(`${CRYSTAL_SPRITE_NAME}.png`)
-                                && !loadedImages.includes(KEY_SPRITE_NAME)
+                                isImageFileAvailable(`${spriteName}.png`)
+                                && !loadedImages.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/images/${KEY_SPRITE_NAME}.png`);
+                                    await import(`../../assets/images/${spriteName}.png`);
 
-                                dispatch(addLoadedImageAction(KEY_SPRITE_NAME));
-                                await asyncLoader(this.load.image(KEY_SPRITE_NAME, imagePath));
+                                dispatch(addLoadedImageAction(spriteName));
+                                await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
                             break;
