@@ -1,10 +1,14 @@
 const path = require('path');
-const { copyFileSync } = require('fs');
+const { copyFileSync, mkdirSync } = require('fs');
 const {
     loaderByName,
     addAfterLoader,
 } = require('@craco/craco');
 
+// Create the public dir
+mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
+
+// Copy all template files to the public folder
 [
     'favicon.ico',
     'index.html',

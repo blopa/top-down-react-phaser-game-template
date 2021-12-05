@@ -1,7 +1,7 @@
 {
   "name": "top-down-react-phaser-game-template",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
     "@babel/eslint-plugin": "^7.14.5",
