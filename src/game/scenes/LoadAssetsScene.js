@@ -290,7 +290,7 @@ export default class LoadAssetsScene extends Scene {
         // eslint-disable-next-line no-restricted-syntax
         for (const image of images) {
             if (
-                isImageFileAvailable(`${image}.png`)
+                !isImageFileAvailable(`${image}.png`)
                 || loadedImages.includes(image)
             ) {
                 // eslint-disable-next-line no-continue
