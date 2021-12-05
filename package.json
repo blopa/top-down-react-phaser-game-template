@@ -54,7 +54,7 @@
     "generate-atlases": "node scripts/generate-atlas-files.js",
     "copy-tileset-data": "node scripts/copy-tileset-data.js",
     "start": "craco start",
-    "build": "craco build",
+    "build": "CI=false craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "bump": "ncu -u -t minor"
