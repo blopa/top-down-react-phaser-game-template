@@ -111,20 +111,22 @@ export default class LoadAssetsScene extends Scene {
                     const { gid, properties } = object;
                     switch (gid) {
                         case ENEMY: {
+                            const spriteName = ENEMY_SPRITE_NAME;
+
                             if (
-                                isGeneratedAtlasFileAvailable(`${ENEMY_SPRITE_NAME}.json`)
-                                && isGeneratedAtlasFileAvailable(`${ENEMY_SPRITE_NAME}.png`)
-                                && !loadedAtlases.includes(ENEMY_SPRITE_NAME)
+                                isGeneratedAtlasFileAvailable(`${spriteName}.json`)
+                                && isGeneratedAtlasFileAvailable(`${spriteName}.png`)
+                                && !loadedAtlases.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: jsonPath } =
-                                    await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.json`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/atlases/generated/${ENEMY_SPRITE_NAME}.png`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
 
-                                dispatch(addLoadedAtlasAction(ENEMY_SPRITE_NAME));
-                                await asyncLoader(this.load.atlas(ENEMY_SPRITE_NAME, imagePath, jsonPath));
+                                dispatch(addLoadedAtlasAction(spriteName));
+                                await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
                             }
 
                             break;
