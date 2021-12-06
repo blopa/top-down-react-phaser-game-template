@@ -1,4 +1,5 @@
 import { Input } from 'phaser';
+import { v4 as uuid } from 'uuid';
 
 // Constants
 import {
@@ -21,6 +22,9 @@ import {
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
 } from '../constants';
+import {
+    MOVE_HERO,
+} from '../serverConstants';
 
 // Utils
 import { createInteractiveGameObject } from './utils';
@@ -105,7 +109,7 @@ export const handleCreateCharactersMovements = (scene) => {
     });
 };
 
-export const handleCreateControls = (scene) => {
+export const handleCreateControlKeys = (scene) => {
     // Controls
     // eslint-disable-next-line no-param-reassign
     scene.actionKey = scene.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
@@ -154,7 +158,7 @@ export const handleCreateHero = (scene) => {
     // Create hero sprite
     const heroSprite = scene.physics.add
         .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
-        .setName(HERO_SPRITE_NAME)
+        .setName(uuid())
         .setDepth(1);
 
     const actionColliderSizeOffset = 2;
@@ -170,7 +174,7 @@ export const handleCreateHero = (scene) => {
 
     // eslint-disable-next-line no-param-reassign
     heroSprite.update = (time, delta) => {
-        const facingDirection = scene.gridEngine.getFacingDirection(HERO_SPRITE_NAME);
+        const facingDirection = scene.gridEngine.getFacingDirection(heroSprite.name);
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
@@ -415,7 +419,7 @@ export const handleConfigureGridEngine = (scene) => {
         collisionTilePropertyName: 'ge_collide', // default
         numberOfDirections: 4, // default
         characters: [{
-            id: HERO_SPRITE_NAME,
+            id: scene.heroSprite.name,
             offsetY: 0, // default
             sprite: scene.heroSprite,
             startPosition: initialPosition,
@@ -426,12 +430,16 @@ export const handleConfigureGridEngine = (scene) => {
 
 export const handleHeroMovement = (scene) => {
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
+        scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
+        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, LEFT_DIRECTION);
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, RIGHT_DIRECTION);
+        scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
+        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, RIGHT_DIRECTION);
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, UP_DIRECTION);
+        scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
+        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, UP_DIRECTION);
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
+        scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
+        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, DOWN_DIRECTION);
     }
 };
