@@ -28,35 +28,39 @@ export default class GameScene extends Scene {
     otherPlayers = [];
 
     create() {
-        const socket = io('http://localhost:4000');
-
-        socket.on(MOVE_HERO_SERVER, (hero, direction) => {
-            if (this.heroSprite.name !== hero) {
-                this.gridEngine.move(hero, direction);
-            }
-        });
-
-        socket.on(ADD_CHARACTER, (hero) => {
-            console.log(hero);
-            if (this.heroSprite.name !== hero) {
-                const heroSprite = this.physics.add
-                    .sprite(0, 0, 'hero')
-                    .setName(hero)
-                    .setDepth(1);
-
-                this.gridEngine.addCharacter({
-                    id: hero,
-                    offsetY: 0,
-                    sprite: heroSprite,
-                    startPosition: {
-                        x: 30,
-                        y: 40,
-                    },
-                });
-
-                this.otherPlayers.push(hero);
-            }
-        });
+        const socket = {
+            emit: () => {},
+            on: () => {},
+        };
+        // const socket = io('http://localhost:4000');
+        //
+        // socket.on(MOVE_HERO_SERVER, (hero, direction) => {
+        //     if (this.heroSprite.name !== hero) {
+        //         this.gridEngine.move(hero, direction);
+        //     }
+        // });
+        //
+        // socket.on(ADD_CHARACTER, (hero) => {
+        //     console.log(hero);
+        //     if (this.heroSprite.name !== hero) {
+        //         const heroSprite = this.physics.add
+        //             .sprite(0, 0, 'hero')
+        //             .setName(hero)
+        //             .setDepth(1);
+        //
+        //         this.gridEngine.addCharacter({
+        //             id: hero,
+        //             offsetY: 0,
+        //             sprite: heroSprite,
+        //             startPosition: {
+        //                 x: 30,
+        //                 y: 40,
+        //             },
+        //         });
+        //
+        //         this.otherPlayers.push(hero);
+        //     }
+        // });
 
         // All of these functions need to be called in order
 

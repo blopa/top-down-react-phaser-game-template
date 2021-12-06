@@ -2,7 +2,6 @@
   "name": "top-down-react-phaser-game-template",
   "author": "Pablo Pirata",
   "license": "MIT",
-  "homepage": ".",
   "version": "0.1.0",
   "private": false,
   "main": "index.js",

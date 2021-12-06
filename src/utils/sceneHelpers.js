@@ -21,6 +21,8 @@ import {
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
+    OPEN_BOX_TILE_INDEX,
+    CLOSED_BOX_TILE_INDEX,
 } from './constants';
 import {
     MOVE_HERO,
@@ -152,6 +154,43 @@ export const handleCreateMap = (scene) => {
     scene.map = map;
 };
 
+export const calculatePushTilePosition = (scene) => {
+    const facingDirection = scene.gridEngine.getFacingDirection(scene.heroSprite.name);
+    const position = scene.gridEngine.getPosition(scene.heroSprite.name);
+
+    switch (facingDirection) {
+        case UP_DIRECTION:
+            return {
+                x: position.x * TILE_WIDTH,
+                y: (position.y - 2) * TILE_HEIGHT,
+            };
+
+        case RIGHT_DIRECTION:
+            return {
+                x: (position.x + 2) * TILE_WIDTH,
+                y: position.y * TILE_HEIGHT,
+            };
+
+        case DOWN_DIRECTION:
+            return {
+                x: position.x * TILE_WIDTH,
+                y: (position.y + 2) * TILE_HEIGHT,
+            };
+
+        case LEFT_DIRECTION:
+            return {
+                x: (position.x - 2) * TILE_WIDTH,
+                y: position.y * TILE_HEIGHT,
+            };
+
+        default:
+            return {
+                x: position.x * TILE_WIDTH,
+                y: position.y * TILE_HEIGHT,
+            };
+    }
+};
+
 export const handleCreateHero = (scene) => {
     const initialFrame = getSelectorData(selectHeroInitialFrame);
 
@@ -170,6 +209,90 @@ export const handleCreateHero = (scene) => {
         TILE_WIDTH - actionColliderSizeOffset,
         TILE_HEIGHT - actionColliderSizeOffset,
         true
+    );
+
+    const mapLayers = scene.add.group();
+    scene.map.layers.forEach((layer) => {
+        mapLayers.add(layer.tilemapLayer);
+    });
+
+    const layersActionHeroCollider = scene.physics.add.overlap(
+        heroSprite.actionCollider,
+        mapLayers,
+        (actionCollider, tile) => {
+            if ([OPEN_BOX_TILE_INDEX, CLOSED_BOX_TILE_INDEX].includes(tile?.index)
+                && tile?.visible
+                && tile?.alpha
+                && Input.Keyboard.JustDown(scene.actionKey)
+            ) {
+                const newPosition = calculatePushTilePosition(scene);
+                const canBePushed = scene.map.layers.every((layer) => {
+                    const t = layer.tilemapLayer.getTileAtWorldXY(
+                        newPosition.x,
+                        newPosition.y
+                    );
+
+                    return !t?.properties?.ge_collide;
+                });
+
+                if (canBePushed) {
+                    const { properties, index, layer } = tile;
+
+                    scene.tweens.add({
+                        targets: tile,
+                        pixelX: newPosition.x,
+                        pixelY: newPosition.y,
+                        ease: 'Power2', // PhaserMath.Easing
+                        duration: 500,
+                        onComplete: () => {
+                            layersActionHeroCollider.active = false;
+                            const newTile = layer.tilemapLayer.putTileAt(
+                                index,
+                                newPosition.x / TILE_WIDTH,
+                                newPosition.y / TILE_HEIGHT,
+                                true
+                            );
+
+                            newTile.properties = {
+                                ...properties,
+                            };
+
+                            // the tile in the new position
+                            // is being created already dead
+                            // figure this out somehow
+                            console.log(newTile.pixelX);
+                            window.newTile = {
+                                pixelX: newTile.pixelX,
+                                pixelY: newTile.pixelY,
+                                x: newTile.x,
+                                y: newTile.y,
+                                alpha: newTile.alpha,
+                                properties: JSON.stringify(newTile.properties),
+                            };
+                            scene.time.delayedCall(0, () => {
+                                layersActionHeroCollider.active = true;
+                                tile.setVisible(false);
+                                tile.setAlpha(0);
+                                tile.destroy();
+
+                                // eslint-disable-next-line no-param-reassign
+                                tile.properties = {};
+                                // eslint-disable-next-line no-param-reassign
+                                tile.index = 0;
+                                // eslint-disable-next-line no-param-reassign
+                                tile.x = -16;
+                                // eslint-disable-next-line no-param-reassign
+                                tile.y = -16;
+                                // eslint-disable-next-line no-param-reassign
+                                tile.pixelX = -16;
+                                // eslint-disable-next-line no-param-reassign
+                                tile.pixelY = -16;
+                            });
+                        },
+                    });
+                }
+            }
+        }
     );
 
     // eslint-disable-next-line no-param-reassign
@@ -259,7 +382,7 @@ export const handleObjectsLayer = (scene) => {
                         },
                     });
 
-                    const enemyActionHeroCollider = scene.physics.add.collider(
+                    const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
                         scene.heroSprite.actionCollider,
                         (e, a) => {
@@ -340,7 +463,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const crystal = scene.physics.add
                         .image(x, y, CRYSTAL_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 

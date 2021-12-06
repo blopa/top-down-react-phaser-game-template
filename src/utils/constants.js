@@ -38,3 +38,7 @@ export const ARROW_LEFT_KEY = 'ArrowLeft';
 export const ARROW_UP_KEY = 'ArrowUp';
 export const ARROW_RIGHT_KEY = 'ArrowRight';
 export const ARROW_DOWN_KEY = 'ArrowDown';
+
+// Tile indexes
+export const OPEN_BOX_TILE_INDEX = 658;
+export const CLOSED_BOX_TILE_INDEX = 715;

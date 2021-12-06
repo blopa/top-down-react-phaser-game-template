@@ -38,13 +38,14 @@ export default class MainMenuScene extends Scene {
             }
         }));
 
+        const map = 'main_map';
         const handleStartGameSelected = () => Promise.all([
             dispatch(setMenuItemsAction([])),
             dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMapKeyAction('sample_map')), // sample_indoor
+            dispatch(setMapKeyAction(map)),
             dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
+            dispatch(setHeroInitialPositionAction({ x: 0, y: 0 })),
+            dispatch(setHeroPreviousPositionAction({ x: 0, y: 0 })),
             dispatch(setHeroInitialFrameAction(
                 IDLE_FRAME.replace('position', DOWN_DIRECTION)
             )),
@@ -55,8 +56,7 @@ export default class MainMenuScene extends Scene {
                     // fonts: ['"Press Start 2P"'],
                     atlases: ['hero'],
                     images: [],
-                    mapKey: 'sample_map',
-                    // mapKey: 'sample_indoor',
+                    mapKey: map,
                 },
             });
         });
