@@ -1,14 +1,14 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 
 // Constants
-const {
+import {
     ADD_CHARACTER,
     NEW_GAME,
     MOVE_HERO,
     MOVE_HERO_SERVER,
-} = require('../src/serverConstants');
+} from '../utils/serverConstants';
 
 const app = express();
 const server = http.createServer(app);

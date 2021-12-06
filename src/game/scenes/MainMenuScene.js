@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 
 // Constants
-import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
+import { DOWN_DIRECTION, IDLE_FRAME } from '../../utils/constants';
 
 // Store
 import store from '../../redux/store';

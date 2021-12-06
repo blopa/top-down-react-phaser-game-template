@@ -42,7 +42,7 @@ import {
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
-} from '../../constants';
+} from '../../utils/constants';
 
 export default class LoadAssetsScene extends Scene {
     constructor() {

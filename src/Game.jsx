@@ -14,7 +14,7 @@ import {
     MIN_GAME_WIDTH,
     MIN_GAME_HEIGHT,
     RESIZE_THRESHOLD,
-} from './constants';
+} from './utils/constants';
 
 // Game Scenes
 import GameScene from './game/scenes/GameScene';

@@ -26,4 +26,4 @@ yarn-error.log*
 .idea
 .idea/
 
-server/node_modules
+src/server/node_modules

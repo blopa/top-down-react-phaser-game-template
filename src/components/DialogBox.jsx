@@ -10,7 +10,7 @@ import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/sele
 import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Constants
-import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
+import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
     dialogWindow: ({ width, height, zoom }) => ({

@@ -1,4 +1,4 @@
-import { MIN_GAME_HEIGHT, MIN_GAME_WIDTH } from '../../constants';
+import { MIN_GAME_HEIGHT, MIN_GAME_WIDTH } from '../../utils/constants';
 import {
     SET_GAME_ZOOM,
     SET_GAME_WIDTH,

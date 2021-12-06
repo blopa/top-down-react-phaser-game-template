@@ -21,10 +21,10 @@ import {
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
-} from '../constants';
+} from './constants';
 import {
     MOVE_HERO,
-} from '../serverConstants';
+} from './serverConstants';
 
 // Utils
 import { createInteractiveGameObject } from './utils';

@@ -6,7 +6,7 @@ import {
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
     ARROW_RIGHT_KEY,
-} from '../constants';
+} from './constants';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;

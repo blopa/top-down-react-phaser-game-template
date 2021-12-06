@@ -4,7 +4,7 @@ import {
     ADD_CHARACTER,
     NEW_GAME,
     MOVE_HERO_SERVER,
-} from '../../serverConstants';
+} from '../../utils/serverConstants';
 
 // Utils
 import {

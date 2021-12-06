@@ -23,7 +23,7 @@ import {
     ARROW_UP_KEY,
     ENTER_KEY,
     SPACE_KEY,
-} from '../constants';
+} from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
     buttonsWrapper: ({ zoom, height }) => ({

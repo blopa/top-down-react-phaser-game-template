@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
 // Constants
-import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
+import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../utils/constants';
 
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
