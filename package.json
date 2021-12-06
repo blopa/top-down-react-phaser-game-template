@@ -6,7 +6,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
     "@babel/eslint-plugin": "^7.14.5",
-    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "eslint": "^7.32.0",
@@ -27,17 +27,17 @@
     "eslint-plugin-unused-imports": "^1.1.5",
     "free-tex-packer-core": "^0.3.4",
     "node-fetch": "^3.1.0",
-    "npm-check-updates": "^12.0.2"
+    "npm-check-updates": "^12.0.3"
   },
   "dependencies": {
     "@craco/craco": "^6.4.2",
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@mui/core": "^5.0.0-alpha.54",
-    "@mui/icons-material": "^5.2.0",
-    "@mui/lab": "^5.0.0-alpha.57",
-    "@mui/material": "^5.2.1",
-    "@mui/styles": "^5.2.1",
+    "@mui/icons-material": "^5.2.1",
+    "@mui/lab": "^5.0.0-alpha.59",
+    "@mui/material": "^5.2.3",
+    "@mui/styles": "^5.2.3",
     "classnames": "^2.3.1",
     "grid-engine": "^2.12.0",
     "is-mobile": "^3.0.0",

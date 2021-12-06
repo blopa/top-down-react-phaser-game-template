@@ -10,7 +10,7 @@
       "scale": 1,
       "frames": [
         {
-          "filename": "walk_down_02",
+          "filename": "walk_down_01",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -52,7 +52,7 @@
           }
         },
         {
-          "filename": "walk_up_02",
+          "filename": "walk_up_01",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -94,7 +94,7 @@
           }
         },
         {
-          "filename": "walk_left_02",
+          "filename": "walk_left_01",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -136,7 +136,7 @@
           }
         },
         {
-          "filename": "walk_right_02",
+          "filename": "walk_right_01",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -178,7 +178,7 @@
           }
         },
         {
-          "filename": "walk_down_01",
+          "filename": "walk_down_02",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -199,7 +199,7 @@
           }
         },
         {
-          "filename": "walk_up_01",
+          "filename": "walk_up_02",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -220,7 +220,7 @@
           }
         },
         {
-          "filename": "walk_left_01",
+          "filename": "walk_left_02",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
@@ -241,7 +241,7 @@
           }
         },
         {
-          "filename": "walk_right_01",
+          "filename": "walk_right_02",
           "rotated": false,
           "trimmed": true,
           "sourceSize": {
