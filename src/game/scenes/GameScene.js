@@ -1,8 +1,8 @@
 import { Scene } from 'phaser';
 import io from 'socket.io-client';
 import {
-    ADD_CHARACTER,
     NEW_GAME,
+    ADD_CHARACTER,
     MOVE_HERO_SERVER,
 } from '../../utils/serverConstants';
 
@@ -13,11 +13,13 @@ import {
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
-    handleCreateControlKeys,
     handleConfigureCamera,
+    handleCreateControlKeys,
     handleConfigureGridEngine,
+    handleHeroOverlapWithItems,
     handleCreateHeroAnimations,
-    handleCreateCharactersMovements, handleCreateHeroPushTileAction,
+    handleCreateHeroPushTileAction,
+    handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 
 export default class GameScene extends Scene {
@@ -81,6 +83,9 @@ export default class GameScene extends Scene {
 
         // Load game objects like items, enemies, etc
         handleObjectsLayer(this);
+
+        // Handle create item colecting
+        handleHeroOverlapWithItems(this);
 
         // Configure the main camera
         handleConfigureCamera(this);

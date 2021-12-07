@@ -126,6 +126,34 @@ export const handleCreateControlKeys = (scene) => {
     });
 };
 
+export const handleHeroOverlapWithItems = (scene) => {
+    scene.physics.add.overlap(
+        scene.heroSprite,
+        scene.items,
+        (heroSprie, item) => {
+            const newOrigin = 0.5;
+            item.setOrigin(newOrigin);
+            item.setPosition(
+                item.x + item.width * newOrigin,
+                item.y - item.height * newOrigin
+            );
+
+            scene.items.remove(item);
+            scene.tweens.add({
+                targets: item,
+                scale: 3,
+                alpha: 0,
+                ease: 'Power2',
+                duration: 300,
+                onComplete: () => {
+                    item.setVisible(false);
+                    item.destroy(true);
+                },
+            });
+        }
+    );
+};
+
 export const handleCreateGroups = (scene) => {
     // Game groups
     // eslint-disable-next-line no-param-reassign
@@ -492,33 +520,6 @@ export const handleObjectsLayer = (scene) => {
                     );
                     scene.items.add(crystal);
                     scene.sprites.add(crystal);
-
-                    const crystalActionHeroCollider = scene.physics.add.overlap(
-                        scene.heroSprite,
-                        crystal,
-                        () => {
-                            const newOrigin = 0.5;
-                            crystal.setOrigin(newOrigin);
-                            crystal.setPosition(
-                                crystal.x + crystal.width * newOrigin,
-                                crystal.y - crystal.height * newOrigin
-                            );
-
-                            scene.tweens.add({
-                                targets: crystal,
-                                scale: 3,
-                                alpha: 0,
-                                ease: 'Power2',
-                                duration: 300,
-                                onComplete: () => {
-                                    crystal.setVisible(false);
-                                    crystal.destroy(true);
-                                },
-                            });
-
-                            crystalActionHeroCollider.destroy();
-                        }
-                    );
 
                     break;
                 }
