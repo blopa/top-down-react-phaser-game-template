@@ -191,33 +191,14 @@ export const calculatePushTilePosition = (scene) => {
     }
 };
 
-export const handleCreateHero = (scene) => {
-    const initialFrame = getSelectorData(selectHeroInitialFrame);
-
-    // Create hero sprite
-    const heroSprite = scene.physics.add
-        .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
-        .setName(uuid())
-        .setDepth(1);
-
-    const actionColliderSizeOffset = 2;
-    // eslint-disable-next-line no-param-reassign
-    heroSprite.actionCollider = createInteractiveGameObject(
-        scene,
-        0,
-        0,
-        TILE_WIDTH - actionColliderSizeOffset,
-        TILE_HEIGHT - actionColliderSizeOffset,
-        true
-    );
-
+export const handleCreateHeroPushTileAction = (scene) => {
     const mapLayers = scene.add.group();
     scene.map.layers.forEach((layer) => {
         mapLayers.add(layer.tilemapLayer);
     });
 
     const layersActionHeroCollider = scene.physics.add.overlap(
-        heroSprite.actionCollider,
+        scene.heroSprite.actionCollider,
         mapLayers,
         (actionCollider, tile) => {
             if ([OPEN_BOX_TILE_INDEX, CLOSED_BOX_TILE_INDEX].includes(tile?.index)
@@ -226,16 +207,20 @@ export const handleCreateHero = (scene) => {
                 && Input.Keyboard.JustDown(scene.actionKey)
             ) {
                 const newPosition = calculatePushTilePosition(scene);
-                const canBePushed = scene.map.layers.every((layer) => {
+                const anyTileInNewPosition = scene.map.layers.some((layer) => {
                     const t = layer.tilemapLayer.getTileAtWorldXY(
                         newPosition.x,
                         newPosition.y
                     );
 
-                    return !t?.properties?.ge_collide;
+                    return t?.properties?.ge_collide;
                 });
 
-                if (canBePushed) {
+                const anySpriteInNewPosition = scene.sprites.getChildren().some((sprite) =>
+                    Math.floor(sprite.x) - Math.floor(sprite.width * sprite.originX) === newPosition.x
+                        && Math.floor(sprite.y) - Math.floor(sprite.height * sprite.originY) === newPosition.y);
+
+                if (!anyTileInNewPosition && !anySpriteInNewPosition) {
                     layersActionHeroCollider.active = false;
                     const {
                         properties,
@@ -304,6 +289,27 @@ export const handleCreateHero = (scene) => {
                 }
             }
         }
+    );
+};
+
+export const handleCreateHero = (scene) => {
+    const initialFrame = getSelectorData(selectHeroInitialFrame);
+
+    // Create hero sprite
+    const heroSprite = scene.physics.add
+        .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
+        .setName(uuid())
+        .setDepth(1);
+
+    const actionColliderSizeOffset = 2;
+    // eslint-disable-next-line no-param-reassign
+    heroSprite.actionCollider = createInteractiveGameObject(
+        scene,
+        0,
+        0,
+        TILE_WIDTH - actionColliderSizeOffset,
+        TILE_HEIGHT - actionColliderSizeOffset,
+        true
     );
 
     // eslint-disable-next-line no-param-reassign
@@ -381,8 +387,8 @@ export const handleObjectsLayer = (scene) => {
                         .setName(name)
                         .setDepth(1);
 
-                    scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
+                    scene.sprites.add(enemy);
                     scene.gridEngine.addCharacter({
                         id: name,
                         offsetY: 0, // default
@@ -453,6 +459,7 @@ export const handleObjectsLayer = (scene) => {
 
                     coin.anims.play(animationKey);
                     scene.items.add(coin);
+                    scene.sprites.add(coin);
 
                     break;
                 }
@@ -466,6 +473,7 @@ export const handleObjectsLayer = (scene) => {
                         .setDepth(1);
 
                     scene.items.add(heart);
+                    scene.sprites.add(heart);
 
                     break;
                 }
@@ -478,7 +486,39 @@ export const handleObjectsLayer = (scene) => {
                         .setName(name)
                         .setDepth(1);
 
+                    crystal.body.setSize(
+                        TILE_WIDTH - 2,
+                        TILE_HEIGHT - 2
+                    );
                     scene.items.add(crystal);
+                    scene.sprites.add(crystal);
+
+                    const crystalActionHeroCollider = scene.physics.add.overlap(
+                        scene.heroSprite,
+                        crystal,
+                        () => {
+                            const newOrigin = 0.5;
+                            crystal.setOrigin(newOrigin);
+                            crystal.setPosition(
+                                crystal.x + crystal.width * newOrigin,
+                                crystal.y - crystal.height * newOrigin
+                            );
+
+                            scene.tweens.add({
+                                targets: crystal,
+                                scale: 3,
+                                alpha: 0,
+                                ease: 'Power2',
+                                duration: 300,
+                                onComplete: () => {
+                                    crystal.setVisible(false);
+                                    crystal.destroy(true);
+                                },
+                            });
+
+                            crystalActionHeroCollider.destroy();
+                        }
+                    );
 
                     break;
                 }
@@ -492,6 +532,7 @@ export const handleObjectsLayer = (scene) => {
                         .setDepth(1);
 
                     scene.items.add(key);
+                    scene.sprites.add(key);
 
                     break;
                 }

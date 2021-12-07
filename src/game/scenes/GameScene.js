@@ -17,7 +17,7 @@ import {
     handleConfigureCamera,
     handleConfigureGridEngine,
     handleCreateHeroAnimations,
-    handleCreateCharactersMovements,
+    handleCreateCharactersMovements, handleCreateHeroPushTileAction,
 } from '../../utils/sceneHelpers';
 
 export default class GameScene extends Scene {
@@ -90,6 +90,9 @@ export default class GameScene extends Scene {
 
         // Handle characters movements
         handleCreateCharactersMovements(this);
+
+        // Handle create hero action to push tiles
+        handleCreateHeroPushTileAction(this);
         socket.emit(NEW_GAME, this.heroSprite.name);
         this.socket = socket;
     }
