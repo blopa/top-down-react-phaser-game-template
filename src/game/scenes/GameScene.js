@@ -18,7 +18,9 @@ import {
     handleConfigureGridEngine,
     handleHeroOverlapWithItems,
     handleCreateHeroAnimations,
+    handleCreateEnemiesAnimations,
     handleCreateHeroPushTileAction,
+    handleCreateHeroEnemiesOverlap,
     handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 
@@ -90,14 +92,21 @@ export default class GameScene extends Scene {
         // Configure the main camera
         handleConfigureCamera(this);
 
-        // Animations
+        // Hero animations
         handleCreateHeroAnimations(this);
+
+        // Enemies animations
+        handleCreateEnemiesAnimations(this);
 
         // Handle characters movements
         handleCreateCharactersMovements(this);
 
         // Handle create hero action to push tiles
         handleCreateHeroPushTileAction(this);
+
+        // Handle create hero action to push tiles
+        handleCreateHeroEnemiesOverlap(this);
+
         socket.emit(NEW_GAME, this.heroSprite.name);
         this.socket = socket;
     }

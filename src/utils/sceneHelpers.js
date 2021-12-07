@@ -18,11 +18,12 @@ import {
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
+    EMPTY_TILE_INDEX,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
     OPEN_BOX_TILE_INDEX,
-    CLOSED_BOX_TILE_INDEX, EMPTY_TILE_INDEX,
+    CLOSED_BOX_TILE_INDEX,
 } from './constants';
 import {
     MOVE_HERO,
@@ -270,6 +271,7 @@ export const handleCreateHeroPushTileAction = (scene) => {
                         ease: 'Power2', // PhaserMath.Easing
                         duration: 500,
                         onComplete: () => {
+                            // TODO create the new tile before the animation is complete
                             const newTile = layer.tilemapLayer.putTileAt(
                                 tile,
                                 newPosition.x / TILE_WIDTH,
@@ -400,6 +402,16 @@ export const handleCreateHero = (scene) => {
     scene.sprites.add(heroSprite);
 };
 
+export const handleCreateHeroEnemiesOverlap = (scene) => {
+    scene.physics.add.collider(
+        scene.heroSprite,
+        scene.enemies,
+        (heroSprite, enemy) => {
+            console.log('game over!!');
+        }
+    );
+};
+
 export const handleObjectsLayer = (scene) => {
     // Load game objects like items, enemies, etc
     const dispatch = getDispatch();
@@ -412,53 +424,62 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const enemy = scene.physics.add
                         .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
+                    enemy.body.setSize(
+                        TILE_WIDTH - 2,
+                        TILE_HEIGHT - 2
+                    );
+
                     scene.enemies.add(enemy);
                     scene.sprites.add(enemy);
+
                     scene.gridEngine.addCharacter({
                         id: name,
+                        speed: 3,
                         offsetY: 0, // default
                         sprite: enemy,
                         startPosition: {
                             x: Math.floor(x / TILE_WIDTH),
-                            y: Math.floor(y / TILE_HEIGHT),
+                            y: Math.floor(y / TILE_HEIGHT) - 1,
                         },
                     });
 
-                    const enemyActionHeroCollider = scene.physics.add.overlap(
-                        enemy,
-                        scene.heroSprite.actionCollider,
-                        (e, a) => {
-                            if (Input.Keyboard.JustDown(scene.actionKey)) {
-                                const messages = getSelectorData(selectDialogMessages);
-
-                                if (messages.length === 0) {
-                                    enemyActionHeroCollider.active = false;
-                                    dispatch(setDialogCharacterNameAction('monster'));
-                                    dispatch(setDialogMessagesAction([
-                                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                                        'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
-                                        'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
-                                    ]));
-                                    dispatch(setDialogActionAction(() => {
-                                        // Do this to not trigger the message again
-                                        // Because whenever you call JustDown once, the second time
-                                        // you call it, it will be false
-                                        Input.Keyboard.JustDown(scene.actionKey);
-                                        dispatch(setDialogCharacterNameAction(''));
-                                        dispatch(setDialogMessagesAction([]));
-                                        dispatch(setDialogActionAction(null));
-                                    }));
-
-                                    scene.time.delayedCall(0, () => {
-                                        enemyActionHeroCollider.active = true;
-                                    });
-                                }
-                            }
-                        }
-                    );
+                    scene.gridEngine.moveRandomly(name, 1000);
+                    // const enemyActionHeroCollider = scene.physics.add.overlap(
+                    //     enemy,
+                    //     scene.heroSprite.actionCollider,
+                    //     (e, a) => {
+                    //         if (Input.Keyboard.JustDown(scene.actionKey)) {
+                    //             const messages = getSelectorData(selectDialogMessages);
+                    //
+                    //             if (messages.length === 0) {
+                    //                 enemyActionHeroCollider.active = false;
+                    //                 dispatch(setDialogCharacterNameAction('monster'));
+                    //                 dispatch(setDialogMessagesAction([
+                    //                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                    //                     'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
+                    //                     'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
+                    //                 ]));
+                    //                 dispatch(setDialogActionAction(() => {
+                    //                     // Do this to not trigger the message again
+                    //                     // Because whenever you call JustDown once, the second time
+                    //                     // you call it, it will be false
+                    //                     Input.Keyboard.JustDown(scene.actionKey);
+                    //                     dispatch(setDialogCharacterNameAction(''));
+                    //                     dispatch(setDialogMessagesAction([]));
+                    //                     dispatch(setDialogActionAction(null));
+                    //                 }));
+                    //
+                    //                 scene.time.delayedCall(0, () => {
+                    //                     enemyActionHeroCollider.active = true;
+                    //                 });
+                    //             }
+                    //         }
+                    //     }
+                    // );
 
                     break;
                 }
@@ -579,6 +600,18 @@ export const handleCreateHeroAnimations = (scene) => {
         createWalkingAnimation(
             scene,
             HERO_SPRITE_NAME,
+            `walk_${direction}`,
+            3
+        );
+    });
+};
+
+export const handleCreateEnemiesAnimations = (scene) => {
+    // Animations
+    [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION].forEach((direction) => {
+        createWalkingAnimation(
+            scene,
+            ENEMY_SPRITE_NAME,
             `walk_${direction}`,
             3
         );
