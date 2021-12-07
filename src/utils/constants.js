@@ -40,5 +40,6 @@ export const ARROW_RIGHT_KEY = 'ArrowRight';
 export const ARROW_DOWN_KEY = 'ArrowDown';
 
 // Tile indexes
+export const EMPTY_TILE_INDEX = -1;
 export const OPEN_BOX_TILE_INDEX = 658;
 export const CLOSED_BOX_TILE_INDEX = 715;

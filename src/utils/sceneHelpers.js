@@ -22,7 +22,7 @@ import {
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
     OPEN_BOX_TILE_INDEX,
-    CLOSED_BOX_TILE_INDEX,
+    CLOSED_BOX_TILE_INDEX, EMPTY_TILE_INDEX,
 } from './constants';
 import {
     MOVE_HERO,
@@ -252,21 +252,11 @@ export const handleCreateHero = (scene) => {
                         targets: tile,
                         pixelX: newPosition.x,
                         pixelY: newPosition.y,
+                        x: newPosition.x / TILE_WIDTH,
+                        y: newPosition.y / TILE_HEIGHT,
                         ease: 'Power2', // PhaserMath.Easing
                         duration: 500,
                         onComplete: () => {
-                            const emptyTile = {
-                                ...tile,
-                                x,
-                                y,
-                                pixelX,
-                                pixelY,
-                                properties: {},
-                                index: -1,
-                                alpha: 0,
-                                visible: false,
-                            };
-
                             const newTile = layer.tilemapLayer.putTileAt(
                                 tile,
                                 newPosition.x / TILE_WIDTH,
@@ -275,32 +265,39 @@ export const handleCreateHero = (scene) => {
                             );
 
                             const oldTile = layer.tilemapLayer.putTileAt(
-                                emptyTile,
+                                EMPTY_TILE_INDEX,
                                 x,
                                 y,
                                 true
                             );
 
-                            // Reset the old tile to its original
-                            // position, so if a new tile shows up on that spot
-                            // the tile texture knows where to be rendered
-                            oldTile.properties = {};
-                            oldTile.pixelX = pixelX;
-                            oldTile.pixelY = pixelY;
-                            oldTile.x = x;
-                            oldTile.y = y;
-
-                            newTile.properties = {
-                                ...properties,
-                            };
-
+                            // wait for Phaser to calculate everything
+                            // and then in the next compilation loop
+                            // set the correct properties to the new tiles
                             scene.time.delayedCall(0, () => {
                                 layersActionHeroCollider.active = true;
+
+                                // Reset the old tile to its original
+                                // position, so if a new tile shows up on that spot
+                                // the tile texture knows where to be rendered
                                 oldTile.setVisible(false);
                                 oldTile.setAlpha(0);
+                                oldTile.properties = {};
+                                oldTile.pixelX = pixelX;
+                                oldTile.pixelY = pixelY;
+                                oldTile.x = x;
+                                oldTile.y = y;
 
+                                // Make sure the new tile is visible
+                                // as Phaser might get the old tile
+                                // properties in case of this new tile
+                                // falls into a spot where there was
+                                // alredy a tile before
                                 newTile.setVisible(true);
                                 newTile.setAlpha(1);
+                                newTile.properties = {
+                                    ...properties,
+                                };
                             });
                         },
                     });
