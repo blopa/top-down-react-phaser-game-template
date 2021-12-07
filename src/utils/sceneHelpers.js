@@ -236,8 +236,18 @@ export const handleCreateHero = (scene) => {
                 });
 
                 if (canBePushed) {
-                    const { properties, index, layer } = tile;
+                    layersActionHeroCollider.active = false;
+                    const {
+                        properties,
+                        layer,
+                        pixelX,
+                        pixelY,
+                        x,
+                        y,
+                    } = tile;
 
+                    // This function will make the tile texture move
+                    // and it will change some of the tile's properties
                     scene.tweens.add({
                         targets: tile,
                         pixelX: newPosition.x,
@@ -245,48 +255,52 @@ export const handleCreateHero = (scene) => {
                         ease: 'Power2', // PhaserMath.Easing
                         duration: 500,
                         onComplete: () => {
-                            layersActionHeroCollider.active = false;
+                            const emptyTile = {
+                                ...tile,
+                                x,
+                                y,
+                                pixelX,
+                                pixelY,
+                                properties: {},
+                                index: -1,
+                                alpha: 0,
+                                visible: false,
+                            };
+
                             const newTile = layer.tilemapLayer.putTileAt(
-                                index,
+                                tile,
                                 newPosition.x / TILE_WIDTH,
                                 newPosition.y / TILE_HEIGHT,
                                 true
                             );
 
+                            const oldTile = layer.tilemapLayer.putTileAt(
+                                emptyTile,
+                                x,
+                                y,
+                                true
+                            );
+
+                            // Reset the old tile to its original
+                            // position, so if a new tile shows up on that spot
+                            // the tile texture knows where to be rendered
+                            oldTile.properties = {};
+                            oldTile.pixelX = pixelX;
+                            oldTile.pixelY = pixelY;
+                            oldTile.x = x;
+                            oldTile.y = y;
+
                             newTile.properties = {
                                 ...properties,
                             };
 
-                            // the tile in the new position
-                            // is being created already dead
-                            // figure this out somehow
-                            console.log(newTile.pixelX);
-                            window.newTile = {
-                                pixelX: newTile.pixelX,
-                                pixelY: newTile.pixelY,
-                                x: newTile.x,
-                                y: newTile.y,
-                                alpha: newTile.alpha,
-                                properties: JSON.stringify(newTile.properties),
-                            };
                             scene.time.delayedCall(0, () => {
                                 layersActionHeroCollider.active = true;
-                                tile.setVisible(false);
-                                tile.setAlpha(0);
-                                tile.destroy();
+                                oldTile.setVisible(false);
+                                oldTile.setAlpha(0);
 
-                                // eslint-disable-next-line no-param-reassign
-                                tile.properties = {};
-                                // eslint-disable-next-line no-param-reassign
-                                tile.index = 0;
-                                // eslint-disable-next-line no-param-reassign
-                                tile.x = -16;
-                                // eslint-disable-next-line no-param-reassign
-                                tile.y = -16;
-                                // eslint-disable-next-line no-param-reassign
-                                tile.pixelX = -16;
-                                // eslint-disable-next-line no-param-reassign
-                                tile.pixelY = -16;
+                                newTile.setVisible(true);
+                                newTile.setAlpha(1);
                             });
                         },
                     });
