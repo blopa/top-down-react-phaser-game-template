@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import Message from './Message';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameSettings';
 import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Constants

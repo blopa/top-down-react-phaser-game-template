@@ -15,7 +15,7 @@ export const SET_INITIAL_POSITION = 'SET_INITIAL_POSITION';
 export const SET_PREVIOUS_POSITION = 'SET_PREVIOUS_POSITION';
 export const SET_INITIAL_FRAME = 'SET_INITIAL_FRAME';
 
-// Game data
+// Game settings data
 export const SET_GAME_WIDTH = 'SET_GAME_WIDTH';
 export const SET_GAME_HEIGHT = 'SET_GAME_HEIGHT';
 export const SET_GAME_ZOOM = 'SET_GAME_ZOOM';
@@ -30,3 +30,14 @@ export const SET_MENU_ITEMS = 'SET_MENU_ITEMS';
 export const SET_MENU_POSITION = 'SET_MENU_POSITION';
 export const ADD_MENU_ITEM = 'ADD_MENU_ITEM';
 export const SET_MENU_ON_SELECT = 'SET_MENU_ON_SELECT';
+
+// Players
+export const ADD_PLAYER = 'ADD_PLAYER';
+export const SET_PLAYERS = 'SET_PLAYERS';
+
+// Game data
+export const SET_GAME_STARTED = 'SET_GAME_STARTED';
+export const SET_MY_PLAYER_ID = 'SET_MY_PLAYER_ID';
+
+// Waiting room
+export const ADD_PLAYER_TO_WAITING_ROOM = 'ADD_PLAYER_TO_WAITING_ROOM';

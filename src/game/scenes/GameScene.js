@@ -1,10 +1,5 @@
+// import io from 'socket.io-client';
 import { Scene } from 'phaser';
-import io from 'socket.io-client';
-import {
-    NEW_GAME,
-    ADD_CHARACTER,
-    MOVE_HERO_SERVER,
-} from '../../utils/serverConstants';
 
 // Utils
 import {
@@ -107,8 +102,8 @@ export default class GameScene extends Scene {
         // Handle create hero action to push tiles
         handleCreateHeroEnemiesOverlap(this);
 
-        socket.emit(NEW_GAME, this.heroSprite.name);
-        this.socket = socket;
+        // socket.emit(NEW_GAME, this.heroSprite.name);
+        // this.socket = socket;
     }
 
     update(time, delta) {

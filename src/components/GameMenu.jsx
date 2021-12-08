@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../utils/constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameSettings';
 import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redux/selectors/selectMenu';
 
 const useStyles = makeStyles((theme) => ({

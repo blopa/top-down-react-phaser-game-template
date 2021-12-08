@@ -120,6 +120,7 @@ const Game = () => {
                 TILE_HEIGHT
             );
 
+            // TODO needs to re-run this function to: handleConfigureCamera
             updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
             phaserGame.scale.resize(gameSize.width, gameSize.height);
             phaserGame.scale.setZoom(gameSize.zoom);

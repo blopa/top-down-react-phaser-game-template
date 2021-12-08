@@ -25,9 +25,6 @@ import {
     OPEN_BOX_TILE_INDEX,
     CLOSED_BOX_TILE_INDEX,
 } from './constants';
-import {
-    MOVE_HERO,
-} from './serverConstants';
 
 // Utils
 import { createInteractiveGameObject } from './utils';
@@ -42,12 +39,13 @@ import {
     selectHeroFacingDirection,
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
-import { selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectGameZoom } from '../redux/selectors/selectGameSettings';
+// import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
-import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
-import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/setDialogActionAction';
+// import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
+// import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
+// import setDialogActionAction from '../redux/actions/setDialogActionAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
@@ -569,6 +567,7 @@ export const handleObjectsLayer = (scene) => {
 export const handleConfigureCamera = (scene) => {
     const { game } = scene.sys;
     const camera = scene.cameras.main;
+    const gameZoom = getSelectorData(selectGameZoom);
 
     // Configure the main camera
     camera.startFollow(scene.heroSprite, true);
@@ -580,13 +579,20 @@ export const handleConfigureCamera = (scene) => {
         Math.max(scene.map.heightInPixels, game.scale.gameSize.height)
     );
 
-    if (scene.map.widthInPixels < game.scale.gameSize.width) {
+    if (
+        scene.map.widthInPixels < game.scale.gameSize.width
+        && window.innerWidth > scene.map.widthInPixels * gameZoom
+    ) {
         camera.setPosition(
-            (game.scale.gameSize.width - scene.map.widthInPixels) / 2
+            (game.scale.gameSize.width - scene.map.widthInPixels) / 2,
+            camera.y
         );
     }
 
-    if (scene.map.heightInPixels < game.scale.gameSize.height) {
+    if (
+        scene.map.heightInPixels < game.scale.gameSize.height
+        && window.innerHeight > scene.map.heightInPixels * gameZoom
+    ) {
         camera.setPosition(
             camera.x,
             (game.scale.gameSize.height - scene.map.heightInPixels) / 2
@@ -640,15 +646,11 @@ export const handleConfigureGridEngine = (scene) => {
 export const handleHeroMovement = (scene) => {
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
-        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, LEFT_DIRECTION);
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
         scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
-        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, RIGHT_DIRECTION);
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
         scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
-        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, UP_DIRECTION);
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
         scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
-        scene.socket.emit(MOVE_HERO, scene.heroSprite.name, DOWN_DIRECTION);
     }
 };
