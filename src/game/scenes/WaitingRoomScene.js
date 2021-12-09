@@ -21,7 +21,7 @@ import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFa
 import { getSelectorData, handleCreateHeroAnimations } from '../../utils/sceneHelpers';
 
 // Selectors
-import { selectMyCharacterId } from '../../redux/selectors/selectPlayers';
+import { selectMyCharacterId, selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
 
 export default class WaitingRoomScene extends Scene {
@@ -38,6 +38,7 @@ export default class WaitingRoomScene extends Scene {
         const gameWidth = getSelectorData(selectGameWidth);
         const gameHeight = getSelectorData(selectGameHeight);
         const spriteName = getSelectorData(selectMyCharacterId);
+        const myPlayerId = getSelectorData(selectMyPlayerId);
 
         const sprite = this.add.sprite(
             gameWidth / 2,
@@ -62,7 +63,10 @@ export default class WaitingRoomScene extends Scene {
         const host = process.env.REACT_APP_SERVER_HOST;
         const port = process.env.REACT_APP_SERVER_PORT;
         const socket = io(`${host}:${port}`);
-        socket.emit(REQUEST_NEW_GAME, this.heroSprite.name);
+        socket.emit(REQUEST_NEW_GAME, JSON.stringify({
+            characterId: spriteName,
+            playerId: myPlayerId,
+        }));
 
         const map = 'main_map';
         const handleStartGameSelected = () => Promise.all([
