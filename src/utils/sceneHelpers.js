@@ -3,27 +3,27 @@ import { v4 as uuid } from 'uuid';
 
 // Constants
 import {
-    KEY,
-    COIN,
-    HEART,
-    ENEMY,
-    CRYSTAL,
-    IDLE_FRAME,
-    TILE_WIDTH,
-    TILE_HEIGHT,
-    UP_DIRECTION,
-    LEFT_DIRECTION,
-    DOWN_DIRECTION,
-    RIGHT_DIRECTION,
-    KEY_SPRITE_NAME,
-    HERO_SPRITE_NAME,
-    COIN_SPRITE_NAME,
-    EMPTY_TILE_INDEX,
-    ENEMY_SPRITE_NAME,
-    HEART_SPRITE_NAME,
+    CLOSED_BOX_TILE_INDEX,
     CRYSTAL_SPRITE_NAME,
     OPEN_BOX_TILE_INDEX,
-    CLOSED_BOX_TILE_INDEX,
+    ENEMY_SPRITE_NAME,
+    HEART_SPRITE_NAME,
+    COIN_SPRITE_NAME,
+    EMPTY_TILE_INDEX,
+    HERO_SPRITE_NAME,
+    RIGHT_DIRECTION,
+    KEY_SPRITE_NAME,
+    DOWN_DIRECTION,
+    LEFT_DIRECTION,
+    UP_DIRECTION,
+    TILE_HEIGHT,
+    TILE_WIDTH,
+    IDLE_FRAME,
+    CRYSTAL,
+    ENEMY,
+    HEART,
+    COIN,
+    KEY,
 } from './constants';
 
 // Utils
@@ -35,8 +35,8 @@ import store from '../redux/store';
 // Selectors
 import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
 import {
-    selectHeroInitialFrame,
     selectHeroFacingDirection,
+    selectHeroInitialFrame,
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectGameZoom } from '../redux/selectors/selectGameSettings';
@@ -600,12 +600,12 @@ export const handleConfigureCamera = (scene) => {
     }
 };
 
-export const handleCreateHeroAnimations = (scene) => {
+export const handleCreateHeroAnimations = (scene, spriteName = HERO_SPRITE_NAME) => {
     // Animations
     [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION].forEach((direction) => {
         createWalkingAnimation(
             scene,
-            HERO_SPRITE_NAME,
+            spriteName,
             `walk_${direction}`,
             3
         );
@@ -653,4 +653,27 @@ export const handleHeroMovement = (scene) => {
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
         scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
     }
+};
+
+const localState = {};
+export const applyLocalState = (defaultValue) => {
+    const stateId = uuid();
+    const setState = (newStateValue) => {
+        localState[stateId] = newStateValue;
+    };
+
+    const getState = () => localState[stateId] || defaultValue;
+
+    return [
+        getState,
+        setState,
+        stateId,
+    ];
+};
+
+export const purgeLocalStates = (stateIds) =>
+    stateIds.forEach((stateId) => purgeLocalState(stateId));
+
+export const purgeLocalState = (stateId) => {
+    delete localState[stateId];
 };

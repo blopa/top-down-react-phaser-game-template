@@ -2,6 +2,7 @@ import {
     ADD_PLAYER,
     SET_PLAYERS,
     SET_MY_PLAYER_ID,
+    SET_MY_CHARACTER_ID,
 } from '../constants';
 
 const defaultState = {
@@ -32,6 +33,13 @@ const playersReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 myPlayerId: action.payload,
+            };
+        }
+
+        case SET_MY_CHARACTER_ID: {
+            return {
+                ...state,
+                myCharacterId: action.payload,
             };
         }
 

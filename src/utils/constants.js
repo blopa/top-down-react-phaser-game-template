@@ -7,6 +7,11 @@ export const MIN_GAME_HEIGHT = 14 * TILE_HEIGHT; // 224
 export const RESIZE_THRESHOLD = 500;
 
 export const HERO_SPRITE_NAME = 'hero';
+export const NPC_01_SPRITE_NAME = 'npc_01';
+export const NPC_02_SPRITE_NAME = 'npc_02';
+export const NPC_03_SPRITE_NAME = 'npc_03';
+export const NPC_04_SPRITE_NAME = 'npc_04';
+export const NPC_05_SPRITE_NAME = 'npc_05';
 export const ENEMY_SPRITE_NAME = 'enemy';
 export const COIN_SPRITE_NAME = 'coin';
 export const HEART_SPRITE_NAME = 'heart';

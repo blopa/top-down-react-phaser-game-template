@@ -38,6 +38,9 @@ export const SET_PLAYERS = 'SET_PLAYERS';
 // Game data
 export const SET_GAME_STARTED = 'SET_GAME_STARTED';
 export const SET_MY_PLAYER_ID = 'SET_MY_PLAYER_ID';
+export const SET_MY_CHARACTER_ID = 'SET_MY_CHARACTER_ID';
 
-// Waiting room
-export const ADD_PLAYER_TO_WAITING_ROOM = 'ADD_PLAYER_TO_WAITING_ROOM';
+// Game manager
+export const SET_CURRENT_ROOM = 'SET_CURRENT_ROOM';
+export const ADD_PLAYER_TO_ROOM = 'ADD_PLAYER_TO_ROOM';
+export const SET_ROOM_PLAYERS = 'SET_ROOM_PLAYERS';

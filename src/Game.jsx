@@ -19,13 +19,15 @@ import {
 // Game Scenes
 import GameScene from './game/scenes/GameScene';
 import BootScene from './game/scenes/BootScene';
-import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 import MainMenuScene from './game/scenes/MainMenuScene';
+import LoadAssetsScene from './game/scenes/LoadAssetsScene';
+import WaitingRoomScene from './game/scenes/WaitingRoomScene';
+import PlayerSelectionScene from './game/scenes/PlayerSelectionScene';
 
 // Actions
-import setGameHeightAction from './redux/actions/setGameHeightAction';
-import setGameWidthAction from './redux/actions/setGameWidthAction';
-import setGameZoomAction from './redux/actions/setGameZoomAction';
+import setGameHeightAction from './redux/actions/gameSettings/setGameHeightAction';
+import setGameWidthAction from './redux/actions/gameSettings/setGameWidthAction';
+import setGameZoomAction from './redux/actions/gameSettings/setGameZoomAction';
 
 // Components
 import DialogBox from './components/DialogBox';
@@ -88,6 +90,8 @@ const Game = () => {
                 LoadAssetsScene,
                 GameScene,
                 MainMenuScene,
+                PlayerSelectionScene,
+                WaitingRoomScene,
             ],
             physics: {
                 default: 'arcade',
