@@ -1,8 +1,5 @@
 import { Scene } from 'phaser';
 
-// Store
-import store from '../../redux/store';
-
 // Actions
 import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
 import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
@@ -15,6 +12,9 @@ import {
     NPC_05_SPRITE_NAME,
 } from '../../utils/constants';
 
+// Utils
+import { getDispatch } from '../../utils/utils';
+
 export default class MainMenuScene extends Scene {
     constructor() {
         super('MainMenuScene');
@@ -25,7 +25,7 @@ export default class MainMenuScene extends Scene {
     }
 
     create() {
-        const { dispatch } = store;
+        const dispatch = getDispatch();
 
         dispatch(setMenuItemsAction(['Start Game', 'Exit']));
         dispatch(setMenuOnSelectAction((item) => {

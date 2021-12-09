@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import isMobile from 'is-mobile';
 
 // Utils
-import { calculateGameSize } from './utils/utils';
+import { calculateGameSize } from './utils/phaser';
 
 // Constants
 import {

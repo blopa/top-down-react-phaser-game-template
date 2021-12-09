@@ -22,12 +22,12 @@ import {
 
 // Utils
 import {
-    asyncLoader,
     isMapFileAvailable,
     isImageFileAvailable,
     isTilesetFileAvailable,
     isGeneratedAtlasFileAvailable,
 } from '../../utils/utils';
+import { asyncLoader } from '../../utils/phaser';
 
 // Constants
 import {

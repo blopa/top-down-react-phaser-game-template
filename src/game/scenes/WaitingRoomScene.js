@@ -1,11 +1,8 @@
 import { Scene } from 'phaser';
 import io from 'socket.io-client';
 
-// Store
-import store from '../../redux/store';
-
 // Constants
-import { REQUEST_NEW_GAME } from '../../server/constants';
+import { PLAYER_ADDED_TO_ROOM, REQUEST_NEW_GAME, SEND_ROOM_ID } from '../../server/constants';
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../utils/constants';
 
 // Actions
@@ -16,13 +13,17 @@ import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
 import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
 import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
+import addPlayerToRoomAction from '../../redux/actions/gameManager/addPlayerToRoomAction';
+import setCurrentRoomAction from '../../redux/actions/gameManager/setCurrentRoomAction';
 
 // Utils
-import { getSelectorData, handleCreateHeroAnimations } from '../../utils/sceneHelpers';
+import { handleCreateHeroAnimations } from '../../utils/sceneHelpers';
+import { getDispatch, getSelectorData } from '../../utils/utils';
 
 // Selectors
 import { selectMyCharacterId, selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
+import { selectGameCurrentRoom } from '../../redux/selectors/selectGameManager';
 
 export default class WaitingRoomScene extends Scene {
     constructor() {
@@ -34,7 +35,7 @@ export default class WaitingRoomScene extends Scene {
     }
 
     create() {
-        const { dispatch } = store;
+        const dispatch = getDispatch();
         const gameWidth = getSelectorData(selectGameWidth);
         const gameHeight = getSelectorData(selectGameHeight);
         const spriteName = getSelectorData(selectMyCharacterId);
@@ -63,10 +64,31 @@ export default class WaitingRoomScene extends Scene {
         const host = process.env.REACT_APP_SERVER_HOST;
         const port = process.env.REACT_APP_SERVER_PORT;
         const socket = io(`${host}:${port}`);
+
         socket.emit(REQUEST_NEW_GAME, JSON.stringify({
             characterId: spriteName,
             playerId: myPlayerId,
         }));
+
+        socket.on(SEND_ROOM_ID, (roomId) => {
+            dispatch(setCurrentRoomAction(roomId));
+        });
+
+        socket.on(PLAYER_ADDED_TO_ROOM, (stringfiedData) => {
+            console.log('new player joined the room');
+            const player = JSON.parse(stringfiedData);
+            const rivalSprite = this.add.sprite(
+                gameWidth / 2,
+                gameHeight * 0.4,
+                player.characterId,
+                IDLE_FRAME.replace('position', DOWN_DIRECTION)
+            ).setName(player.characterId);
+
+            handleCreateHeroAnimations(this, player.characterId);
+            rivalSprite.anims.play(`${player.characterId}_walk_${DOWN_DIRECTION}`);
+            const roomId = getSelectorData(selectGameCurrentRoom);
+            dispatch(addPlayerToRoomAction(roomId, player));
+        });
 
         const map = 'main_map';
         const handleStartGameSelected = () => Promise.all([

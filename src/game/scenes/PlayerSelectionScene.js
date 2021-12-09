@@ -19,12 +19,9 @@ import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectActio
 import setMyPlayerIdAction from '../../redux/actions/players/setMyPlayerIdAction';
 import setMyCharacterIdAction from '../../redux/actions/players/setMyCharacterIdAction';
 
-// Store
-import store from '../../redux/store';
-
 // Utils
+import { getDispatch, getSelectorData } from '../../utils/utils';
 import {
-    getSelectorData,
     handleCreateHeroAnimations,
     applyLocalState,
     purgeLocalState,
@@ -43,7 +40,7 @@ export default class PlayerSelectionScene extends Scene {
     }
 
     create() {
-        const { dispatch } = store;
+        const dispatch = getDispatch();
         const gameWidth = getSelectorData(selectGameWidth);
         const gameHeight = getSelectorData(selectGameHeight);
         const [

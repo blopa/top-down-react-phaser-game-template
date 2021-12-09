@@ -5,16 +5,15 @@ import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 
 // Constants
-import { REQUEST_NEW_GAME, SEND_ROOM_ID } from './constants';
+import { PLAYER_ADDED_TO_ROOM, REQUEST_NEW_GAME, SEND_ROOM_ID } from './constants';
 
 // Utils
-import { getSelectorData } from '../utils/sceneHelpers';
+import { getDispatch, getSelectorData } from '../utils/utils';
 
 // Selectors
 import { selectGameRoom, selectGameRooms } from '../redux/selectors/selectGameManager';
 
-// Store
-import store from '../redux/store';
+// Actions
 import addPlayerToRoomAction from '../redux/actions/gameManager/addPlayerToRoomAction';
 
 dotenv.config({});
@@ -34,7 +33,7 @@ server.listen(serverPort, () => {
 
 // Socket.io
 io.on('connection', (socket) => {
-    const { dispatch } = store;
+    const dispatch = getDispatch();
 
     socket.on(REQUEST_NEW_GAME, (stringfiedData) => {
         const sessionId = socket.id;
@@ -43,8 +42,8 @@ io.on('connection', (socket) => {
         const rooms = getSelectorData(selectGameRooms);
 
         let roomWithSpace;
-        let newRoomId;
-        Object.entries(rooms).some((roomId, roomData) => {
+        let myRoomId;
+        Object.entries(rooms).some(([roomId, roomData]) => {
             if (roomData?.players?.length < 4) {
                 roomWithSpace = roomId;
                 return true;
@@ -54,21 +53,29 @@ io.on('connection', (socket) => {
         });
 
         if (roomWithSpace) {
-            newRoomId = roomWithSpace;
+            myRoomId = roomWithSpace;
+            const room = getSelectorData(selectGameRoom(myRoomId));
+            room.players.forEach((player) => {
+                socket.emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
+                    characterId: player.characterId,
+                    playerId: player.playerId,
+                }));
+            });
         } else {
-            newRoomId = uuid();
-            dispatch(addPlayerToRoomAction(newRoomId, {
+            myRoomId = uuid();
+            dispatch(addPlayerToRoomAction(myRoomId, {
                 characterId,
                 sessionId,
                 playerId,
             }));
         }
 
-        const room = getSelectorData(selectGameRoom);
-        room.players.forEach((player) => {
-            const playerSocket = io.sockets.sockets.get(player.sessionId);
-        });
+        io.to(myRoomId).emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
+            characterId,
+            playerId,
+        }));
 
-        socket.emit(SEND_ROOM_ID, newRoomId);
+        socket.join(myRoomId);
+        socket.emit(SEND_ROOM_ID, myRoomId);
     });
 });

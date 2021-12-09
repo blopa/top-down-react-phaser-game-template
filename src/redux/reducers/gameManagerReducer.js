@@ -24,10 +24,13 @@ const gameManagerReducer = (state = defaultState, action) => {
                 ...state,
                 rooms: {
                     ...state.rooms,
-                    [roomId]: [
-                        ...state.rooms[roomId],
-                        payload,
-                    ],
+                    [roomId]: {
+                        ...(state.rooms?.[roomId] || []),
+                        players: [
+                            ...(state.rooms?.[roomId]?.players || []),
+                            payload,
+                        ],
+                    },
                 },
             };
         }

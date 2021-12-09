@@ -27,10 +27,8 @@ import {
 } from './constants';
 
 // Utils
-import { createInteractiveGameObject } from './utils';
-
-// Store
-import store from '../redux/store';
+import { getDispatch, getSelectorData } from './utils';
+import { createInteractiveGameObject } from './phaser';
 
 // Selectors
 import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
@@ -46,14 +44,6 @@ import { selectGameZoom } from '../redux/selectors/selectGameSettings';
 // import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
 // import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
 // import setDialogActionAction from '../redux/actions/setDialogActionAction';
-
-export const getSelectorData = (selector) => {
-    const { getState } = store;
-
-    return selector(getState());
-};
-
-export const getDispatch = () => store.dispatch;
 
 /**
  * @param scene
