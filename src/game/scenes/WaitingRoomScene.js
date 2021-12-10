@@ -30,10 +30,6 @@ export default class WaitingRoomScene extends Scene {
         super('WaitingRoomScene');
     }
 
-    preload() {
-        // TODO
-    }
-
     create() {
         const dispatch = getDispatch();
         const gameWidth = getSelectorData(selectGameWidth);
@@ -74,18 +70,33 @@ export default class WaitingRoomScene extends Scene {
             dispatch(setCurrentRoomAction(roomId));
         });
 
+        const rivalsSprites = this.add.group();
         socket.on(PLAYER_ADDED_TO_ROOM, (stringfiedData) => {
-            console.log('new player joined the room');
             const player = JSON.parse(stringfiedData);
             const rivalSprite = this.add.sprite(
                 gameWidth / 2,
-                gameHeight * 0.4,
+                gameHeight * 0.5,
                 player.characterId,
                 IDLE_FRAME.replace('position', DOWN_DIRECTION)
             ).setName(player.characterId);
+            rivalsSprites.add(rivalSprite);
 
+            const sprites = rivalsSprites.getChildren();
+            const totalWidth = sprites.reduce(
+                (acc, curr) => curr.width + acc, 0
+            );
+
+            let accWidth = 0;
+            sprites.forEach((s) => {
+                s.setX((gameWidth / 2) - totalWidth + accWidth + s.width);
+                accWidth += s.width * 2;
+            });
+
+            // handle animations
             handleCreateHeroAnimations(this, player.characterId);
             rivalSprite.anims.play(`${player.characterId}_walk_${DOWN_DIRECTION}`);
+
+            // add player to the room in the state
             const roomId = getSelectorData(selectGameCurrentRoom);
             dispatch(addPlayerToRoomAction(roomId, player));
         });

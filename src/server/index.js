@@ -41,20 +41,16 @@ io.on('connection', (socket) => {
         const { playerId, characterId } = data;
         const rooms = getSelectorData(selectGameRooms);
 
-        let roomWithSpace;
-        let myRoomId;
-        Object.entries(rooms).some(([roomId, roomData]) => {
-            if (roomData?.players?.length < 4) {
-                roomWithSpace = roomId;
-                return true;
-            }
+        const result = Object.entries(rooms).find(
+            ([roomId, roomData]) => roomData?.players?.length < 4
+        );
 
-            return false;
-        });
+        let [roomId, roomData] = result || [];
 
-        if (roomWithSpace) {
-            myRoomId = roomWithSpace;
-            const room = getSelectorData(selectGameRoom(myRoomId));
+        if (roomId) {
+            // send to the current socket all other
+            // players already in the room
+            const room = getSelectorData(selectGameRoom(roomId));
             room.players.forEach((player) => {
                 socket.emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
                     characterId: player.characterId,
@@ -62,20 +58,21 @@ io.on('connection', (socket) => {
                 }));
             });
         } else {
-            myRoomId = uuid();
-            dispatch(addPlayerToRoomAction(myRoomId, {
-                characterId,
-                sessionId,
-                playerId,
-            }));
+            roomId = uuid();
         }
 
-        io.to(myRoomId).emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
+        dispatch(addPlayerToRoomAction(roomId, {
+            characterId,
+            sessionId,
+            playerId,
+        }));
+
+        io.to(roomId).emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
             characterId,
             playerId,
         }));
 
-        socket.join(myRoomId);
-        socket.emit(SEND_ROOM_ID, myRoomId);
+        socket.join(roomId);
+        socket.emit(SEND_ROOM_ID, roomId);
     });
 });
