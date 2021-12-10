@@ -1,6 +1,9 @@
 import {
+    INCREASE_ELAPSED_TIME,
     ADD_PLAYER_TO_ROOM,
     SET_CURRENT_ROOM,
+    SET_ELAPSED_TIME,
+    SET_GAME_STARTED,
     SET_ROOM_PLAYERS,
 } from '../constants';
 
@@ -19,13 +22,52 @@ const gameManagerReducer = (state = defaultState, action) => {
             };
         }
 
+        case SET_GAME_STARTED: {
+            return {
+                ...state,
+                rooms: {
+                    ...state.rooms,
+                    [roomId]: {
+                        ...(state.rooms?.[roomId] || {}),
+                        gameStarted: payload,
+                    },
+                },
+            };
+        }
+
+        case INCREASE_ELAPSED_TIME: {
+            return {
+                ...state,
+                rooms: {
+                    ...state.rooms,
+                    [roomId]: {
+                        ...(state.rooms?.[roomId] || {}),
+                        elapsedTime: (state.rooms?.[roomId]?.elapsedTime || 0) + 1,
+                    },
+                },
+            };
+        }
+
+        case SET_ELAPSED_TIME: {
+            return {
+                ...state,
+                rooms: {
+                    ...state.rooms,
+                    [roomId]: {
+                        ...(state.rooms?.[roomId] || {}),
+                        elapsedTime: payload,
+                    },
+                },
+            };
+        }
+
         case ADD_PLAYER_TO_ROOM: {
             return {
                 ...state,
                 rooms: {
                     ...state.rooms,
                     [roomId]: {
-                        ...(state.rooms?.[roomId] || []),
+                        ...(state.rooms?.[roomId] || {}),
                         players: [
                             ...(state.rooms?.[roomId]?.players || []),
                             payload,

@@ -4,7 +4,6 @@ import { combineReducers } from 'redux';
 import loadedAssetsReducer from './loadedAssetsReducer';
 import gameSettingsReducer from './gameSettingsReducer';
 import gameManagerReducer from './gameManagerReducer';
-import gameDataReducer from './gameDataReducer';
 import heroDataReducer from './heroDataReducer';
 import mapDataReducer from './mapDataReducer';
 import playersReducer from './playersReducer';
@@ -18,7 +17,6 @@ export default combineReducers({
     heroData: heroDataReducer,
     players: playersReducer,
     mapData: mapDataReducer,
-    game: gameDataReducer,
     dialog: dialogReducer,
     menu: menuReducer,
 });

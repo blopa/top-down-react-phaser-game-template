@@ -5,16 +5,30 @@ import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 
 // Constants
-import { PLAYER_ADDED_TO_ROOM, REQUEST_NEW_GAME, SEND_ROOM_ID } from './constants';
+import {
+    SEND_WAITING_ELAPSED_TIME,
+    PLAYER_ADDED_TO_ROOM,
+    REQUEST_NEW_GAME,
+    SEND_JOINED_ROOM,
+    START_GAME,
+} from './constants';
+import { ONE_SECOND, WAITING_ROOM_TIMEOUT } from '../utils/constants';
 
 // Utils
 import { getDispatch, getSelectorData } from '../utils/utils';
 
 // Selectors
-import { selectGameRoom, selectGameRooms } from '../redux/selectors/selectGameManager';
+import {
+    selectGameElapsedTime,
+    selectGameRoom,
+    selectGameRooms,
+    selectGameStarted
+} from '../redux/selectors/selectGameManager';
 
 // Actions
 import addPlayerToRoomAction from '../redux/actions/gameManager/addPlayerToRoomAction';
+import setGameStartedAction from '../redux/actions/game/setGameStartedAction';
+import increaseWaitingRoomElapsedTimeAction from '../redux/actions/gameManager/increaseWaitingRoomElapsedTimeAction';
 
 dotenv.config({});
 const app = express();
@@ -73,6 +87,36 @@ io.on('connection', (socket) => {
         }));
 
         socket.join(roomId);
-        socket.emit(SEND_ROOM_ID, roomId);
+        socket.emit(SEND_JOINED_ROOM, JSON.stringify({
+            roomId,
+        }));
+
+        const room = getSelectorData(selectGameRoom(roomId));
+        if (room.players.length === 4) {
+            dispatch(setGameStartedAction(roomId, true));
+            io.to(roomId).emit(START_GAME);
+        } else {
+            const gameStarted = getSelectorData(selectGameStarted(roomId));
+
+            if (!gameStarted && room.players.length >= 2) {
+                const elapsedTime = getSelectorData(selectGameElapsedTime(roomId));
+                io.to(roomId).emit(SEND_WAITING_ELAPSED_TIME, JSON.stringify({
+                    elapsedTime: elapsedTime || 0,
+                }));
+
+                let timeForGameIntervalHandler;
+                if (!Number.isFinite(elapsedTime)) {
+                    timeForGameIntervalHandler = setInterval(() => {
+                        dispatch(increaseWaitingRoomElapsedTimeAction(roomId));
+                    }, ONE_SECOND);
+                }
+
+                setTimeout(() => {
+                    clearInterval(timeForGameIntervalHandler);
+                    dispatch(setGameStartedAction(roomId, true));
+                    io.to(roomId).emit(START_GAME);
+                }, WAITING_ROOM_TIMEOUT);
+            }
+        }
     });
 });

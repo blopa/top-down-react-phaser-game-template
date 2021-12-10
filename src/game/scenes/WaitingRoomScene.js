@@ -2,8 +2,13 @@ import { Scene } from 'phaser';
 import io from 'socket.io-client';
 
 // Constants
-import { PLAYER_ADDED_TO_ROOM, REQUEST_NEW_GAME, SEND_ROOM_ID } from '../../server/constants';
-import { DOWN_DIRECTION, IDLE_FRAME } from '../../utils/constants';
+import {
+    PLAYER_ADDED_TO_ROOM,
+    REQUEST_NEW_GAME,
+    SEND_JOINED_ROOM,
+    SEND_WAITING_ELAPSED_TIME,
+} from '../../server/constants';
+import { DOWN_DIRECTION, IDLE_FRAME, ONE_SECOND } from '../../utils/constants';
 
 // Actions
 import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
@@ -66,8 +71,35 @@ export default class WaitingRoomScene extends Scene {
             playerId: myPlayerId,
         }));
 
-        socket.on(SEND_ROOM_ID, (roomId) => {
+        socket.on(SEND_JOINED_ROOM, (stringfiedData) => {
+            const data = JSON.parse(stringfiedData);
+            const { roomId } = data;
             dispatch(setCurrentRoomAction(roomId));
+        });
+
+        const timeForGame = this.add.text(
+            gameWidth / 2,
+            gameHeight * 0.7,
+            '',
+            {
+                fontFamily: '"Press Start 2P"',
+                color: '#FFFFFF',
+            }
+        ).setOrigin(0.5);
+
+        let timeForGameIntervalHandler = null;
+        socket.on(SEND_WAITING_ELAPSED_TIME, (stringfiedData) => {
+            const data = JSON.parse(stringfiedData);
+            const { elapsedTime } = data;
+
+            clearInterval(timeForGameIntervalHandler);
+            let waitingTime = 60 - elapsedTime;
+            timeForGameIntervalHandler = setInterval(() => {
+                waitingTime -= 1;
+                timeForGame.setText(
+                    `Game will start in ${Math.max(waitingTime, 0)} seconds`
+                );
+            }, ONE_SECOND);
         });
 
         const rivalsSprites = this.add.group();
@@ -113,6 +145,7 @@ export default class WaitingRoomScene extends Scene {
                 IDLE_FRAME.replace('position', DOWN_DIRECTION)
             )),
         ]).then(() => {
+            clearInterval(timeForGameIntervalHandler);
             this.scene.start('LoadAssetsScene', {
                 nextScene: 'GameScene',
                 assets: {

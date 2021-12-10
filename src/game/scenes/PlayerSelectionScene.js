@@ -117,9 +117,8 @@ export default class PlayerSelectionScene extends Scene {
             });
         });
 
-        initialPosX = (gameWidth - initialPosX) / 2;
         // set positions
-        let nextPosX = initialPosX;
+        let nextPosX = (gameWidth - initialPosX) / 2;
         sprites.getChildren().forEach((sprite, index) => {
             sprite.setPosition(
                 nextPosX,

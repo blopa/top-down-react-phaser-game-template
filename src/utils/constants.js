@@ -4,7 +4,9 @@ export const TILE_HEIGHT = 16;
 export const MIN_GAME_WIDTH = 25 * TILE_WIDTH; // 400
 export const MIN_GAME_HEIGHT = 14 * TILE_HEIGHT; // 224
 
-export const RESIZE_THRESHOLD = 500;
+export const ONE_SECOND = 1000;
+export const RESIZE_THRESHOLD = ONE_SECOND / 2;
+export const WAITING_ROOM_TIMEOUT = 60 * ONE_SECOND;
 
 export const HERO_SPRITE_NAME = 'hero';
 export const NPC_01_SPRITE_NAME = 'npc_01';
