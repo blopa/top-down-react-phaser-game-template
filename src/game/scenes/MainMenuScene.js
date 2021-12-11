@@ -63,7 +63,7 @@ export default class MainMenuScene extends Scene {
                     });
                 } else {
                     this.scene.start('LoadAssetsScene', {
-                        nextScene: 'PlayerSelectionScene',
+                        nextScene: 'CharacterSelectionScene',
                         assets: {
                             atlases: [
                                 HERO_SPRITE_NAME,

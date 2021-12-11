@@ -16,7 +16,7 @@ import {
     handleCreateEnemiesAnimations,
     handleCreateHeroPushTileAction,
     handleCreateHeroEnemiesOverlap,
-    handleCreateCharactersMovements,
+    handleCreateCharactersMovements, connectToServer,
 } from '../../utils/sceneHelpers';
 import { getSelectorData } from '../../utils/utils';
 
@@ -29,6 +29,7 @@ import {
 // Selectors
 import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
+import { MOVE_CHARACTER } from '../../server/constants';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -94,6 +95,13 @@ export default class GameScene extends Scene {
 
         // Handle create hero action to push tiles
         handleCreateHeroEnemiesOverlap(this);
+
+        // Handle character movements from server
+        const socket = connectToServer();
+        socket.on(MOVE_CHARACTER, (stringfiedData) => {
+            const data = JSON.parse(stringfiedData);
+            this.gridEngine.move(data.playerId, data.direction);
+        });
     }
 
     update(time, delta) {

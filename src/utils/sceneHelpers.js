@@ -26,6 +26,7 @@ import {
     COIN,
     KEY,
 } from './constants';
+import { MOVE_CHARACTER } from '../server/constants';
 
 // Utils
 import { getDispatch, getSelectorData } from './utils';
@@ -48,6 +49,7 @@ import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacin
 import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
+import { selectMyPlayer } from '../redux/selectors/selectPlayers';
 // import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
@@ -322,11 +324,13 @@ export const handleCreateHeroPushTileAction = (scene) => {
 
 export const handleCreateHero = (scene) => {
     const initialFrame = getSelectorData(selectHeroInitialFrame);
+    // TODO players were not added to the state
+    const myPlayer = getSelectorData(selectMyPlayer);
 
     // Create hero sprite
     const heroSprite = scene.physics.add
         .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
-        .setName(uuid())
+        .setName(myPlayer.playerId)
         .setDepth(1);
 
     const actionColliderSizeOffset = 2;
@@ -625,8 +629,8 @@ export const handleCreateEnemiesAnimations = (scene) => {
 };
 
 export const handleConfigureGridEngine = (scene) => {
-    const initialPosition = getSelectorData(selectHeroInitialPosition);
     const facingDirection = getSelectorData(selectHeroFacingDirection);
+    const myPlayer = getSelectorData(selectMyPlayer);
 
     // Grid Engine
     scene.gridEngine.create(scene.map, {
@@ -637,21 +641,39 @@ export const handleConfigureGridEngine = (scene) => {
             id: scene.heroSprite.name,
             offsetY: 0, // default
             sprite: scene.heroSprite,
-            startPosition: initialPosition,
+            startPosition: myPlayer.position,
             facingDirection,
         }],
     });
 };
 
 export const handleHeroMovement = (scene) => {
+    const socket = connectToServer();
+
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
-        scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
+        // scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
+        socket.emit(MOVE_CHARACTER, JSON.stringify({
+            playerId: scene.heroSprite.name,
+            direction: LEFT_DIRECTION,
+        }));
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
-        scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
+        // scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
+        socket.emit(MOVE_CHARACTER, JSON.stringify({
+            playerId: scene.heroSprite.name,
+            direction: RIGHT_DIRECTION,
+        }));
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
-        scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
+        // scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
+        socket.emit(MOVE_CHARACTER, JSON.stringify({
+            playerId: scene.heroSprite.name,
+            direction: UP_DIRECTION,
+        }));
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
-        scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
+        // scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
+        socket.emit(MOVE_CHARACTER, JSON.stringify({
+            playerId: scene.heroSprite.name,
+            direction: DOWN_DIRECTION,
+        }));
     }
 };
 
@@ -678,11 +700,16 @@ export const purgeLocalState = (stateId) => {
     delete localState[stateId];
 };
 
+let socketIo = null;
 export const connectToServer = () => {
-    const host = process.env.REACT_APP_SERVER_HOST;
-    const port = process.env.REACT_APP_SERVER_PORT;
+    if (!socketIo) {
+        const host = process.env.REACT_APP_SERVER_HOST;
+        const port = process.env.REACT_APP_SERVER_PORT;
 
-    return io(`${host}:${port}`);
+        socketIo = io(`${host}:${port}`);
+    }
+
+    return socketIo;
 };
 
 export const startGameScene = (scene, map, beforeStartScene) => {

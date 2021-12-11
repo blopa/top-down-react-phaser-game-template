@@ -23,7 +23,7 @@ import MainMenuScene from './game/scenes/MainMenuScene';
 import ReconnectScene from './game/scenes/ReconnectScene';
 import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 import WaitingRoomScene from './game/scenes/WaitingRoomScene';
-import PlayerSelectionScene from './game/scenes/PlayerSelectionScene';
+import CharacterSelectionScene from './game/scenes/CharacterSelectionScene';
 
 // Actions
 import setGameHeightAction from './redux/actions/gameSettings/setGameHeightAction';
@@ -91,7 +91,7 @@ const Game = () => {
                 LoadAssetsScene,
                 GameScene,
                 MainMenuScene,
-                PlayerSelectionScene,
+                CharacterSelectionScene,
                 WaitingRoomScene,
                 ReconnectScene,
             ],

@@ -57,6 +57,7 @@ export default class ReconnectScene extends Scene {
         });
 
         socket.on(RECONNECTION_FAILED, () => {
+            localStorage.removeItem(LAST_TIME_CONNECTED_DATA_KEY);
             reconnectingText.setText(
                 'Failed to reconnect'
             );

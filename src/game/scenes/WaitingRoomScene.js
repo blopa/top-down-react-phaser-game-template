@@ -1,11 +1,11 @@
 import { Scene } from 'phaser';
-import io from 'socket.io-client';
 
 // Constants
 import {
-    PLAYER_ADDED_TO_ROOM,
+    START_GAME,
     REQUEST_NEW_GAME,
     SEND_JOINED_ROOM,
+    PLAYER_ADDED_TO_ROOM,
     SEND_WAITING_ELAPSED_TIME,
 } from '../../server/constants';
 import { DOWN_DIRECTION, IDLE_FRAME, ONE_SECOND } from '../../utils/constants';
@@ -123,8 +123,10 @@ export default class WaitingRoomScene extends Scene {
             dispatch(addPlayerToRoomAction(roomId, player));
         });
 
-        startGameScene(this, 'main_map', () => {
-            clearInterval(timeForGameIntervalHandler);
+        socket.on(START_GAME, (stringfiedData) => {
+            startGameScene(this, 'main_map', () => {
+                clearInterval(timeForGameIntervalHandler);
+            });
         });
     }
 }

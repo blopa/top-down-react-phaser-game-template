@@ -30,9 +30,9 @@ import {
 // Selectors
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
 
-export default class PlayerSelectionScene extends Scene {
+export default class CharacterSelectionScene extends Scene {
     constructor() {
-        super('PlayerSelectionScene');
+        super('CharacterSelectionScene');
     }
 
     preload() {
