@@ -7,7 +7,11 @@ import { v4 as uuid } from 'uuid';
 // Constants
 import {
     SEND_WAITING_ELAPSED_TIME,
+    APPROVE_RECONNECTION,
     PLAYER_ADDED_TO_ROOM,
+    REQUEST_RECONNECTION,
+    PLAYER_DISCONNECTED,
+    RECONNECTION_FAILED,
     REQUEST_NEW_GAME,
     SEND_JOINED_ROOM,
     START_GAME,
@@ -19,16 +23,17 @@ import { getDispatch, getSelectorData } from '../utils/utils';
 
 // Selectors
 import {
-    selectGameElapsedTime,
     selectGameRoom,
     selectGameRooms,
-    selectGameStarted
+    selectGameStarted,
+    selectGameElapsedTime,
 } from '../redux/selectors/selectGameManager';
 
 // Actions
 import addPlayerToRoomAction from '../redux/actions/gameManager/addPlayerToRoomAction';
 import setGameStartedAction from '../redux/actions/game/setGameStartedAction';
 import increaseWaitingRoomElapsedTimeAction from '../redux/actions/gameManager/increaseWaitingRoomElapsedTimeAction';
+import setPlayerIsConnectedAction from '../redux/actions/gameManager/setPlayerIsConnectedAction';
 
 dotenv.config({});
 const app = express();
@@ -48,15 +53,41 @@ server.listen(serverPort, () => {
 // Socket.io
 io.on('connection', (socket) => {
     const dispatch = getDispatch();
+    const sessionId = socket.id;
+    const positionsMap = {
+        0: { x: 0, y: 0 },
+        1: { x: 19, y: 0 },
+        2: { x: 19, y: 19 },
+        3: { x: 0, y: 19 },
+    };
+
+    socket.on(REQUEST_RECONNECTION, (stringfiedData) => {
+        const data = JSON.parse(stringfiedData);
+        const { roomId, playerId } = data;
+        const room = getSelectorData(selectGameRoom(roomId));
+
+        const player = room?.players.find(
+            (p) => p.playerId === playerId && p.isConnected === false
+        );
+
+        if (player) {
+            dispatch(setPlayerIsConnectedAction(roomId, playerId, true));
+            socket.emit(APPROVE_RECONNECTION, JSON.stringify(room?.players.map((p) => ({
+                ...p,
+                sessionId: null,
+            }))));
+        } else {
+            socket.emit(RECONNECTION_FAILED);
+        }
+    });
 
     socket.on(REQUEST_NEW_GAME, (stringfiedData) => {
-        const sessionId = socket.id;
         const data = JSON.parse(stringfiedData);
         const { playerId, characterId } = data;
         const rooms = getSelectorData(selectGameRooms);
 
         const result = Object.entries(rooms).find(
-            ([roomId, roomData]) => roomData?.players?.length < 4
+            ([, roomData]) => roomData?.players?.length < 4 && !roomData?.gameStarted
         );
 
         let [roomId, roomData] = result || [];
@@ -65,25 +96,38 @@ io.on('connection', (socket) => {
             // send to the current socket all other
             // players already in the room
             const room = getSelectorData(selectGameRoom(roomId));
-            room.players.forEach((player) => {
+            room?.players.forEach((player) => {
                 socket.emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
-                    characterId: player.characterId,
-                    playerId: player.playerId,
+                    ...player,
+                    sessionId: null,
                 }));
             });
         } else {
             roomId = uuid();
         }
 
-        dispatch(addPlayerToRoomAction(roomId, {
+        // create player objects
+        const player = {
+            position: positionsMap[roomData?.players.length || 0],
+            isConnected: true,
             characterId,
             sessionId,
             playerId,
-        }));
+        };
+
+        socket.on('disconnect', () => {
+            dispatch(setPlayerIsConnectedAction(roomId, playerId, false));
+            io.to(roomId).emit(PLAYER_DISCONNECTED, JSON.stringify({
+                playerId,
+            }));
+        });
+
+        // this automatically creates a room if it doesn't exist
+        dispatch(addPlayerToRoomAction(roomId, player));
 
         io.to(roomId).emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
-            characterId,
-            playerId,
+            ...player,
+            sessionId: null,
         }));
 
         socket.join(roomId);
@@ -92,13 +136,13 @@ io.on('connection', (socket) => {
         }));
 
         const room = getSelectorData(selectGameRoom(roomId));
-        if (room.players.length === 4) {
+        if (room?.players.length === 4) {
             dispatch(setGameStartedAction(roomId, true));
             io.to(roomId).emit(START_GAME);
         } else {
             const gameStarted = getSelectorData(selectGameStarted(roomId));
 
-            if (!gameStarted && room.players.length >= 2) {
+            if (!gameStarted && room?.players.length >= 2) {
                 const elapsedTime = getSelectorData(selectGameElapsedTime(roomId));
                 io.to(roomId).emit(SEND_WAITING_ELAPSED_TIME, JSON.stringify({
                     elapsedTime: elapsedTime || 0,

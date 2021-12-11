@@ -4,10 +4,14 @@ export const TILE_HEIGHT = 16;
 export const MIN_GAME_WIDTH = 25 * TILE_WIDTH; // 400
 export const MIN_GAME_HEIGHT = 14 * TILE_HEIGHT; // 224
 
+// Times
 export const ONE_SECOND = 1000;
 export const RESIZE_THRESHOLD = ONE_SECOND / 2;
 export const WAITING_ROOM_TIMEOUT = 60 * ONE_SECOND;
+export const CAN_RECONNECT_THRESHOLD = 60 * ONE_SECOND;
+export const LAST_TIME_CONNECTED_THRESHOLD = 10 * ONE_SECOND;
 
+// Sprites
 export const HERO_SPRITE_NAME = 'hero';
 export const NPC_01_SPRITE_NAME = 'npc_01';
 export const NPC_02_SPRITE_NAME = 'npc_02';
@@ -20,14 +24,14 @@ export const HEART_SPRITE_NAME = 'heart';
 export const CRYSTAL_SPRITE_NAME = 'crystal';
 export const KEY_SPRITE_NAME = 'key';
 
+export const IDLE_FRAME = 'walk_position_02';
+
 // Game Objects Tiled IDs
 export const ENEMY = 1;
 export const COIN = 2;
 export const HEART = 3;
 export const CRYSTAL = 4;
 export const KEY = 5;
-
-export const IDLE_FRAME = 'walk_position_02';
 
 // Directions
 export const RIGHT_DIRECTION = 'right';
@@ -50,3 +54,5 @@ export const ARROW_DOWN_KEY = 'ArrowDown';
 export const EMPTY_TILE_INDEX = -1;
 export const OPEN_BOX_TILE_INDEX = 658;
 export const CLOSED_BOX_TILE_INDEX = 715;
+
+export const LAST_TIME_CONNECTED_DATA_KEY = 'LAST_TIME_CONNECTED_DATA_KEY';

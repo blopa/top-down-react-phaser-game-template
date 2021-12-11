@@ -1,5 +1,6 @@
 import { Input } from 'phaser';
 import { v4 as uuid } from 'uuid';
+import io from 'socket.io-client';
 
 // Constants
 import {
@@ -8,17 +9,17 @@ import {
     OPEN_BOX_TILE_INDEX,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    COIN_SPRITE_NAME,
     EMPTY_TILE_INDEX,
     HERO_SPRITE_NAME,
-    RIGHT_DIRECTION,
+    COIN_SPRITE_NAME,
     KEY_SPRITE_NAME,
+    RIGHT_DIRECTION,
     DOWN_DIRECTION,
     LEFT_DIRECTION,
     UP_DIRECTION,
     TILE_HEIGHT,
-    TILE_WIDTH,
     IDLE_FRAME,
+    TILE_WIDTH,
     CRYSTAL,
     ENEMY,
     HEART,
@@ -38,6 +39,15 @@ import {
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectGameZoom } from '../redux/selectors/selectGameSettings';
+
+// Actions
+import setMenuItemsAction from '../redux/actions/menu/setMenuItemsAction';
+import setMenuOnSelectAction from '../redux/actions/menu/setMenuOnSelectAction';
+import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
+import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
+import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 // import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
@@ -666,4 +676,35 @@ export const purgeLocalStates = (stateIds) =>
 
 export const purgeLocalState = (stateId) => {
     delete localState[stateId];
+};
+
+export const connectToServer = () => {
+    const host = process.env.REACT_APP_SERVER_HOST;
+    const port = process.env.REACT_APP_SERVER_PORT;
+
+    return io(`${host}:${port}`);
+};
+
+export const startGameScene = (scene, map, beforeStartScene) => {
+    const dispatch = getDispatch();
+
+    return Promise.all([
+        dispatch(setMenuItemsAction([])),
+        dispatch(setMenuOnSelectAction(null)),
+        dispatch(setMapKeyAction(map)),
+        dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
+        // dispatch(setHeroInitialPositionAction({ x: 0, y: 0 })),
+        // dispatch(setHeroPreviousPositionAction({ x: 0, y: 0 })),
+        dispatch(setHeroInitialFrameAction(
+            IDLE_FRAME.replace('position', DOWN_DIRECTION)
+        )),
+    ]).then(() => {
+        beforeStartScene?.();
+        scene.scene.start('LoadAssetsScene', {
+            nextScene: 'GameScene',
+            assets: {
+                mapKey: map,
+            },
+        });
+    });
 };

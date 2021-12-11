@@ -11,24 +11,17 @@ import {
 import { DOWN_DIRECTION, IDLE_FRAME, ONE_SECOND } from '../../utils/constants';
 
 // Actions
-import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
-import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
-import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
-import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
-import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
 import addPlayerToRoomAction from '../../redux/actions/gameManager/addPlayerToRoomAction';
 import setCurrentRoomAction from '../../redux/actions/gameManager/setCurrentRoomAction';
 
 // Utils
-import { handleCreateHeroAnimations } from '../../utils/sceneHelpers';
+import { connectToServer, handleCreateHeroAnimations, startGameScene } from '../../utils/sceneHelpers';
 import { getDispatch, getSelectorData } from '../../utils/utils';
 
 // Selectors
 import { selectMyCharacterId, selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
-import { selectGameCurrentRoom } from '../../redux/selectors/selectGameManager';
+import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
 
 export default class WaitingRoomScene extends Scene {
     constructor() {
@@ -62,10 +55,7 @@ export default class WaitingRoomScene extends Scene {
             }
         ).setOrigin(0.5);
 
-        const host = process.env.REACT_APP_SERVER_HOST;
-        const port = process.env.REACT_APP_SERVER_PORT;
-        const socket = io(`${host}:${port}`);
-
+        const socket = connectToServer();
         socket.emit(REQUEST_NEW_GAME, JSON.stringify({
             characterId: spriteName,
             playerId: myPlayerId,
@@ -129,29 +119,12 @@ export default class WaitingRoomScene extends Scene {
             rivalSprite.anims.play(`${player.characterId}_walk_${DOWN_DIRECTION}`);
 
             // add player to the room in the state
-            const roomId = getSelectorData(selectGameCurrentRoom);
+            const roomId = getSelectorData(selectGameCurrentRoomId);
             dispatch(addPlayerToRoomAction(roomId, player));
         });
 
-        const map = 'main_map';
-        const handleStartGameSelected = () => Promise.all([
-            dispatch(setMenuItemsAction([])),
-            dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMapKeyAction(map)),
-            dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 0, y: 0 })),
-            dispatch(setHeroPreviousPositionAction({ x: 0, y: 0 })),
-            dispatch(setHeroInitialFrameAction(
-                IDLE_FRAME.replace('position', DOWN_DIRECTION)
-            )),
-        ]).then(() => {
+        startGameScene(this, 'main_map', () => {
             clearInterval(timeForGameIntervalHandler);
-            this.scene.start('LoadAssetsScene', {
-                nextScene: 'GameScene',
-                assets: {
-                    mapKey: map,
-                },
-            });
         });
     }
 }

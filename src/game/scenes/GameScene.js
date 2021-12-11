@@ -18,6 +18,17 @@ import {
     handleCreateHeroEnemiesOverlap,
     handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
+import { getSelectorData } from '../../utils/utils';
+
+// Constants
+import {
+    LAST_TIME_CONNECTED_DATA_KEY,
+    LAST_TIME_CONNECTED_THRESHOLD,
+} from '../../utils/constants';
+
+// Selectors
+import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
+import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -27,41 +38,23 @@ export default class GameScene extends Scene {
     otherPlayers = [];
 
     create() {
-        const socket = {
-            emit: () => {},
-            on: () => {},
-        };
-        // const socket = io('http://localhost:4000');
-        //
-        // socket.on(MOVE_HERO_SERVER, (hero, direction) => {
-        //     if (this.heroSprite.name !== hero) {
-        //         this.gridEngine.move(hero, direction);
-        //     }
-        // });
-        //
-        // socket.on(ADD_CHARACTER, (hero) => {
-        //     console.log(hero);
-        //     if (this.heroSprite.name !== hero) {
-        //         const heroSprite = this.physics.add
-        //             .sprite(0, 0, 'hero')
-        //             .setName(hero)
-        //             .setDepth(1);
-        //
-        //         this.gridEngine.addCharacter({
-        //             id: hero,
-        //             offsetY: 0,
-        //             sprite: heroSprite,
-        //             startPosition: {
-        //                 x: 30,
-        //                 y: 40,
-        //             },
-        //         });
-        //
-        //         this.otherPlayers.push(hero);
-        //     }
-        // });
-
         // All of these functions need to be called in order
+
+        const myPlayerId = getSelectorData(selectMyPlayerId);
+        const roomId = getSelectorData(selectGameCurrentRoomId);
+        localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
+            lastTimeConnected: Date.now(),
+            playerId: myPlayerId,
+            roomId,
+        }));
+
+        const lastTimeConnectedHandler = setInterval(() => {
+            localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
+                lastTimeConnected: Date.now(),
+                playerId: myPlayerId,
+                roomId,
+            }));
+        }, LAST_TIME_CONNECTED_THRESHOLD);
 
         // Create controls
         handleCreateControlKeys(this);
@@ -101,9 +94,6 @@ export default class GameScene extends Scene {
 
         // Handle create hero action to push tiles
         handleCreateHeroEnemiesOverlap(this);
-
-        // socket.emit(NEW_GAME, this.heroSprite.name);
-        // this.socket = socket;
     }
 
     update(time, delta) {

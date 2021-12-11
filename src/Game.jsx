@@ -20,6 +20,7 @@ import {
 import GameScene from './game/scenes/GameScene';
 import BootScene from './game/scenes/BootScene';
 import MainMenuScene from './game/scenes/MainMenuScene';
+import ReconnectScene from './game/scenes/ReconnectScene';
 import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 import WaitingRoomScene from './game/scenes/WaitingRoomScene';
 import PlayerSelectionScene from './game/scenes/PlayerSelectionScene';
@@ -92,6 +93,7 @@ const Game = () => {
                 MainMenuScene,
                 PlayerSelectionScene,
                 WaitingRoomScene,
+                ReconnectScene,
             ],
             physics: {
                 default: 'arcade',
