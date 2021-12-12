@@ -3,6 +3,7 @@ import {
     SET_PLAYERS,
     SET_MY_PLAYER_ID,
     SET_MY_CHARACTER_ID,
+    INCREASE_ITEM_QTY_COLLECTED,
 } from '../constants';
 
 const defaultState = {
@@ -40,6 +41,21 @@ const playersReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 myCharacterId: action.payload,
+            };
+        }
+
+        case INCREASE_ITEM_QTY_COLLECTED: {
+            const {
+                itemType,
+                quantity,
+            } = action.payload;
+
+            return {
+                ...state,
+                collectedItems: {
+                    ...state?.collectedItems,
+                    [itemType]: (state?.collectedItems?.[itemType] || 0) + quantity,
+                },
             };
         }
 

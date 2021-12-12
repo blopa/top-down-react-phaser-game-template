@@ -15,6 +15,7 @@ import {
     RECONNECTION_FAILED,
     REQUEST_NEW_GAME,
     SEND_JOINED_ROOM,
+    ITEM_COLLECTED,
     TILE_PUSHED,
 } from './constants';
 import { ONE_SECOND, WAITING_ROOM_TIMEOUT } from '../utils/constants';
@@ -35,6 +36,8 @@ import addPlayerToRoomAction from '../redux/actions/gameManager/addPlayerToRoomA
 import setGameStartedAction from '../redux/actions/game/setGameStartedAction';
 import increaseWaitingRoomElapsedTimeAction from '../redux/actions/gameManager/increaseWaitingRoomElapsedTimeAction';
 import setPlayerIsConnectedAction from '../redux/actions/gameManager/setPlayerIsConnectedAction';
+import increaseItemQuantityCollectByPlayerAction
+    from '../redux/actions/gameManager/increaseItemQuantityCollectByPlayerAction';
 
 dotenv.config({});
 const app = express();
@@ -70,6 +73,26 @@ io.on('connection', (socket) => {
         socket.on(TILE_PUSHED, (stringfiedData) => {
             // const tile = JSON.parse(stringfiedData);
             io.to(roomId).emit(TILE_PUSHED, stringfiedData);
+        });
+
+        socket.on(ITEM_COLLECTED, (stringfiedData) => {
+            const itemData = JSON.parse(stringfiedData);
+            const {
+                playerId,
+                itemType,
+                itemName,
+                quantity,
+            } = itemData;
+
+            dispatch(increaseItemQuantityCollectByPlayerAction(
+                roomId, {
+                    playerId,
+                    itemType,
+                    quantity,
+                }
+            ));
+
+            io.to(roomId).emit(ITEM_COLLECTED, stringfiedData);
         });
     };
 

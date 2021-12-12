@@ -26,7 +26,7 @@ import {
     COIN,
     KEY,
 } from './constants';
-import { MOVE_CHARACTER, TILE_PUSHED } from '../server/constants';
+import { ITEM_COLLECTED, MOVE_CHARACTER, TILE_PUSHED } from '../server/constants';
 
 // Utils
 import { getDispatch, getSelectorData } from './utils';
@@ -45,6 +45,7 @@ import setMenuOnSelectAction from '../redux/actions/menu/setMenuOnSelectAction';
 import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
 import { selectMyPlayer, selectMyPlayerId, selectPlayers } from '../redux/selectors/selectPlayers';
+import setItemCollectedAction from '../redux/actions/players/setItemCollectedAction';
 // import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
@@ -113,30 +114,62 @@ export const handleCreateControlKeys = (scene) => {
     });
 };
 
-export const handleHeroOverlapWithItems = (scene) => {
-    scene.physics.add.overlap(
-        scene.heroSprite,
-        scene.items,
-        (heroSprie, item) => {
-            const newOrigin = 0.5;
-            item.setOrigin(newOrigin);
-            item.setPosition(
-                item.x + item.width * newOrigin,
-                item.y - item.height * newOrigin
-            );
+export const handleItemCollected = (scene, itemData) => {
+    const {
+        playerId,
+        itemType,
+        itemName,
+        quantity,
+    } = itemData;
 
-            scene.items.remove(item);
-            scene.tweens.add({
-                targets: item,
-                scale: 3,
-                alpha: 0,
-                ease: 'Power2',
-                duration: 300,
-                onComplete: () => {
-                    item.setVisible(false);
-                    item.destroy(true);
-                },
-            });
+    const item = scene.items.getChildren().find((it) => it.name === itemName);
+
+    if (item) {
+        const dispatch = getDispatch();
+        const newOrigin = 0.5;
+        item.collected = true;
+        item.setOrigin(newOrigin);
+        item.setPosition(
+            item.x + item.width * newOrigin,
+            item.y - item.height * newOrigin
+        );
+
+        dispatch(setItemCollectedAction({
+            itemType,
+            quantity,
+        }));
+
+        scene.items.remove(item);
+        scene.tweens.add({
+            targets: item,
+            scale: 3,
+            alpha: 0,
+            ease: 'Power2',
+            duration: 300,
+            onComplete: () => {
+                item.setVisible(false);
+                item.destroy(true);
+            },
+        });
+    }
+};
+
+export const handlePlayersOverlapWithItems = (scene) => {
+    const socket = connectToServer();
+    const myPlayerId = getSelectorData(selectMyPlayerId);
+
+    scene.physics.add.overlap(
+        scene.players,
+        scene.items,
+        (playerSprite, item) => {
+            if (!item?.collected) {
+                socket.emit(ITEM_COLLECTED, JSON.stringify({
+                    playerId: myPlayerId,
+                    itemType: item.type,
+                    itemName: item.name,
+                    quantity: 1,
+                }));
+            }
         }
     );
 };
@@ -151,6 +184,8 @@ export const handleCreateGroups = (scene) => {
     scene.items = scene.add.group();
     // eslint-disable-next-line no-param-reassign
     scene.rivals = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.players = scene.add.group();
 };
 
 export const handleCreateMap = (scene) => {
@@ -218,6 +253,7 @@ export const handlePushTile = (scene, tileData) => {
         newX,
         newY,
         layerName,
+        playerId, // TODO use this to fix player position
     } = tileData;
 
     const layer = scene.map.layers.find((l) => l.name === layerName);
@@ -288,6 +324,7 @@ export const handlePushTile = (scene, tileData) => {
 };
 
 export const handleCreateHeroPushTileAction = (scene) => {
+    const myPlayerId = getSelectorData(selectMyPlayerId);
     const mapLayers = scene.add.group();
     scene.map.layers.forEach((layer) => {
         mapLayers.add(layer.tilemapLayer);
@@ -331,6 +368,7 @@ export const handleCreateHeroPushTileAction = (scene) => {
 
                     const socket = connectToServer();
                     socket.emit(TILE_PUSHED, JSON.stringify({
+                        playerId: myPlayerId,
                         properties,
                         pixelX,
                         pixelY,
@@ -360,6 +398,7 @@ export const handleCreateRivals = (scene) => {
             .setDepth(1);
 
         scene.rivals.add(rivalSprite);
+        scene.players.add(rivalSprite);
         scene.sprites.add(rivalSprite);
 
         scene.gridEngine.addCharacter({
@@ -450,6 +489,7 @@ export const handleCreateHero = (scene) => {
     // eslint-disable-next-line no-param-reassign
     scene.heroSprite = heroSprite;
     scene.sprites.add(heroSprite);
+    scene.players.add(heroSprite);
 };
 
 export const handleCreateHeroEnemiesOverlap = (scene) => {
@@ -556,6 +596,7 @@ export const handleObjectsLayer = (scene) => {
                         });
                     }
 
+                    coin.type = COIN_SPRITE_NAME;
                     coin.anims.play(animationKey);
                     scene.items.add(coin);
                     scene.sprites.add(coin);
@@ -571,6 +612,7 @@ export const handleObjectsLayer = (scene) => {
                         .setName(name)
                         .setDepth(1);
 
+                    heart.type = HEART_SPRITE_NAME;
                     scene.items.add(heart);
                     scene.sprites.add(heart);
 
@@ -585,6 +627,7 @@ export const handleObjectsLayer = (scene) => {
                         .setName(name)
                         .setDepth(1);
 
+                    crystal.type = CRYSTAL_SPRITE_NAME;
                     crystal.body.setSize(
                         TILE_WIDTH - 2,
                         TILE_HEIGHT - 2
@@ -603,6 +646,7 @@ export const handleObjectsLayer = (scene) => {
                         .setName(name)
                         .setDepth(1);
 
+                    key.type = KEY_SPRITE_NAME;
                     scene.items.add(key);
                     scene.sprites.add(key);
 

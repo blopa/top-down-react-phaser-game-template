@@ -1,4 +1,5 @@
 import {
+    INCREASE_ITEM_QTY_COLLECTED_BY_PLAYER,
     INCREASE_ELAPSED_TIME,
     ADD_PLAYER_TO_ROOM,
     SET_CURRENT_ROOM,
@@ -72,6 +73,37 @@ const gameManagerReducer = (state = defaultState, action) => {
                             ...(state.rooms?.[roomId]?.players || []),
                             payload,
                         ],
+                    },
+                },
+            };
+        }
+
+        case INCREASE_ITEM_QTY_COLLECTED_BY_PLAYER: {
+            const {
+                playerId,
+                itemType,
+                quantity,
+            } = payload;
+
+            return {
+                ...state,
+                rooms: {
+                    ...state.rooms,
+                    [roomId]: {
+                        ...(state.rooms?.[roomId] || {}),
+                        players: (state.rooms?.[roomId]?.players || []).map((player) => {
+                            if (player.playerId === playerId) {
+                                return {
+                                    ...player,
+                                    collectedItems: {
+                                        ...player?.collectedItems,
+                                        [itemType]: (player?.collectedItems?.[itemType] || 0) + quantity,
+                                    },
+                                };
+                            }
+
+                            return player;
+                        }),
                     },
                 },
             };

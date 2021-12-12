@@ -3,6 +3,7 @@ import { Scene } from 'phaser';
 
 // Utils
 import {
+    handlePushTile,
     connectToServer,
     handleCreateMap,
     handleCreateHero,
@@ -10,15 +11,16 @@ import {
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
+    handleItemCollected,
     handleConfigureCamera,
     handleCreateControlKeys,
     handleConfigureGridEngine,
-    handleHeroOverlapWithItems,
     handleCreateHeroAnimations,
     handleCreateEnemiesAnimations,
+    handlePlayersOverlapWithItems,
     handleCreateHeroPushTileAction,
     handleCreateHeroEnemiesOverlap,
-    handleCreateCharactersMovements, handlePushTile,
+    handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 import { getSelectorData } from '../../utils/utils';
 
@@ -27,11 +29,11 @@ import {
     LAST_TIME_CONNECTED_DATA_KEY,
     LAST_TIME_CONNECTED_THRESHOLD,
 } from '../../utils/constants';
+import { ITEM_COLLECTED, MOVE_CHARACTER, TILE_PUSHED } from '../../server/constants';
 
 // Selectors
 import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
-import { MOVE_CHARACTER, TILE_PUSHED } from '../../server/constants';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -79,7 +81,7 @@ export default class GameScene extends Scene {
         handleObjectsLayer(this);
 
         // Handle create item colecting
-        handleHeroOverlapWithItems(this);
+        handlePlayersOverlapWithItems(this);
 
         // Configure the main camera
         handleConfigureCamera(this);
@@ -105,14 +107,23 @@ export default class GameScene extends Scene {
             const data = JSON.parse(stringfiedData);
             this.gridEngine.move(data.playerId, data.direction);
         });
+
         socket.on(TILE_PUSHED, (stringfiedData) => {
             const tileData = JSON.parse(stringfiedData);
             handlePushTile(this, tileData);
+        });
+
+        socket.on(ITEM_COLLECTED, (stringfiedData) => {
+            const itemData = JSON.parse(stringfiedData);
+            handleItemCollected(this, itemData);
         });
     }
 
     update(time, delta) {
         handleHeroMovement(this);
         this.heroSprite.update(time, delta);
+        if (this.items.getChildren().length === 0) {
+            console.log('Game Over');
+        }
     }
 }
