@@ -15,6 +15,7 @@ import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectG
 
 // Actions
 import setMyCharacterIdAction from '../../redux/actions/players/setMyCharacterIdAction';
+import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 export default class ReconnectScene extends Scene {
     constructor() {
@@ -53,7 +54,11 @@ export default class ReconnectScene extends Scene {
             const myPlayer = players.find((p) => p.playerId === myPlayerId);
             dispatch(setMyCharacterIdAction(myPlayer.characterId));
 
-            startGameScene(this, 'main_map');
+            startGameScene(
+                this,
+                'main_map',
+                () => dispatch(setPlayersAction(players))
+            );
         });
 
         socket.on(RECONNECTION_FAILED, () => {

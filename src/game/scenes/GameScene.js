@@ -3,8 +3,10 @@ import { Scene } from 'phaser';
 
 // Utils
 import {
+    connectToServer,
     handleCreateMap,
     handleCreateHero,
+    handleCreateRivals,
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
@@ -16,7 +18,7 @@ import {
     handleCreateEnemiesAnimations,
     handleCreateHeroPushTileAction,
     handleCreateHeroEnemiesOverlap,
-    handleCreateCharactersMovements, connectToServer,
+    handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 import { getSelectorData } from '../../utils/utils';
 
@@ -35,8 +37,6 @@ export default class GameScene extends Scene {
     constructor() {
         super('GameScene');
     }
-
-    otherPlayers = [];
 
     create() {
         // All of these functions need to be called in order
@@ -71,6 +71,9 @@ export default class GameScene extends Scene {
 
         // Configure grid engine
         handleConfigureGridEngine(this);
+
+        // Create rivals sprite
+        handleCreateRivals(this);
 
         // Load game objects like items, enemies, etc
         handleObjectsLayer(this);

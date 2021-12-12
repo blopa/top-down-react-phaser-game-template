@@ -49,7 +49,7 @@ import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacin
 import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-import { selectMyPlayer } from '../redux/selectors/selectPlayers';
+import { selectMyPlayer, selectMyPlayerId, selectPlayers } from '../redux/selectors/selectPlayers';
 // import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
@@ -163,6 +163,8 @@ export const handleCreateGroups = (scene) => {
     scene.enemies = scene.add.group();
     // eslint-disable-next-line no-param-reassign
     scene.items = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.rivals = scene.add.group();
 };
 
 export const handleCreateMap = (scene) => {
@@ -322,14 +324,38 @@ export const handleCreateHeroPushTileAction = (scene) => {
     );
 };
 
+export const handleCreateRivals = (scene) => {
+    const myPlayerId = getSelectorData(selectMyPlayerId);
+    const players = getSelectorData(selectPlayers);
+    const initialFrame = IDLE_FRAME.replace('position', DOWN_DIRECTION);
+
+    const rivals = players.filter((p) => p.playerId !== myPlayerId);
+
+    rivals.forEach((rival) => {
+        const rivalSprite = scene.physics.add
+            .sprite(0, 0, rival.characterId, initialFrame)
+            .setName(rival.playerId)
+            .setDepth(1);
+
+        scene.rivals.add(rivalSprite);
+        scene.sprites.add(rivalSprite);
+
+        scene.gridEngine.addCharacter({
+            id: rivalSprite.name,
+            sprite: rivalSprite,
+            startPosition: rival.position,
+        });
+    });
+};
+
 export const handleCreateHero = (scene) => {
-    const initialFrame = getSelectorData(selectHeroInitialFrame);
-    // TODO players were not added to the state
+    // const initialFrame = getSelectorData(selectHeroInitialFrame);
+    const initialFrame = IDLE_FRAME.replace('position', DOWN_DIRECTION);
     const myPlayer = getSelectorData(selectMyPlayer);
 
     // Create hero sprite
     const heroSprite = scene.physics.add
-        .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
+        .sprite(0, 0, myPlayer.characterId, initialFrame)
         .setName(myPlayer.playerId)
         .setDepth(1);
 
@@ -715,18 +741,19 @@ export const connectToServer = () => {
 export const startGameScene = (scene, map, beforeStartScene) => {
     const dispatch = getDispatch();
 
-    return Promise.all([
+    Promise.all([
         dispatch(setMenuItemsAction([])),
         dispatch(setMenuOnSelectAction(null)),
         dispatch(setMapKeyAction(map)),
         dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
         // dispatch(setHeroInitialPositionAction({ x: 0, y: 0 })),
         // dispatch(setHeroPreviousPositionAction({ x: 0, y: 0 })),
-        dispatch(setHeroInitialFrameAction(
-            IDLE_FRAME.replace('position', DOWN_DIRECTION)
-        )),
-    ]).then(() => {
-        beforeStartScene?.();
+        // dispatch(setHeroInitialFrameAction(
+        //     IDLE_FRAME.replace('position', DOWN_DIRECTION)
+        // )),
+    ]).then(async () => {
+        await beforeStartScene?.();
+
         scene.scene.start('LoadAssetsScene', {
             nextScene: 'GameScene',
             assets: {

@@ -14,7 +14,7 @@ import {
     RECONNECTION_FAILED,
     REQUEST_NEW_GAME,
     SEND_JOINED_ROOM,
-    START_GAME,
+    START_GAME, MOVE_CHARACTER,
 } from './constants';
 import { ONE_SECOND, WAITING_ROOM_TIMEOUT } from '../utils/constants';
 
@@ -76,6 +76,11 @@ io.on('connection', (socket) => {
                 ...p,
                 sessionId: null,
             }))));
+
+            socket.on(MOVE_CHARACTER, (dataString) => {
+                // const data = JSON.parse(dataString);
+                io.to(roomId).emit(MOVE_CHARACTER, dataString);
+            });
         } else {
             socket.emit(RECONNECTION_FAILED);
         }
@@ -115,11 +120,17 @@ io.on('connection', (socket) => {
             playerId,
         };
 
+        // TODO add this to the reconnect too
         socket.on('disconnect', () => {
             dispatch(setPlayerIsConnectedAction(roomId, playerId, false));
             io.to(roomId).emit(PLAYER_DISCONNECTED, JSON.stringify({
                 playerId,
             }));
+        });
+
+        socket.on(MOVE_CHARACTER, (dataString) => {
+            // const data = JSON.parse(dataString);
+            io.to(roomId).emit(MOVE_CHARACTER, dataString);
         });
 
         // this automatically creates a room if it doesn't exist
@@ -138,7 +149,10 @@ io.on('connection', (socket) => {
         const room = getSelectorData(selectGameRoom(roomId));
         if (room?.players.length === 4) {
             dispatch(setGameStartedAction(roomId, true));
-            io.to(roomId).emit(START_GAME);
+            io.to(roomId).emit(START_GAME, JSON.stringify(room?.players.map((p) => ({
+                ...p,
+                sessionId: null,
+            }))));
         } else {
             const gameStarted = getSelectorData(selectGameStarted(roomId));
 
@@ -158,7 +172,10 @@ io.on('connection', (socket) => {
                 setTimeout(() => {
                     clearInterval(timeForGameIntervalHandler);
                     dispatch(setGameStartedAction(roomId, true));
-                    io.to(roomId).emit(START_GAME);
+                    io.to(roomId).emit(START_GAME, JSON.stringify(room?.players.map((p) => ({
+                        ...p,
+                        sessionId: null,
+                    }))));
                 }, WAITING_ROOM_TIMEOUT);
             }
         }

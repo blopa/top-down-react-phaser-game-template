@@ -22,6 +22,7 @@ import { getDispatch, getSelectorData } from '../../utils/utils';
 import { selectMyCharacterId, selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
 import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
+import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 export default class WaitingRoomScene extends Scene {
     constructor() {
@@ -124,8 +125,10 @@ export default class WaitingRoomScene extends Scene {
         });
 
         socket.on(START_GAME, (stringfiedData) => {
+            const players = JSON.parse(stringfiedData);
             startGameScene(this, 'main_map', () => {
                 clearInterval(timeForGameIntervalHandler);
+                return dispatch(setPlayersAction(players));
             });
         });
     }
