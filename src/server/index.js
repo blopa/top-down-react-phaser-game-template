@@ -6,17 +6,21 @@ import { v4 as uuid } from 'uuid';
 
 // Constants
 import {
-    START_GAME, MOVE_CHARACTER,
+    RESPOND_PLAYER_ADDED_TO_ROOM,
     SEND_WAITING_ELAPSED_TIME,
+    RESPOND_MOVE_CHARACTER,
+    REQUEST_MOVE_CHARACTER,
+    RESPOND_ITEM_COLLECTED,
+    REQUEST_COLLECT_ITEM,
     APPROVE_RECONNECTION,
-    PLAYER_ADDED_TO_ROOM,
     REQUEST_RECONNECTION,
     PLAYER_DISCONNECTED,
     RECONNECTION_FAILED,
+    RESPOND_JOINED_ROOM,
+    RESPOND_TILE_PUSHED,
+    REQUEST_PUSH_TILE,
     REQUEST_NEW_GAME,
-    SEND_JOINED_ROOM,
-    ITEM_COLLECTED,
-    TILE_PUSHED,
+    START_GAME,
 } from './constants';
 import { ONE_SECOND, WAITING_ROOM_TIMEOUT } from '../utils/constants';
 
@@ -64,18 +68,18 @@ io.on('connection', (socket) => {
         2: { x: 19, y: 19 },
         3: { x: 0, y: 19 },
     };
-    const commonListeners = (so, roomId) => {
-        socket.on(MOVE_CHARACTER, (stringfiedData) => {
+    const commonListeners = (roomId) => {
+        socket.on(REQUEST_MOVE_CHARACTER, (stringfiedData) => {
             // const data = JSON.parse(stringfiedData);
-            io.to(roomId).emit(MOVE_CHARACTER, stringfiedData);
+            io.to(roomId).emit(RESPOND_MOVE_CHARACTER, stringfiedData);
         });
 
-        socket.on(TILE_PUSHED, (stringfiedData) => {
+        socket.on(REQUEST_PUSH_TILE, (stringfiedData) => {
             // const tile = JSON.parse(stringfiedData);
-            io.to(roomId).emit(TILE_PUSHED, stringfiedData);
+            io.to(roomId).emit(RESPOND_TILE_PUSHED, stringfiedData);
         });
 
-        socket.on(ITEM_COLLECTED, (stringfiedData) => {
+        socket.on(REQUEST_COLLECT_ITEM, (stringfiedData) => {
             const itemData = JSON.parse(stringfiedData);
             const {
                 playerId,
@@ -92,7 +96,7 @@ io.on('connection', (socket) => {
                 }
             ));
 
-            io.to(roomId).emit(ITEM_COLLECTED, stringfiedData);
+            io.to(roomId).emit(RESPOND_ITEM_COLLECTED, stringfiedData);
         });
     };
 
@@ -112,10 +116,7 @@ io.on('connection', (socket) => {
                 sessionId: null,
             }))));
 
-            commonListeners(
-                socket,
-                roomId
-            );
+            commonListeners(roomId);
         } else {
             socket.emit(RECONNECTION_FAILED);
         }
@@ -137,7 +138,7 @@ io.on('connection', (socket) => {
             // players already in the room
             const room = getSelectorData(selectGameRoom(roomId));
             room?.players.forEach((player) => {
-                socket.emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
+                socket.emit(RESPOND_PLAYER_ADDED_TO_ROOM, JSON.stringify({
                     ...player,
                     sessionId: null,
                 }));
@@ -163,21 +164,18 @@ io.on('connection', (socket) => {
             }));
         });
 
-        commonListeners(
-            socket,
-            roomId
-        );
+        commonListeners(roomId);
 
         // this automatically creates a room if it doesn't exist
         dispatch(addPlayerToRoomAction(roomId, player));
 
-        io.to(roomId).emit(PLAYER_ADDED_TO_ROOM, JSON.stringify({
+        io.to(roomId).emit(RESPOND_PLAYER_ADDED_TO_ROOM, JSON.stringify({
             ...player,
             sessionId: null,
         }));
 
         socket.join(roomId);
-        socket.emit(SEND_JOINED_ROOM, JSON.stringify({
+        socket.emit(RESPOND_JOINED_ROOM, JSON.stringify({
             roomId,
         }));
 

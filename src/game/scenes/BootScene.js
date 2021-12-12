@@ -1,5 +1,8 @@
 import { Scene } from 'phaser';
 
+// Constants
+import { LAST_TIME_CONNECTED_DATA_KEY } from '../../utils/constants';
+
 export default class BootScene extends Scene {
     constructor() {
         super('BootScene');
@@ -10,6 +13,9 @@ export default class BootScene extends Scene {
     }
 
     create() {
+        // TODO this is for debugging
+        localStorage.removeItem(LAST_TIME_CONNECTED_DATA_KEY);
+
         this.scene.start('LoadAssetsScene', {
             nextScene: 'MainMenuScene',
             assets: {

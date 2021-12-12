@@ -26,7 +26,11 @@ import {
     COIN,
     KEY,
 } from './constants';
-import { ITEM_COLLECTED, MOVE_CHARACTER, TILE_PUSHED } from '../server/constants';
+import {
+    REQUEST_PUSH_TILE,
+    REQUEST_COLLECT_ITEM,
+    REQUEST_MOVE_CHARACTER,
+} from '../server/constants';
 
 // Utils
 import { getDispatch, getSelectorData } from './utils';
@@ -79,10 +83,32 @@ export const createWalkingAnimation = (
 };
 
 export const handleCreateCharactersMovements = (scene) => {
+    const socket = connectToServer();
+    const myPlayerId = getSelectorData(selectMyPlayerId);
+
     // Movement started
     scene.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
         const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
         char?.anims.play(`${char.texture.key}_walk_${direction}`);
+    });
+
+    // Position changed
+    scene.gridEngine.positionChangeStarted().subscribe(({
+        charId,
+        exitTile,
+        enterTile,
+        exitLayer,
+        enterLayer,
+    }) => {
+        if (charId !== myPlayerId) {
+            return;
+        }
+
+        // const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
+        socket.emit(REQUEST_MOVE_CHARACTER, JSON.stringify({
+            playerId: charId,
+            position: enterTile,
+        }));
     });
 
     // Movement ended
@@ -163,7 +189,7 @@ export const handlePlayersOverlapWithItems = (scene) => {
         scene.items,
         (playerSprite, item) => {
             if (!item?.collected) {
-                socket.emit(ITEM_COLLECTED, JSON.stringify({
+                socket.emit(REQUEST_COLLECT_ITEM, JSON.stringify({
                     playerId: myPlayerId,
                     itemType: item.type,
                     itemName: item.name,
@@ -367,7 +393,7 @@ export const handleCreateHeroPushTileAction = (scene) => {
                     } = tile;
 
                     const socket = connectToServer();
-                    socket.emit(TILE_PUSHED, JSON.stringify({
+                    socket.emit(REQUEST_PUSH_TILE, JSON.stringify({
                         playerId: myPlayerId,
                         properties,
                         pixelX,
@@ -740,33 +766,14 @@ export const handleConfigureGridEngine = (scene) => {
 };
 
 export const handleHeroMovement = (scene) => {
-    const socket = connectToServer();
-
-    // TODO probably better move the socket.io movement to: scene.gridEngine.movementStarted
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
-        // scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
-        socket.emit(MOVE_CHARACTER, JSON.stringify({
-            playerId: scene.heroSprite.name,
-            direction: LEFT_DIRECTION,
-        }));
+        scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
-        // scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
-        socket.emit(MOVE_CHARACTER, JSON.stringify({
-            playerId: scene.heroSprite.name,
-            direction: RIGHT_DIRECTION,
-        }));
+        scene.gridEngine.move(scene.heroSprite.name, RIGHT_DIRECTION);
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
-        // scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
-        socket.emit(MOVE_CHARACTER, JSON.stringify({
-            playerId: scene.heroSprite.name,
-            direction: UP_DIRECTION,
-        }));
+        scene.gridEngine.move(scene.heroSprite.name, UP_DIRECTION);
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
-        // scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
-        socket.emit(MOVE_CHARACTER, JSON.stringify({
-            playerId: scene.heroSprite.name,
-            direction: DOWN_DIRECTION,
-        }));
+        scene.gridEngine.move(scene.heroSprite.name, DOWN_DIRECTION);
     }
 };
 

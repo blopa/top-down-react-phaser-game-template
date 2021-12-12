@@ -29,7 +29,11 @@ import {
     LAST_TIME_CONNECTED_DATA_KEY,
     LAST_TIME_CONNECTED_THRESHOLD,
 } from '../../utils/constants';
-import { ITEM_COLLECTED, MOVE_CHARACTER, TILE_PUSHED } from '../../server/constants';
+import {
+    RESPOND_TILE_PUSHED,
+    RESPOND_ITEM_COLLECTED,
+    RESPOND_MOVE_CHARACTER,
+} from '../../server/constants';
 
 // Selectors
 import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
@@ -103,17 +107,17 @@ export default class GameScene extends Scene {
 
         // Handle character movements from server
         const socket = connectToServer();
-        socket.on(MOVE_CHARACTER, (stringfiedData) => {
+        socket.on(RESPOND_MOVE_CHARACTER, (stringfiedData) => {
             const data = JSON.parse(stringfiedData);
-            this.gridEngine.move(data.playerId, data.direction);
+            this.gridEngine.moveTo(data.playerId, data.position);
         });
 
-        socket.on(TILE_PUSHED, (stringfiedData) => {
+        socket.on(RESPOND_TILE_PUSHED, (stringfiedData) => {
             const tileData = JSON.parse(stringfiedData);
             handlePushTile(this, tileData);
         });
 
-        socket.on(ITEM_COLLECTED, (stringfiedData) => {
+        socket.on(RESPOND_ITEM_COLLECTED, (stringfiedData) => {
             const itemData = JSON.parse(stringfiedData);
             handleItemCollected(this, itemData);
         });

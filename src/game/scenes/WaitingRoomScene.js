@@ -4,9 +4,9 @@ import { Scene } from 'phaser';
 import {
     START_GAME,
     REQUEST_NEW_GAME,
-    SEND_JOINED_ROOM,
-    PLAYER_ADDED_TO_ROOM,
+    RESPOND_JOINED_ROOM,
     SEND_WAITING_ELAPSED_TIME,
+    RESPOND_PLAYER_ADDED_TO_ROOM,
 } from '../../server/constants';
 import { DOWN_DIRECTION, IDLE_FRAME, ONE_SECOND } from '../../utils/constants';
 
@@ -62,7 +62,7 @@ export default class WaitingRoomScene extends Scene {
             playerId: myPlayerId,
         }));
 
-        socket.on(SEND_JOINED_ROOM, (stringfiedData) => {
+        socket.on(RESPOND_JOINED_ROOM, (stringfiedData) => {
             const data = JSON.parse(stringfiedData);
             const { roomId } = data;
             dispatch(setCurrentRoomAction(roomId));
@@ -94,7 +94,7 @@ export default class WaitingRoomScene extends Scene {
         });
 
         const rivalsSprites = this.add.group();
-        socket.on(PLAYER_ADDED_TO_ROOM, (stringfiedData) => {
+        socket.on(RESPOND_PLAYER_ADDED_TO_ROOM, (stringfiedData) => {
             const player = JSON.parse(stringfiedData);
             const rivalSprite = this.add.sprite(
                 gameWidth / 2,
