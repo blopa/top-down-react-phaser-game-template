@@ -26,7 +26,7 @@ import {
     COIN,
     KEY,
 } from './constants';
-import { MOVE_CHARACTER } from '../server/constants';
+import { MOVE_CHARACTER, TILE_PUSHED } from '../server/constants';
 
 // Utils
 import { getDispatch, getSelectorData } from './utils';
@@ -36,8 +36,6 @@ import { createInteractiveGameObject } from './phaser';
 import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
 import {
     selectHeroFacingDirection,
-    selectHeroInitialFrame,
-    selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectGameZoom } from '../redux/selectors/selectGameSettings';
 
@@ -46,9 +44,6 @@ import setMenuItemsAction from '../redux/actions/menu/setMenuItemsAction';
 import setMenuOnSelectAction from '../redux/actions/menu/setMenuOnSelectAction';
 import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 import { selectMyPlayer, selectMyPlayerId, selectPlayers } from '../redux/selectors/selectPlayers';
 // import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
@@ -86,29 +81,20 @@ export const handleCreateCharactersMovements = (scene) => {
     // Movement started
     scene.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
         const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.anims.play(`${char.texture.key}_walk_${direction}`);
-        }
+        char?.anims.play(`${char.texture.key}_walk_${direction}`);
     });
 
     // Movement ended
     scene.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
         const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.anims.stop();
-            char.setFrame(IDLE_FRAME.replace('position', direction));
-        }
+        char?.anims.stop();
+        char?.setFrame(IDLE_FRAME.replace('position', direction));
     });
 
     // Direction changed
     scene.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
         const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.setFrame(IDLE_FRAME.replace('position', direction));
-        }
+        char?.setFrame(IDLE_FRAME.replace('position', direction));
     });
 };
 
@@ -222,13 +208,93 @@ export const calculatePushTilePosition = (scene) => {
     }
 };
 
+export const handlePushTile = (scene, tileData) => {
+    const {
+        properties,
+        pixelX,
+        pixelY,
+        x,
+        y,
+        newX,
+        newY,
+        layerName,
+    } = tileData;
+
+    const layer = scene.map.layers.find((l) => l.name === layerName);
+    const tile = layer.tilemapLayer.getTileAtWorldXY(
+        pixelX,
+        pixelY
+    );
+
+    if (tile) {
+        // This function will make the tile texture move
+        // and it will change some of the tile's properties
+        scene.tweens.add({
+            targets: tile,
+            pixelX: newX * TILE_WIDTH,
+            pixelY: newY * TILE_HEIGHT,
+            x: newX,
+            y: newY,
+            ease: 'Power2', // PhaserMath.Easing
+            duration: 500,
+            onComplete: () => {
+                // TODO create the new tile before the animation is complete
+                const newTile = layer.tilemapLayer.putTileAt(
+                    tile,
+                    newX,
+                    newY,
+                    true
+                );
+
+                const oldTile = layer.tilemapLayer.putTileAt(
+                    EMPTY_TILE_INDEX,
+                    x,
+                    y,
+                    true
+                );
+
+                // wait for Phaser to calculate everything
+                // and then in the next compilation loop
+                // set the correct properties to the new tiles
+                scene.time.delayedCall(0, () => {
+                    // eslint-disable-next-line no-param-reassign
+                    scene.layersActionHeroCollider.active = true;
+
+                    // Reset the old tile to its original
+                    // position, so if a new tile shows up on that spot
+                    // the tile texture knows where to be rendered
+                    oldTile.setVisible(false);
+                    oldTile.setAlpha(0);
+                    oldTile.properties = {};
+                    oldTile.pixelX = pixelX;
+                    oldTile.pixelY = pixelY;
+                    oldTile.x = x;
+                    oldTile.y = y;
+
+                    // Make sure the new tile is visible
+                    // as Phaser might get the old tile
+                    // properties in case of this new tile
+                    // falls into a spot where there was
+                    // alredy a tile before
+                    newTile.setVisible(true);
+                    newTile.setAlpha(1);
+                    newTile.properties = {
+                        ...properties,
+                    };
+                });
+            },
+        });
+    }
+};
+
 export const handleCreateHeroPushTileAction = (scene) => {
     const mapLayers = scene.add.group();
     scene.map.layers.forEach((layer) => {
         mapLayers.add(layer.tilemapLayer);
     });
 
-    const layersActionHeroCollider = scene.physics.add.overlap(
+    // eslint-disable-next-line no-param-reassign
+    scene.layersActionHeroCollider = scene.physics.add.overlap(
         scene.heroSprite.actionCollider,
         mapLayers,
         (actionCollider, tile) => {
@@ -252,7 +318,8 @@ export const handleCreateHeroPushTileAction = (scene) => {
                         && Math.floor(sprite.y) - Math.floor(sprite.height * sprite.originY) === newPosition.y);
 
                 if (!anyTileInNewPosition && !anySpriteInNewPosition) {
-                    layersActionHeroCollider.active = false;
+                    // eslint-disable-next-line no-param-reassign
+                    scene.layersActionHeroCollider.active = false;
                     const {
                         properties,
                         layer,
@@ -262,62 +329,17 @@ export const handleCreateHeroPushTileAction = (scene) => {
                         y,
                     } = tile;
 
-                    // This function will make the tile texture move
-                    // and it will change some of the tile's properties
-                    scene.tweens.add({
-                        targets: tile,
-                        pixelX: newPosition.x,
-                        pixelY: newPosition.y,
-                        x: newPosition.x / TILE_WIDTH,
-                        y: newPosition.y / TILE_HEIGHT,
-                        ease: 'Power2', // PhaserMath.Easing
-                        duration: 500,
-                        onComplete: () => {
-                            // TODO create the new tile before the animation is complete
-                            const newTile = layer.tilemapLayer.putTileAt(
-                                tile,
-                                newPosition.x / TILE_WIDTH,
-                                newPosition.y / TILE_HEIGHT,
-                                true
-                            );
-
-                            const oldTile = layer.tilemapLayer.putTileAt(
-                                EMPTY_TILE_INDEX,
-                                x,
-                                y,
-                                true
-                            );
-
-                            // wait for Phaser to calculate everything
-                            // and then in the next compilation loop
-                            // set the correct properties to the new tiles
-                            scene.time.delayedCall(0, () => {
-                                layersActionHeroCollider.active = true;
-
-                                // Reset the old tile to its original
-                                // position, so if a new tile shows up on that spot
-                                // the tile texture knows where to be rendered
-                                oldTile.setVisible(false);
-                                oldTile.setAlpha(0);
-                                oldTile.properties = {};
-                                oldTile.pixelX = pixelX;
-                                oldTile.pixelY = pixelY;
-                                oldTile.x = x;
-                                oldTile.y = y;
-
-                                // Make sure the new tile is visible
-                                // as Phaser might get the old tile
-                                // properties in case of this new tile
-                                // falls into a spot where there was
-                                // alredy a tile before
-                                newTile.setVisible(true);
-                                newTile.setAlpha(1);
-                                newTile.properties = {
-                                    ...properties,
-                                };
-                            });
-                        },
-                    });
+                    const socket = connectToServer();
+                    socket.emit(TILE_PUSHED, JSON.stringify({
+                        properties,
+                        pixelX,
+                        pixelY,
+                        x,
+                        y,
+                        newX: newPosition.x / TILE_WIDTH,
+                        newY: newPosition.y / TILE_HEIGHT,
+                        layerName: layer.name,
+                    }));
                 }
             }
         }
@@ -676,6 +698,7 @@ export const handleConfigureGridEngine = (scene) => {
 export const handleHeroMovement = (scene) => {
     const socket = connectToServer();
 
+    // TODO probably better move the socket.io movement to: scene.gridEngine.movementStarted
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         // scene.gridEngine.move(scene.heroSprite.name, LEFT_DIRECTION);
         socket.emit(MOVE_CHARACTER, JSON.stringify({
