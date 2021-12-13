@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@craco/craco": "^6.4.3",
-    "@emotion/react": "^11.7.0",
+    "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/core": "^5.0.0-alpha.54",
     "@mui/icons-material": "^5.2.1",

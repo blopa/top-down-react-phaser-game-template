@@ -1,6 +1,7 @@
 import {
     INCREASE_ITEM_QTY_COLLECTED_BY_PLAYER,
     INCREASE_ELAPSED_TIME,
+    SET_GAME_IS_OFFLINE,
     ADD_PLAYER_TO_ROOM,
     SET_CURRENT_ROOM,
     SET_ELAPSED_TIME,
@@ -9,6 +10,7 @@ import {
 } from '../constants';
 
 const defaultState = {
+    isOffline: false,
     currentRoom: null,
     rooms: {},
 };
@@ -20,6 +22,13 @@ const gameManagerReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 currentRoom: payload,
+            };
+        }
+
+        case SET_GAME_IS_OFFLINE: {
+            return {
+                ...state,
+                isOffline: payload,
             };
         }
 

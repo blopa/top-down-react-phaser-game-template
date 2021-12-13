@@ -9,3 +9,5 @@ export const selectGameElapsedTime = (roomId) => (state) => state.gameManager.ro
 
 // Client
 export const selectGameCurrentRoomId = (state) => state.gameManager.currentRoom;
+
+export const selectGameIsOffline = (state) => state.gameManager.isOffline;

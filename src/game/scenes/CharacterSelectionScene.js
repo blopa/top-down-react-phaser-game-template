@@ -24,11 +24,13 @@ import { getDispatch, getSelectorData } from '../../utils/utils';
 import {
     handleCreateHeroAnimations,
     applyLocalState,
-    purgeLocalState,
+    purgeLocalState, startGameScene,
 } from '../../utils/sceneHelpers';
 
 // Selectors
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
+import { selectGameIsOffline } from '../../redux/selectors/selectGameManager';
+import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 export default class CharacterSelectionScene extends Scene {
     constructor() {
@@ -43,6 +45,8 @@ export default class CharacterSelectionScene extends Scene {
         const dispatch = getDispatch();
         const gameWidth = getSelectorData(selectGameWidth);
         const gameHeight = getSelectorData(selectGameHeight);
+        const isGameOffline = getSelectorData(selectGameIsOffline);
+
         const [
             getSelectedCharacter,
             setSelectedCharacter,
@@ -128,17 +132,45 @@ export default class CharacterSelectionScene extends Scene {
             nextPosX += sprite.width * 2;
         });
 
+        const myPlayerId = uuid();
         const handleStartGameSelected = () => Promise.all([
             dispatch(setMenuItemsAction([])),
             dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMyPlayerIdAction(uuid())),
+            dispatch(setMyPlayerIdAction(myPlayerId)),
             dispatch(setMyCharacterIdAction(getSelectedCharacter())),
         ]).then(() => {
+            const characterId = getSelectedCharacter();
             purgeLocalState(characterStateId);
-            this.scene.start('LoadAssetsScene', {
-                nextScene: 'WaitingRoomScene',
-                assets: {},
-            });
+
+            if (isGameOffline) {
+                this.scene.start('LoadAssetsScene', {
+                    nextScene: 'WaitingRoomScene',
+                    assets: {},
+                });
+            } else {
+                // TODO make offline game work
+                startGameScene(this, 'main_map', () => {
+                    // const players = [{
+                    //     playerId: uuid(),
+                    //     characterId: 'npc_01',
+                    //     position: { x: 19, y: 0 },
+                    // }];
+                    const positions = [
+                        { x: 0, y: 0 },
+                        { x: 19, y: 0 },
+                        { x: 19, y: 19 },
+                        { x: 0, y: 19 },
+                    ];
+
+                    const players = [{
+                        playerId: myPlayerId,
+                        characterId,
+                        position: positions[Math.floor(Math.random() * positions.length)],
+                    }];
+
+                    return dispatch(setPlayersAction(players));
+                });
+            }
         });
     }
 }

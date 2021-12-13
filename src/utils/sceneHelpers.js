@@ -289,6 +289,18 @@ export const handlePushTile = (scene, tileData) => {
     );
 
     if (tile) {
+        // Create the tile in the new position already, to block it
+        const newTile = layer.tilemapLayer.putTileAt(
+            tile,
+            newX,
+            newY,
+            true
+        );
+        newTile.setAlpha(0);
+
+        // set the current tile as traversable
+        tile.properties = {};
+
         // This function will make the tile texture move
         // and it will change some of the tile's properties
         scene.tweens.add({
@@ -300,14 +312,7 @@ export const handlePushTile = (scene, tileData) => {
             ease: 'Power2', // PhaserMath.Easing
             duration: 500,
             onComplete: () => {
-                // TODO create the new tile before the animation is complete
-                const newTile = layer.tilemapLayer.putTileAt(
-                    tile,
-                    newX,
-                    newY,
-                    true
-                );
-
+                newTile.setAlpha(1);
                 const oldTile = layer.tilemapLayer.putTileAt(
                     EMPTY_TILE_INDEX,
                     x,
@@ -820,11 +825,6 @@ export const startGameScene = (scene, map, beforeStartScene) => {
         dispatch(setMenuOnSelectAction(null)),
         dispatch(setMapKeyAction(map)),
         dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-        // dispatch(setHeroInitialPositionAction({ x: 0, y: 0 })),
-        // dispatch(setHeroPreviousPositionAction({ x: 0, y: 0 })),
-        // dispatch(setHeroInitialFrameAction(
-        //     IDLE_FRAME.replace('position', DOWN_DIRECTION)
-        // )),
     ]).then(async () => {
         await beforeStartScene?.();
 
