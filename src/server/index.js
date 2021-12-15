@@ -48,11 +48,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
-// Express
-app.get('/', (req, res) => {
-    res.send('<h1>Hello world</h1>');
-});
-
 const serverPort = process.env.REACT_APP_SERVER_PORT || 4000;
 server.listen(serverPort, () => {
     console.log(`listening on *:${serverPort}`);
@@ -68,7 +63,15 @@ io.on('connection', (socket) => {
         2: { x: 19, y: 19 },
         3: { x: 0, y: 19 },
     };
-    const commonListeners = (roomId) => {
+
+    const commonListeners = (roomId, playerId) => {
+        socket.on('disconnect', () => {
+            dispatch(setPlayerIsConnectedAction(roomId, playerId, false));
+            io.to(roomId).emit(PLAYER_DISCONNECTED, JSON.stringify({
+                playerId,
+            }));
+        });
+
         socket.on(REQUEST_MOVE_CHARACTER, (stringfiedData) => {
             // const data = JSON.parse(stringfiedData);
             io.to(roomId).emit(RESPOND_MOVE_CHARACTER, stringfiedData);
@@ -82,7 +85,7 @@ io.on('connection', (socket) => {
         socket.on(REQUEST_COLLECT_ITEM, (stringfiedData) => {
             const itemData = JSON.parse(stringfiedData);
             const {
-                playerId,
+                playerId: pId,
                 itemType,
                 itemName,
                 quantity,
@@ -90,7 +93,7 @@ io.on('connection', (socket) => {
 
             dispatch(increaseItemQuantityCollectByPlayerAction(
                 roomId, {
-                    playerId,
+                    playerId: pId,
                     itemType,
                     quantity,
                 }
@@ -116,7 +119,7 @@ io.on('connection', (socket) => {
                 sessionId: null,
             }))));
 
-            commonListeners(roomId);
+            commonListeners(roomId, playerId);
         } else {
             socket.emit(RECONNECTION_FAILED);
         }
@@ -156,15 +159,7 @@ io.on('connection', (socket) => {
             playerId,
         };
 
-        // TODO add this to the reconnect too
-        socket.on('disconnect', () => {
-            dispatch(setPlayerIsConnectedAction(roomId, playerId, false));
-            io.to(roomId).emit(PLAYER_DISCONNECTED, JSON.stringify({
-                playerId,
-            }));
-        });
-
-        commonListeners(roomId);
+        commonListeners(roomId, playerId);
 
         // this automatically creates a room if it doesn't exist
         dispatch(addPlayerToRoomAction(roomId, player));

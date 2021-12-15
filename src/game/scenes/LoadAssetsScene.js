@@ -210,7 +210,7 @@ export default class LoadAssetsScene extends Scene {
                     }
 
                     properties?.forEach((property) => {
-                        // TODO
+                        // do whatever is needed here
                         const { name, type, value } = property;
                     });
                 });

@@ -27,10 +27,6 @@ export default class MainMenuScene extends Scene {
         super('MainMenuScene');
     }
 
-    preload() {
-        // TODO
-    }
-
     create() {
         const dispatch = getDispatch();
 

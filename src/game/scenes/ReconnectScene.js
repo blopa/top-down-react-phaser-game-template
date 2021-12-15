@@ -50,7 +50,6 @@ export default class ReconnectScene extends Scene {
             const players = JSON.parse(stringfiedData);
             localStorage.removeItem(LAST_TIME_CONNECTED_DATA_KEY);
 
-            // TODO get rid of this state property
             const myPlayer = players.find((p) => p.playerId === myPlayerId);
             dispatch(setMyCharacterIdAction(myPlayer.characterId));
 

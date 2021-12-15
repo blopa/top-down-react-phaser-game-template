@@ -279,7 +279,7 @@ export const handlePushTile = (scene, tileData) => {
         newX,
         newY,
         layerName,
-        playerId, // TODO use this to fix player position
+        playerId,
     } = tileData;
 
     const layer = scene.map.layers.find((l) => l.name === layerName);
