@@ -3,15 +3,13 @@ import { Scene } from 'phaser';
 
 // Utils
 import {
-    handlePushTile,
-    connectToServer,
     handleCreateMap,
     handleCreateHero,
     handleCreateRivals,
     handleObjectsLayer,
     handleHeroMovement,
     handleCreateGroups,
-    handleItemCollected,
+    handleGameplayActions,
     handleConfigureCamera,
     handleCreateControlKeys,
     handleConfigureGridEngine,
@@ -21,23 +19,8 @@ import {
     handleCreateHeroPushTileAction,
     handleCreateHeroEnemiesOverlap,
     handleCreateCharactersMovements,
+    handleLastTimeConnectedCheckpoint,
 } from '../../utils/sceneHelpers';
-import { getSelectorData } from '../../utils/utils';
-
-// Constants
-import {
-    LAST_TIME_CONNECTED_DATA_KEY,
-    LAST_TIME_CONNECTED_THRESHOLD,
-} from '../../utils/constants';
-import {
-    RESPOND_TILE_PUSHED,
-    RESPOND_ITEM_COLLECTED,
-    RESPOND_MOVE_CHARACTER,
-} from '../../server/constants';
-
-// Selectors
-import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
-import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -47,21 +30,7 @@ export default class GameScene extends Scene {
     create() {
         // All of these functions need to be called in order
 
-        const myPlayerId = getSelectorData(selectMyPlayerId);
-        const roomId = getSelectorData(selectGameCurrentRoomId);
-        localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
-            lastTimeConnected: Date.now(),
-            playerId: myPlayerId,
-            roomId,
-        }));
-
-        const lastTimeConnectedHandler = setInterval(() => {
-            localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
-                lastTimeConnected: Date.now(),
-                playerId: myPlayerId,
-                roomId,
-            }));
-        }, LAST_TIME_CONNECTED_THRESHOLD);
+        handleLastTimeConnectedCheckpoint(this);
 
         // Create controls
         handleCreateControlKeys(this);
@@ -106,21 +75,7 @@ export default class GameScene extends Scene {
         handleCreateHeroEnemiesOverlap(this);
 
         // Handle character movements from server
-        const socket = connectToServer();
-        socket.on(RESPOND_MOVE_CHARACTER, (stringfiedData) => {
-            const data = JSON.parse(stringfiedData);
-            this.gridEngine.moveTo(data.playerId, data.position);
-        });
-
-        socket.on(RESPOND_TILE_PUSHED, (stringfiedData) => {
-            const tileData = JSON.parse(stringfiedData);
-            handlePushTile(this, tileData);
-        });
-
-        socket.on(RESPOND_ITEM_COLLECTED, (stringfiedData) => {
-            const itemData = JSON.parse(stringfiedData);
-            handleItemCollected(this, itemData);
-        });
+        handleGameplayActions(this);
     }
 
     update(time, delta) {

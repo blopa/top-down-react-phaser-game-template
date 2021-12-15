@@ -43,6 +43,7 @@ import setPlayerIsConnectedAction from '../redux/actions/gameManager/setPlayerIs
 import increaseItemQuantityCollectByPlayerAction
     from '../redux/actions/gameManager/increaseItemQuantityCollectByPlayerAction';
 
+// configure server
 dotenv.config({});
 const app = express();
 const server = http.createServer(app);
@@ -103,6 +104,7 @@ io.on('connection', (socket) => {
         });
     };
 
+    // player was disconnected and is trying to return to the same room
     socket.on(REQUEST_RECONNECTION, (stringfiedData) => {
         const data = JSON.parse(stringfiedData);
         const { roomId, playerId } = data;
@@ -125,11 +127,13 @@ io.on('connection', (socket) => {
         }
     });
 
+    // create a new room
     socket.on(REQUEST_NEW_GAME, (stringfiedData) => {
         const data = JSON.parse(stringfiedData);
         const { playerId, characterId } = data;
         const rooms = getSelectorData(selectGameRooms);
 
+        // find a room with space for the new player
         const result = Object.entries(rooms).find(
             ([, roomData]) => roomData?.players?.length < 4 && !roomData?.gameStarted
         );
@@ -159,22 +163,27 @@ io.on('connection', (socket) => {
             playerId,
         };
 
+        // common event listeners for 'connect' and 'reconnect'
         commonListeners(roomId, playerId);
 
         // this automatically creates a room if it doesn't exist
         dispatch(addPlayerToRoomAction(roomId, player));
 
+        // let all other players know a new player joined the room
         io.to(roomId).emit(RESPOND_PLAYER_ADDED_TO_ROOM, JSON.stringify({
             ...player,
             sessionId: null,
         }));
 
+        // add the player to the room
         socket.join(roomId);
         socket.emit(RESPOND_JOINED_ROOM, JSON.stringify({
             roomId,
         }));
 
         const room = getSelectorData(selectGameRoom(roomId));
+
+        // if we already have 4 players, then start the game
         if (room?.players.length === 4) {
             dispatch(setGameStartedAction(roomId, true));
             io.to(roomId).emit(START_GAME, JSON.stringify(room?.players.map((p) => ({
@@ -184,12 +193,16 @@ io.on('connection', (socket) => {
         } else {
             const gameStarted = getSelectorData(selectGameStarted(roomId));
 
+            // if we have more than one player
+            // then start countdown to start the game
             if (!gameStarted && room?.players.length >= 2) {
                 const elapsedTime = getSelectorData(selectGameElapsedTime(roomId));
                 io.to(roomId).emit(SEND_WAITING_ELAPSED_TIME, JSON.stringify({
                     elapsedTime: elapsedTime || 0,
                 }));
 
+                // set the seconds countdown
+                // increment for the game to start
                 let timeForGameIntervalHandler;
                 if (!Number.isFinite(elapsedTime)) {
                     timeForGameIntervalHandler = setInterval(() => {
@@ -197,6 +210,7 @@ io.on('connection', (socket) => {
                     }, ONE_SECOND);
                 }
 
+                // set the countdown to start the game
                 setTimeout(() => {
                     clearInterval(timeForGameIntervalHandler);
                     dispatch(setGameStartedAction(roomId, true));

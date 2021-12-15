@@ -17,9 +17,9 @@ import { simulateKeyEvent } from '../utils/utils';
 
 // Constants
 import {
+    ARROW_RIGHT_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
-    ARROW_RIGHT_KEY,
     ARROW_UP_KEY,
     ENTER_KEY,
     SPACE_KEY,
@@ -85,6 +85,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VirtualGamepad = () => {
+    // TODO redo this with that answer from stackoverflow
     const gameWidth = useSelector(selectGameWidth);
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);

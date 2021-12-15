@@ -30,7 +30,11 @@ export default class MainMenuScene extends Scene {
     create() {
         const dispatch = getDispatch();
 
-        const menuItems = ['New Game', 'Offline Game', 'Exit'];
+        const menuItems = [
+            'New Game',
+            // 'Offline Game',
+            'Exit',
+        ];
 
         const {
             roomId,

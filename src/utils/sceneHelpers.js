@@ -4,6 +4,8 @@ import io from 'socket.io-client';
 
 // Constants
 import {
+    LAST_TIME_CONNECTED_THRESHOLD,
+    LAST_TIME_CONNECTED_DATA_KEY,
     CLOSED_BOX_TILE_INDEX,
     CRYSTAL_SPRITE_NAME,
     OPEN_BOX_TILE_INDEX,
@@ -28,8 +30,11 @@ import {
 } from './constants';
 import {
     REQUEST_PUSH_TILE,
+    RESPOND_TILE_PUSHED,
     REQUEST_COLLECT_ITEM,
     REQUEST_MOVE_CHARACTER,
+    RESPOND_MOVE_CHARACTER,
+    RESPOND_ITEM_COLLECTED,
 } from '../server/constants';
 
 // Utils
@@ -38,9 +43,7 @@ import { createInteractiveGameObject } from './phaser';
 
 // Selectors
 import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
-import {
-    selectHeroFacingDirection,
-} from '../redux/selectors/selectHeroData';
+import { selectHeroFacingDirection } from '../redux/selectors/selectHeroData';
 import { selectGameZoom } from '../redux/selectors/selectGameSettings';
 
 // Actions
@@ -50,12 +53,7 @@ import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
 import { selectMyPlayer, selectMyPlayerId, selectPlayers } from '../redux/selectors/selectPlayers';
 import setItemCollectedAction from '../redux/actions/players/setItemCollectedAction';
-// import { selectDialogMessages } from '../redux/selectors/selectDialog';
-
-// Actions
-// import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
-// import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
-// import setDialogActionAction from '../redux/actions/setDialogActionAction';
+import { selectGameCurrentRoomId } from '../redux/selectors/selectGameManager';
 
 /**
  * @param scene
@@ -63,7 +61,6 @@ import setItemCollectedAction from '../redux/actions/players/setItemCollectedAct
  * @param animationName
  * @param frameQuantity
  */
-// eslint-disable-next-line import/prefer-default-export
 export const createWalkingAnimation = (
     scene,
     assetKey,
@@ -569,38 +566,6 @@ export const handleObjectsLayer = (scene) => {
                     });
 
                     scene.gridEngine.moveRandomly(name, 1000);
-                    // const enemyActionHeroCollider = scene.physics.add.overlap(
-                    //     enemy,
-                    //     scene.heroSprite.actionCollider,
-                    //     (e, a) => {
-                    //         if (Input.Keyboard.JustDown(scene.actionKey)) {
-                    //             const messages = getSelectorData(selectDialogMessages);
-                    //
-                    //             if (messages.length === 0) {
-                    //                 enemyActionHeroCollider.active = false;
-                    //                 dispatch(setDialogCharacterNameAction('monster'));
-                    //                 dispatch(setDialogMessagesAction([
-                    //                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                    //                     'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
-                    //                     'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
-                    //                 ]));
-                    //                 dispatch(setDialogActionAction(() => {
-                    //                     // Do this to not trigger the message again
-                    //                     // Because whenever you call JustDown once, the second time
-                    //                     // you call it, it will be false
-                    //                     Input.Keyboard.JustDown(scene.actionKey);
-                    //                     dispatch(setDialogCharacterNameAction(''));
-                    //                     dispatch(setDialogMessagesAction([]));
-                    //                     dispatch(setDialogActionAction(null));
-                    //                 }));
-                    //
-                    //                 scene.time.delayedCall(0, () => {
-                    //                     enemyActionHeroCollider.active = true;
-                    //                 });
-                    //             }
-                    //         }
-                    //     }
-                    // );
 
                     break;
                 }
@@ -834,5 +799,41 @@ export const startGameScene = (scene, map, beforeStartScene) => {
                 mapKey: map,
             },
         });
+    });
+};
+
+export const handleLastTimeConnectedCheckpoint = (scene) => {
+    const myPlayerId = getSelectorData(selectMyPlayerId);
+    const roomId = getSelectorData(selectGameCurrentRoomId);
+    localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
+        lastTimeConnected: Date.now(),
+        playerId: myPlayerId,
+        roomId,
+    }));
+
+    const lastTimeConnectedHandler = setInterval(() => {
+        localStorage.setItem(LAST_TIME_CONNECTED_DATA_KEY, JSON.stringify({
+            lastTimeConnected: Date.now(),
+            playerId: myPlayerId,
+            roomId,
+        }));
+    }, LAST_TIME_CONNECTED_THRESHOLD);
+};
+
+export const handleGameplayActions = (scene) => {
+    const socket = connectToServer();
+    socket.on(RESPOND_MOVE_CHARACTER, (stringfiedData) => {
+        const data = JSON.parse(stringfiedData);
+        scene.gridEngine.moveTo(data.playerId, data.position);
+    });
+
+    socket.on(RESPOND_TILE_PUSHED, (stringfiedData) => {
+        const tileData = JSON.parse(stringfiedData);
+        handlePushTile(scene, tileData);
+    });
+
+    socket.on(RESPOND_ITEM_COLLECTED, (stringfiedData) => {
+        const itemData = JSON.parse(stringfiedData);
+        handleItemCollected(scene, itemData);
     });
 };
