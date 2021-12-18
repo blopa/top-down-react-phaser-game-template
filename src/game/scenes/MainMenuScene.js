@@ -31,9 +31,9 @@ export default class MainMenuScene extends Scene {
         const dispatch = getDispatch();
 
         const menuItems = [
-            'New Game',
-            // 'Offline Game',
-            'Exit',
+            'new_game',
+            // 'offline_game',
+            'exit',
         ];
 
         const {
@@ -49,7 +49,7 @@ export default class MainMenuScene extends Scene {
             && lastTimeConnected - Date.now() < CAN_RECONNECT_THRESHOLD;
 
         if (canReconnect) {
-            menuItems.splice(1, 0, 'Reconnect');
+            menuItems.splice(1, 0, 'reconnect');
         }
 
         dispatch(setMenuItemsAction(menuItems));
@@ -58,7 +58,7 @@ export default class MainMenuScene extends Scene {
             dispatch(setMenuOnSelectAction(null));
 
             switch (item) {
-                case 'New Game': {
+                case 'new_game': {
                     this.scene.start('LoadAssetsScene', {
                         nextScene: 'CharacterSelectionScene',
                         assets: {
@@ -76,7 +76,7 @@ export default class MainMenuScene extends Scene {
                     break;
                 }
 
-                case 'Reconnect': {
+                case 'reconnect': {
                     Promise.all([
                         dispatch(setCurrentRoomAction(roomId)),
                         dispatch(setMyPlayerIdAction(playerId)),
@@ -90,7 +90,7 @@ export default class MainMenuScene extends Scene {
                     break;
                 }
 
-                case 'Offline Game': {
+                case 'offline_game': {
                     dispatch(setGameIsOfflineAction(true));
 
                     this.scene.start('LoadAssetsScene', {
@@ -110,7 +110,7 @@ export default class MainMenuScene extends Scene {
                     break;
                 }
 
-                case 'Exit':
+                case 'exit':
                 default: {
                     Promise.all([
                         dispatch(setMenuItemsAction([])),

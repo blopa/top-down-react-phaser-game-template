@@ -19,6 +19,7 @@ export const SET_INITIAL_FRAME = 'SET_INITIAL_FRAME';
 export const SET_GAME_WIDTH = 'SET_GAME_WIDTH';
 export const SET_GAME_HEIGHT = 'SET_GAME_HEIGHT';
 export const SET_GAME_ZOOM = 'SET_GAME_ZOOM';
+export const SET_GAME_LOCALE = 'SET_GAME_LOCALE';
 
 // Dialog
 export const SET_DIALOG_MESSAGES = 'SET_DIALOG_MESSAGES';

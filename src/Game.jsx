@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import GridEngine from 'grid-engine';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 import isMobile from 'is-mobile';
 
 // Utils
@@ -36,14 +37,27 @@ import VirtualGamepad from './components/VirtualGamepad';
 import GameMenu from './components/GameMenu';
 
 // Selectors
-import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectMenuItems } from './redux/selectors/selectMenu';
+import { selectDialogMessages } from './redux/selectors/selectDialog';
+import { selectGameLocale } from './redux/selectors/selectGameSettings';
 
 const Game = () => {
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
+    const locale = useSelector(selectGameLocale);
+
+    const [messages, setMessages] = useState({});
+
+    useEffect(() => {
+        async function loadMessages() {
+            const module = await import(`./intl/${locale}.json`);
+            setMessages(module.default);
+        }
+
+        loadMessages();
+    }, [locale]);
 
     const updateGameReduxState = useCallback((
         gameWidth,
@@ -145,7 +159,11 @@ const Game = () => {
     ]);
 
     return (
-        <div>
+        <IntlProvider
+            messages={messages}
+            locale={locale}
+            defaultLocale="en"
+        >
             <div
                 id="game-content"
                 key="game-content"
@@ -161,7 +179,7 @@ const Game = () => {
             {isMobile() && (
                 <VirtualGamepad />
             )}
-        </div>
+        </IntlProvider>
     );
 };
 

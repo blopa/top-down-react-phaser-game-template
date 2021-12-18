@@ -98,7 +98,7 @@ export default class CharacterSelectionScene extends Scene {
                     }
 
                     setSelectedCharacter(spriteName);
-                    dispatch(setMenuItemsAction(['Go']));
+                    dispatch(setMenuItemsAction(['go']));
                     sprite.selected = true;
                     sprite.setScale(2);
                 } else {

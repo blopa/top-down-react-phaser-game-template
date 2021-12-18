@@ -39,7 +39,7 @@
     "eslint-plugin-unused-imports": "^1.1.5",
     "free-tex-packer-core": "^0.3.4",
     "node-fetch": "^3.1.0",
-    "npm-check-updates": "^12.0.3"
+    "npm-check-updates": "^12.0.5"
   },
   "dependencies": {
     "@craco/craco": "^6.4.3",
@@ -53,13 +53,14 @@
     "classnames": "^2.3.1",
     "dotenv": "^10.0.0",
     "esm-wallaby": "^3.2.25",
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "grid-engine": "^2.12.0",
     "is-mobile": "^3.0.0",
     "phaser": "^3.55.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
+    "react-intl": "^5.23.0",
     "react-redux": "^7.2.6",
     "react-scripts": "^4.0.3",
     "react-spring": "^9.3.2",
