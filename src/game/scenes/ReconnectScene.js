@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 
 // Utils
-import { connectToServer, startGameScene } from '../../utils/sceneHelpers';
+import { changeScene, connectToServer, startGameScene } from '../../utils/sceneHelpers';
 import { getDispatch, getSelectorData } from '../../utils/utils';
 
 // Constants
@@ -67,10 +67,7 @@ export default class ReconnectScene extends Scene {
             );
 
             this.time.delayedCall(5 * ONE_SECOND, () => {
-                this.scene.start('LoadAssetsScene', {
-                    nextScene: 'MainMenuScene',
-                    assets: {},
-                });
+                changeScene(this, 'MainMenuScene');
             });
         });
     }

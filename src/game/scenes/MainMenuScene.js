@@ -21,6 +21,7 @@ import {
 
 // Utils
 import { getDispatch } from '../../utils/utils';
+import { changeScene } from '../../utils/sceneHelpers';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -59,18 +60,15 @@ export default class MainMenuScene extends Scene {
 
             switch (item) {
                 case 'new_game': {
-                    this.scene.start('LoadAssetsScene', {
-                        nextScene: 'CharacterSelectionScene',
-                        assets: {
-                            atlases: [
-                                HERO_SPRITE_NAME,
-                                NPC_01_SPRITE_NAME,
-                                NPC_02_SPRITE_NAME,
-                                NPC_03_SPRITE_NAME,
-                                NPC_04_SPRITE_NAME,
-                                NPC_05_SPRITE_NAME,
-                            ],
-                        },
+                    changeScene(this, 'CharacterSelectionScene', {
+                        atlases: [
+                            HERO_SPRITE_NAME,
+                            NPC_01_SPRITE_NAME,
+                            NPC_02_SPRITE_NAME,
+                            NPC_03_SPRITE_NAME,
+                            NPC_04_SPRITE_NAME,
+                            NPC_05_SPRITE_NAME,
+                        ],
                     });
 
                     break;
@@ -81,10 +79,7 @@ export default class MainMenuScene extends Scene {
                         dispatch(setCurrentRoomAction(roomId)),
                         dispatch(setMyPlayerIdAction(playerId)),
                     ]).then(() => {
-                        this.scene.start('LoadAssetsScene', {
-                            nextScene: 'ReconnectScene',
-                            assets: {},
-                        });
+                        changeScene(this, 'ReconnectScene');
                     });
 
                     break;
@@ -93,18 +88,15 @@ export default class MainMenuScene extends Scene {
                 case 'offline_game': {
                     dispatch(setGameIsOfflineAction(true));
 
-                    this.scene.start('LoadAssetsScene', {
-                        nextScene: 'CharacterSelectionScene',
-                        assets: {
-                            atlases: [
-                                HERO_SPRITE_NAME,
-                                NPC_01_SPRITE_NAME,
-                                NPC_02_SPRITE_NAME,
-                                NPC_03_SPRITE_NAME,
-                                NPC_04_SPRITE_NAME,
-                                NPC_05_SPRITE_NAME,
-                            ],
-                        },
+                    changeScene(this, 'CharacterSelectionScene', {
+                        atlases: [
+                            HERO_SPRITE_NAME,
+                            NPC_01_SPRITE_NAME,
+                            NPC_02_SPRITE_NAME,
+                            NPC_03_SPRITE_NAME,
+                            NPC_04_SPRITE_NAME,
+                            NPC_05_SPRITE_NAME,
+                        ],
                     });
 
                     break;

@@ -42,6 +42,7 @@ import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectGameLocale } from './redux/selectors/selectGameSettings';
 
 const Game = () => {
+    const isDevelopment = process?.env?.NODE_ENV !== 'production';
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const dialogMessages = useSelector(selectDialogMessages);
@@ -112,7 +113,7 @@ const Game = () => {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: process?.env?.NODE_ENV !== 'production',
+                    debug: isDevelopment,
                 },
             },
             plugins: {
@@ -152,9 +153,12 @@ const Game = () => {
         });
 
         setGame(phaserGame);
-        // window.phaserGame = game;
+        if (isDevelopment) {
+            window.phaserGame = game;
+        }
     }, [
         game,
+        isDevelopment,
         updateGameReduxState,
     ]);
 

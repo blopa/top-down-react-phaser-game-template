@@ -24,7 +24,9 @@ import { getDispatch, getSelectorData } from '../../utils/utils';
 import {
     handleCreateHeroAnimations,
     applyLocalState,
-    purgeLocalState, startGameScene,
+    purgeLocalState,
+    startGameScene,
+    changeScene,
 } from '../../utils/sceneHelpers';
 
 // Selectors
@@ -143,10 +145,7 @@ export default class CharacterSelectionScene extends Scene {
             purgeLocalState(characterStateId);
 
             if (isGameOffline) {
-                this.scene.start('LoadAssetsScene', {
-                    nextScene: 'WaitingRoomScene',
-                    assets: {},
-                });
+                changeScene(this, 'WaitingRoomScene');
             } else {
                 // TODO make offline game work
                 startGameScene(this, 'main_map', () => {

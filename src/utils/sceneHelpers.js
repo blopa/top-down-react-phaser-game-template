@@ -793,11 +793,8 @@ export const startGameScene = (scene, map, beforeStartScene) => {
     ]).then(async () => {
         await beforeStartScene?.();
 
-        scene.scene.start('LoadAssetsScene', {
-            nextScene: 'GameScene',
-            assets: {
-                mapKey: map,
-            },
+        changeScene(scene, 'GameScene', {
+            mapKey: map,
         });
     });
 };
@@ -835,5 +832,12 @@ export const handleGameplayActions = (scene) => {
     socket.on(RESPOND_ITEM_COLLECTED, (stringfiedData) => {
         const itemData = JSON.parse(stringfiedData);
         handleItemCollected(scene, itemData);
+    });
+};
+
+export const changeScene = (scene, nextScene, assets = {}, config = {}) => {
+    scene.scene.start('LoadAssetsScene', {
+        nextScene,
+        assets,
     });
 };
