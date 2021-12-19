@@ -18,6 +18,9 @@ import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
 import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
 import setMyPlayerIdAction from '../../redux/actions/players/setMyPlayerIdAction';
 import setMyCharacterIdAction from '../../redux/actions/players/setMyCharacterIdAction';
+import addTextAction from '../../redux/actions/text/addTextAction';
+import removeTextAction from '../../redux/actions/text/removeTextAction';
+import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 // Utils
 import { getDispatch, getSelectorData } from '../../utils/utils';
@@ -32,7 +35,6 @@ import {
 // Selectors
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
 import { selectGameIsOffline } from '../../redux/selectors/selectGameManager';
-import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 export default class CharacterSelectionScene extends Scene {
     constructor() {
@@ -59,15 +61,15 @@ export default class CharacterSelectionScene extends Scene {
             handleStartGameSelected();
         }));
 
-        this.add.text(
-            gameWidth / 2,
-            gameHeight * 0.2,
-            'Select Your Player',
-            {
-                fontFamily: '"Press Start 2P"',
+        dispatch(addTextAction({
+            key: 'select_your_player',
+            config: {
+                position: 'center',
                 color: '#FFFFFF',
-            }
-        ).setOrigin(0.5);
+                top: gameHeight * 0.2,
+                size: 16,
+            },
+        }));
 
         const sprites = this.add.group();
 
@@ -136,6 +138,7 @@ export default class CharacterSelectionScene extends Scene {
 
         const myPlayerId = uuid();
         const handleStartGameSelected = () => Promise.all([
+            dispatch(removeTextAction('select_your_player')),
             dispatch(setMenuItemsAction([])),
             dispatch(setMenuOnSelectAction(null)),
             dispatch(setMyPlayerIdAction(myPlayerId)),
@@ -144,7 +147,7 @@ export default class CharacterSelectionScene extends Scene {
             const characterId = getSelectedCharacter();
             purgeLocalState(characterStateId);
 
-            if (isGameOffline) {
+            if (!isGameOffline) {
                 changeScene(this, 'WaitingRoomScene');
             } else {
                 // TODO make offline game work

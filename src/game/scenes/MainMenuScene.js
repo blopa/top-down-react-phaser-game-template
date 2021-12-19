@@ -6,6 +6,7 @@ import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectActio
 import setCurrentRoomAction from '../../redux/actions/gameManager/setCurrentRoomAction';
 import setMyPlayerIdAction from '../../redux/actions/players/setMyPlayerIdAction';
 import setGameIsOfflineAction from '../../redux/actions/gameManager/setGameIsOfflineAction';
+import addTextAction from '../../redux/actions/text/addTextAction';
 
 // Constants
 import {
@@ -20,8 +21,12 @@ import {
 } from '../../utils/constants';
 
 // Utils
-import { getDispatch } from '../../utils/utils';
+import { getDispatch, getSelectorData } from '../../utils/utils';
 import { changeScene } from '../../utils/sceneHelpers';
+
+// Selectors
+import { selectGameHeight } from '../../redux/selectors/selectGameSettings';
+import removeTextAction from '../../redux/actions/text/removeTextAction';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -30,6 +35,7 @@ export default class MainMenuScene extends Scene {
 
     create() {
         const dispatch = getDispatch();
+        const gameHeight = getSelectorData(selectGameHeight);
 
         const menuItems = [
             'new_game',
@@ -53,10 +59,20 @@ export default class MainMenuScene extends Scene {
             menuItems.splice(1, 0, 'reconnect');
         }
 
+        dispatch(addTextAction({
+            key: 'game_title',
+            config: {
+                position: 'center',
+                color: '#FFFFFF',
+                top: gameHeight * 0.2,
+                size: 18,
+            },
+        }));
         dispatch(setMenuItemsAction(menuItems));
         dispatch(setMenuOnSelectAction((item) => {
             dispatch(setMenuItemsAction([]));
             dispatch(setMenuOnSelectAction(null));
+            dispatch(removeTextAction('game_title'));
 
             switch (item) {
                 case 'new_game': {

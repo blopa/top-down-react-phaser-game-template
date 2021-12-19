@@ -30,7 +30,7 @@ import CharacterSelectionScene from './game/scenes/CharacterSelectionScene';
 import setGameHeightAction from './redux/actions/gameSettings/setGameHeightAction';
 import setGameWidthAction from './redux/actions/gameSettings/setGameWidthAction';
 import setGameZoomAction from './redux/actions/gameSettings/setGameZoomAction';
-import setGameDomRectAction from './redux/actions/gameSettings/setGameDomRectAction';
+import setGameCanvasElementAction from './redux/actions/gameSettings/setGameCanvasElementAction';
 
 // Components
 import DialogBox from './components/DialogBox';
@@ -67,13 +67,10 @@ const Game = () => {
     const updateGameReduxState = useCallback((
         gameWidth,
         gameHeight,
-        gameZoom,
-        domRect
+        gameZoom
     ) => {
-        console.log(domRect.top, domRect.y);
         dispatch(setGameHeightAction(gameHeight));
         dispatch(setGameWidthAction(gameWidth));
-        dispatch(setGameDomRectAction(domRect));
         dispatch(setGameZoomAction(gameZoom));
     }, [dispatch]);
 
@@ -135,8 +132,7 @@ const Game = () => {
             backgroundColor: '#000000',
         });
 
-        const domRect = phaserGame?.canvas?.getBoundingClientRect();
-        updateGameReduxState(width, height, zoom, domRect);
+        updateGameReduxState(width, height, zoom);
 
         // Create listener to resize the game
         // when the window is resized
@@ -150,8 +146,7 @@ const Game = () => {
             );
 
             // TODO needs to re-run this function to: handleConfigureCamera
-            const rect = phaserGame?.canvas?.getBoundingClientRect();
-            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom, rect);
+            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
             phaserGame.scale.resize(gameSize.width, gameSize.height);
             phaserGame.scale.setZoom(gameSize.zoom);
         };
@@ -162,11 +157,13 @@ const Game = () => {
         });
 
         setGame(phaserGame);
+        dispatch(setGameCanvasElementAction(phaserGame.canvas));
         if (isDevelopment) {
             window.phaserGame = phaserGame;
         }
     }, [
         game,
+        dispatch,
         isDevelopment,
         updateGameReduxState,
     ]);

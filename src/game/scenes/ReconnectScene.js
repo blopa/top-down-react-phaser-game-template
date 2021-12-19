@@ -11,11 +11,13 @@ import { APPROVE_RECONNECTION, RECONNECTION_FAILED, REQUEST_RECONNECTION } from 
 // Selectors
 import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
 import { selectMyPlayerId } from '../../redux/selectors/selectPlayers';
-import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
+import { selectGameHeight } from '../../redux/selectors/selectGameSettings';
 
 // Actions
 import setMyCharacterIdAction from '../../redux/actions/players/setMyCharacterIdAction';
 import setPlayersAction from '../../redux/actions/players/setPlayersAction';
+import addTextAction from '../../redux/actions/text/addTextAction';
+import removeTextAction from '../../redux/actions/text/removeTextAction';
 
 export default class ReconnectScene extends Scene {
     constructor() {
@@ -24,18 +26,16 @@ export default class ReconnectScene extends Scene {
 
     create() {
         const dispatch = getDispatch();
-        const gameWidth = getSelectorData(selectGameWidth);
         const gameHeight = getSelectorData(selectGameHeight);
 
-        const reconnectingText = this.add.text(
-            gameWidth / 2,
-            gameHeight * 0.6,
-            'Reconnecting...',
-            {
-                fontFamily: '"Press Start 2P"',
+        dispatch(addTextAction({
+            key: 'reconnecting_ellipsis',
+            config: {
+                position: 'center',
                 color: '#FFFFFF',
-            }
-        ).setOrigin(0.5);
+                top: gameHeight * 0.6,
+            },
+        }));
 
         const roomId = getSelectorData(selectGameCurrentRoomId);
         const myPlayerId = getSelectorData(selectMyPlayerId);
@@ -62,12 +62,20 @@ export default class ReconnectScene extends Scene {
 
         socket.on(RECONNECTION_FAILED, () => {
             localStorage.removeItem(LAST_TIME_CONNECTED_DATA_KEY);
-            reconnectingText.setText(
-                'Failed to reconnect'
-            );
+
+            dispatch(removeTextAction('reconnecting_ellipsis'));
+            dispatch(addTextAction({
+                key: 'failed_to_reconnect',
+                config: {
+                    position: 'center',
+                    color: '#FFFFFF',
+                    top: gameHeight * 0.6,
+                },
+            }));
 
             this.time.delayedCall(5 * ONE_SECOND, () => {
                 changeScene(this, 'MainMenuScene');
+                return dispatch(removeTextAction('failed_to_reconnect'));
             });
         });
     }

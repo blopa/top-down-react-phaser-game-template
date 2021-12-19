@@ -6,4 +6,4 @@ export const selectGameZoom = (state) => state.gameSettings.zoom;
 
 export const selectGameLocale = (state) => state.gameSettings.locale;
 
-export const selectGameDomRect = (state) => state.gameSettings.domRect;
+export const selectGameCanvasElement = (state) => state.gameSettings.canvas;

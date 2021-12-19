@@ -4,7 +4,7 @@ import {
     SET_GAME_WIDTH,
     SET_GAME_HEIGHT,
     SET_GAME_LOCALE,
-    SET_GAME_DOM_RECT,
+    SET_GAME_CANVAS,
 } from '../constants';
 
 const defaultState = {
@@ -44,10 +44,10 @@ const gameSettingsReducer = (state = defaultState, action) => {
             };
         }
 
-        case SET_GAME_DOM_RECT: {
+        case SET_GAME_CANVAS: {
             return {
                 ...state,
-                domRect: action.payload,
+                canvas: action.payload,
             };
         }
 

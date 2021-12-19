@@ -13,6 +13,10 @@ import { DOWN_DIRECTION, IDLE_FRAME, ONE_SECOND } from '../../utils/constants';
 // Actions
 import addPlayerToRoomAction from '../../redux/actions/gameManager/addPlayerToRoomAction';
 import setCurrentRoomAction from '../../redux/actions/gameManager/setCurrentRoomAction';
+import setPlayersAction from '../../redux/actions/players/setPlayersAction';
+import addTextAction from '../../redux/actions/text/addTextAction';
+import removeTextAction from '../../redux/actions/text/removeTextAction';
+import updateTextVariablesAction from '../../redux/actions/text/updateTextVariablesAction';
 
 // Utils
 import { connectToServer, handleCreateHeroAnimations, startGameScene } from '../../utils/sceneHelpers';
@@ -22,7 +26,6 @@ import { getDispatch, getSelectorData } from '../../utils/utils';
 import { selectMyCharacterId, selectMyPlayerId } from '../../redux/selectors/selectPlayers';
 import { selectGameHeight, selectGameWidth } from '../../redux/selectors/selectGameSettings';
 import { selectGameCurrentRoomId } from '../../redux/selectors/selectGameManager';
-import setPlayersAction from '../../redux/actions/players/setPlayersAction';
 
 export default class WaitingRoomScene extends Scene {
     constructor() {
@@ -46,15 +49,15 @@ export default class WaitingRoomScene extends Scene {
         handleCreateHeroAnimations(this, spriteName);
         sprite.anims.play(`${spriteName}_walk_${DOWN_DIRECTION}`);
 
-        this.add.text(
-            gameWidth / 2,
-            gameHeight * 0.2,
-            'Waiting For\nOther Players',
-            {
-                fontFamily: '"Press Start 2P"',
+        dispatch(addTextAction({
+            key: 'waiting_for_players',
+            config: {
+                position: 'center',
                 color: '#FFFFFF',
-            }
-        ).setOrigin(0.5);
+                top: gameHeight * 0.2,
+                size: 16,
+            },
+        }));
 
         const socket = connectToServer();
         socket.emit(REQUEST_NEW_GAME, JSON.stringify({
@@ -68,18 +71,21 @@ export default class WaitingRoomScene extends Scene {
             dispatch(setCurrentRoomAction(roomId));
         });
 
-        const timeForGame = this.add.text(
-            gameWidth / 2,
-            gameHeight * 0.7,
-            '',
-            {
-                fontFamily: '"Press Start 2P"',
-                color: '#FFFFFF',
-            }
-        ).setOrigin(0.5);
-
         let timeForGameIntervalHandler = null;
         socket.on(SEND_WAITING_ELAPSED_TIME, (stringfiedData) => {
+            dispatch(removeTextAction('game_will_start_in_seconds'));
+            dispatch(addTextAction({
+                key: 'game_will_start_in_seconds',
+                variables: {
+                    seconds: '0',
+                },
+                config: {
+                    position: 'center',
+                    color: '#FFFFFF',
+                    top: gameHeight * 0.7,
+                },
+            }));
+
             const data = JSON.parse(stringfiedData);
             const { elapsedTime } = data;
 
@@ -87,9 +93,9 @@ export default class WaitingRoomScene extends Scene {
             let waitingTime = 60 - elapsedTime;
             timeForGameIntervalHandler = setInterval(() => {
                 waitingTime -= 1;
-                timeForGame.setText(
-                    `Game will start in ${Math.max(waitingTime, 0)} seconds`
-                );
+                dispatch(updateTextVariablesAction('game_will_start_in_seconds', {
+                    seconds: Math.max(waitingTime, 0),
+                }));
             }, ONE_SECOND);
         });
 
@@ -128,7 +134,10 @@ export default class WaitingRoomScene extends Scene {
             const players = JSON.parse(stringfiedData);
             startGameScene(this, 'main_map', () => {
                 clearInterval(timeForGameIntervalHandler);
-                return dispatch(setPlayersAction(players));
+                return Promise.all([
+                    dispatch(removeTextAction('waiting_for_players')),
+                    dispatch(setPlayersAction(players)),
+                ]);
             });
         });
     }
