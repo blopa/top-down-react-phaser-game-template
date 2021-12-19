@@ -37,12 +37,14 @@ import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
 import GameMenu from './components/GameMenu';
 import GameText from './components/GameText';
+import ItemCount from './components/ItemCount';
 
 // Selectors
 import { selectMenuItems } from './redux/selectors/selectMenu';
 import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectGameLocale } from './redux/selectors/selectGameSettings';
 import { selectTexts } from './redux/selectors/selectText';
+import { selectMyPlayerCollectedItems } from './redux/selectors/selectPlayers';
 
 const Game = () => {
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
@@ -52,6 +54,8 @@ const Game = () => {
     const menuItems = useSelector(selectMenuItems);
     const locale = useSelector(selectGameLocale);
     const gameTexts = useSelector(selectTexts);
+    const myPlayerCollectedItems = useSelector(selectMyPlayerCollectedItems);
+    const collectedItemsArray = Object.entries(myPlayerCollectedItems);
 
     const [messages, setMessages] = useState({});
 
@@ -186,6 +190,13 @@ const Game = () => {
             {menuItems.length > 0 && (
                 <GameMenu />
             )}
+            {collectedItemsArray.length > 0 && collectedItemsArray.map(([itemType, quantity]) => (
+                <ItemCount
+                    key={itemType}
+                    itemType={itemType}
+                    quantity={quantity}
+                />
+            ))}
             {gameTexts.length > 0 && gameTexts.map((text) => {
                 const { key, variables, config } = text;
 

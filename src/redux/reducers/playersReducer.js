@@ -9,6 +9,8 @@ import {
 const defaultState = {
     players: [],
     myPlayerId: null,
+    myCharacterId: null,
+    collectedItems: {},
 };
 
 const playersReducer = (state = defaultState, action) => {

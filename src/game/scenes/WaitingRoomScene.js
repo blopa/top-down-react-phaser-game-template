@@ -77,7 +77,7 @@ export default class WaitingRoomScene extends Scene {
             dispatch(addTextAction({
                 key: 'game_will_start_in_seconds',
                 variables: {
-                    seconds: '0',
+                    seconds: '∞',
                 },
                 config: {
                     position: 'center',
@@ -135,6 +135,7 @@ export default class WaitingRoomScene extends Scene {
             startGameScene(this, 'main_map', () => {
                 clearInterval(timeForGameIntervalHandler);
                 return Promise.all([
+                    dispatch(removeTextAction('game_will_start_in_seconds')),
                     dispatch(removeTextAction('waiting_for_players')),
                     dispatch(setPlayersAction(players)),
                 ]);

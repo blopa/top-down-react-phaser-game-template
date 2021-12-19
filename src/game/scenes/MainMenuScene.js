@@ -1,12 +1,13 @@
 import { Scene } from 'phaser';
 
 // Actions
+import addTextAction from '../../redux/actions/text/addTextAction';
+import removeTextAction from '../../redux/actions/text/removeTextAction';
 import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
+import setMyPlayerIdAction from '../../redux/actions/players/setMyPlayerIdAction';
 import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
 import setCurrentRoomAction from '../../redux/actions/gameManager/setCurrentRoomAction';
-import setMyPlayerIdAction from '../../redux/actions/players/setMyPlayerIdAction';
 import setGameIsOfflineAction from '../../redux/actions/gameManager/setGameIsOfflineAction';
-import addTextAction from '../../redux/actions/text/addTextAction';
 
 // Constants
 import {
@@ -26,7 +27,6 @@ import { changeScene } from '../../utils/sceneHelpers';
 
 // Selectors
 import { selectGameHeight } from '../../redux/selectors/selectGameSettings';
-import removeTextAction from '../../redux/actions/text/removeTextAction';
 
 export default class MainMenuScene extends Scene {
     constructor() {

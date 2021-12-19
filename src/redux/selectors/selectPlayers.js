@@ -11,3 +11,5 @@ export const selectMyPlayer = (state) => {
         (player) => player.playerId === myPlayerId
     );
 };
+
+export const selectMyPlayerCollectedItems = (state) => state.players.collectedItems;

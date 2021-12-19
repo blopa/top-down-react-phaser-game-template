@@ -442,6 +442,8 @@ export const handleCreateHero = (scene) => {
     const initialFrame = IDLE_FRAME.replace('position', DOWN_DIRECTION);
     const myPlayer = getSelectorData(selectMyPlayer);
 
+    // TODO sometimes it breaks here because myPlayer is undefined, idk why
+
     // Create hero sprite
     const heroSprite = scene.physics.add
         .sprite(0, 0, myPlayer.characterId, initialFrame)
@@ -628,6 +630,13 @@ export const handleObjectsLayer = (scene) => {
                         TILE_WIDTH - 2,
                         TILE_HEIGHT - 2
                     );
+
+                    // TODO add this to the other items too
+                    dispatch(setItemCollectedAction({
+                        itemType: CRYSTAL_SPRITE_NAME,
+                        quantity: 0,
+                    }));
+
                     scene.items.add(crystal);
                     scene.sprites.add(crystal);
 
