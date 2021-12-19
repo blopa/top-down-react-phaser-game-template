@@ -30,16 +30,19 @@ import CharacterSelectionScene from './game/scenes/CharacterSelectionScene';
 import setGameHeightAction from './redux/actions/gameSettings/setGameHeightAction';
 import setGameWidthAction from './redux/actions/gameSettings/setGameWidthAction';
 import setGameZoomAction from './redux/actions/gameSettings/setGameZoomAction';
+import setGameDomRectAction from './redux/actions/gameSettings/setGameDomRectAction';
 
 // Components
 import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
 import GameMenu from './components/GameMenu';
+import GameText from './components/GameText';
 
 // Selectors
 import { selectMenuItems } from './redux/selectors/selectMenu';
 import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectGameLocale } from './redux/selectors/selectGameSettings';
+import { selectTexts } from './redux/selectors/selectText';
 
 const Game = () => {
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
@@ -48,6 +51,7 @@ const Game = () => {
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
     const locale = useSelector(selectGameLocale);
+    const gameTexts = useSelector(selectTexts);
 
     const [messages, setMessages] = useState({});
 
@@ -63,10 +67,13 @@ const Game = () => {
     const updateGameReduxState = useCallback((
         gameWidth,
         gameHeight,
-        gameZoom
+        gameZoom,
+        domRect
     ) => {
+        console.log(domRect.top, domRect.y);
         dispatch(setGameHeightAction(gameHeight));
         dispatch(setGameWidthAction(gameWidth));
+        dispatch(setGameDomRectAction(domRect));
         dispatch(setGameZoomAction(gameZoom));
     }, [dispatch]);
 
@@ -128,7 +135,8 @@ const Game = () => {
             backgroundColor: '#000000',
         });
 
-        updateGameReduxState(width, height, zoom);
+        const domRect = phaserGame?.canvas?.getBoundingClientRect();
+        updateGameReduxState(width, height, zoom, domRect);
 
         // Create listener to resize the game
         // when the window is resized
@@ -142,7 +150,8 @@ const Game = () => {
             );
 
             // TODO needs to re-run this function to: handleConfigureCamera
-            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
+            const rect = phaserGame?.canvas?.getBoundingClientRect();
+            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom, rect);
             phaserGame.scale.resize(gameSize.width, gameSize.height);
             phaserGame.scale.setZoom(gameSize.zoom);
         };
@@ -154,7 +163,7 @@ const Game = () => {
 
         setGame(phaserGame);
         if (isDevelopment) {
-            window.phaserGame = game;
+            window.phaserGame = phaserGame;
         }
     }, [
         game,
@@ -180,6 +189,18 @@ const Game = () => {
             {menuItems.length > 0 && (
                 <GameMenu />
             )}
+            {gameTexts.length > 0 && gameTexts.map((text) => {
+                const { key, variables, config } = text;
+
+                return (
+                    <GameText
+                        key={key}
+                        translationKey={key}
+                        variables={variables}
+                        config={config}
+                    />
+                );
+            })}
             {isMobile() && (
                 <VirtualGamepad />
             )}

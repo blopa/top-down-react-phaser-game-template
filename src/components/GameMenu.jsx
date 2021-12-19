@@ -12,7 +12,7 @@ import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/sele
 import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redux/selectors/selectMenu';
 
 // Utils
-import { isObject } from '../utils/utils';
+import { getTranslationVariables } from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     menuWrapper: ({ zoom }) => ({
@@ -118,14 +118,6 @@ const GameMenu = () => {
 
         return () => window.removeEventListener('keydown', handleKeyPressed);
     }, [items, onSelected, selectedItemIndex]);
-
-    const getTranslationVariables = (item) => {
-        if (isObject(item)) {
-            return [item.key, item.variables];
-        }
-
-        return [item, {}];
-    };
 
     return (
         <div className={classNames(classes.menuWrapper, classes.menuPositionWrapper)}>

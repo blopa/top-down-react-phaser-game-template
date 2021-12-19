@@ -20,6 +20,7 @@ export const SET_GAME_WIDTH = 'SET_GAME_WIDTH';
 export const SET_GAME_HEIGHT = 'SET_GAME_HEIGHT';
 export const SET_GAME_ZOOM = 'SET_GAME_ZOOM';
 export const SET_GAME_LOCALE = 'SET_GAME_LOCALE';
+export const SET_GAME_DOM_RECT = 'SET_GAME_DOM_RECT';
 
 // Dialog
 export const SET_DIALOG_MESSAGES = 'SET_DIALOG_MESSAGES';
@@ -31,6 +32,10 @@ export const SET_MENU_ITEMS = 'SET_MENU_ITEMS';
 export const SET_MENU_POSITION = 'SET_MENU_POSITION';
 export const ADD_MENU_ITEM = 'ADD_MENU_ITEM';
 export const SET_MENU_ON_SELECT = 'SET_MENU_ON_SELECT';
+
+// Text
+export const SET_TEXTS = 'SET_TEXTS';
+export const ADD_TEXT = 'ADD_TEXT';
 
 // Players
 export const ADD_PLAYER = 'ADD_PLAYER';

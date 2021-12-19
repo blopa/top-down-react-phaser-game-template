@@ -43,6 +43,14 @@ export const simulateKeyEvent = (code, type = 'down') => {
     document.dispatchEvent(event);
 };
 
+export const getTranslationVariables = (item) => {
+    if (isObject(item)) {
+        return [item.key, item.variables];
+    }
+
+    return [item, {}];
+};
+
 export const getSelectorData = (selector) => {
     const { getState } = store;
 
@@ -93,4 +101,3 @@ export const isGeneratedAtlasFileAvailable = (file) => {
         return false;
     }
 };
-

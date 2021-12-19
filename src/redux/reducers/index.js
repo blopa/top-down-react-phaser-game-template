@@ -9,6 +9,7 @@ import mapDataReducer from './mapDataReducer';
 import playersReducer from './playersReducer';
 import dialogReducer from './dialogReducer';
 import menuReducer from './menuReducer';
+import textReducer from './textReducer';
 
 export default combineReducers({
     loadedAssets: loadedAssetsReducer,
@@ -19,4 +20,5 @@ export default combineReducers({
     mapData: mapDataReducer,
     dialog: dialogReducer,
     menu: menuReducer,
+    text: textReducer,
 });
