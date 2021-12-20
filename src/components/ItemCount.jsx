@@ -1,6 +1,5 @@
 import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
 
 // Selectors
 import {
@@ -16,34 +15,31 @@ import crystalImage from '../assets/images/crystal.png';
 // Constants
 import { CRYSTAL_SPRITE_NAME } from '../utils/constants';
 
+// Hooks
+import useRect from '../hooks/useRect';
+
 const useStyles = makeStyles((theme) => ({
-    itemCountWrapper: ({ zoom, domRect }) => {
-        return {
-            top: `${(domRect?.top || 0) + (10 * zoom)}px`,
-            left: `${(domRect?.left || 0) + (10 * zoom)}px`,
-            userSelect: 'none',
-            userDrag: 'none',
-            display: 'flex',
-            position: 'absolute',
-            alignItems: 'flex-start',
-        };
-    },
-    itemImage: ({ zoom }) => {
-        return {
-            imageRendering: 'pixelated',
-            transform: `scale(${zoom})`,
-        };
-    },
-    quantityText: ({ zoom }) => {
-        return {
-            fontFamily: '"Press Start 2P"',
-            fontSize: `${10 * zoom}px`,
-            textTransform: 'uppercase',
-            margin: 0,
-            color: '#FFFFFF',
-            marginLeft: `${7 * zoom}px`,
-        };
-    },
+    itemCountWrapper: ({ zoom, domRect }) => ({
+        top: `${(domRect?.top || 0) + (10 * zoom)}px`,
+        left: `${(domRect?.left || 0) + (10 * zoom)}px`,
+        userSelect: 'none',
+        userDrag: 'none',
+        display: 'flex',
+        position: 'absolute',
+        alignItems: 'flex-start',
+    }),
+    itemImage: ({ zoom }) => ({
+        imageRendering: 'pixelated',
+        transform: `scale(${zoom})`,
+    }),
+    quantityText: ({ zoom }) => ({
+        fontFamily: '"Press Start 2P"',
+        fontSize: `${10 * zoom}px`,
+        textTransform: 'uppercase',
+        margin: 0,
+        color: '#FFFFFF',
+        marginLeft: `${7 * zoom}px`,
+    }),
 }));
 
 const images = {
@@ -56,11 +52,7 @@ const ItemCount = ({ itemType, quantity }) => {
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);
     const canvas = useSelector(selectGameCanvasElement);
-
-    const domRect = useMemo(
-        () => canvas?.getBoundingClientRect() || {},
-        [gameWidth, gameHeight, gameZoom, canvas]
-    );
+    const domRect = useRect(canvas);
 
     const classes = useStyles({
         height: gameHeight,

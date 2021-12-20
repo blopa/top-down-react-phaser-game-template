@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 
 // Selectors
 import {
@@ -11,6 +11,9 @@ import {
     selectGameCanvasElement,
 } from '../redux/selectors/selectGameSettings';
 
+// Hooks
+import useRect from '../hooks/useRect';
+
 const useStyles = makeStyles((theme) => ({
     textWrapper: ({ zoom, top, position, domRect }) => ({
         top: `${(domRect?.top || 0) + (top * zoom)}px`,
@@ -19,7 +22,17 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         textAlign: position,
         width: `calc(100% - ${((domRect?.left || 0) * 2) + (10 * zoom)}px)`,
+        transform: 'translate(-50%, 0%)',
     }),
+    textPositionWrapper: ({ position }) => {
+        if (position === 'center') {
+            return {
+                left: '50%',
+            };
+        }
+
+        return {};
+    },
     text: ({ zoom, color, size }) => ({
         fontFamily: '"Press Start 2P"',
         fontSize: `${size * zoom}px`,
@@ -40,11 +53,7 @@ const GameText = ({
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);
     const canvas = useSelector(selectGameCanvasElement);
-
-    const domRect = useMemo(
-        () => canvas?.getBoundingClientRect() || {},
-        [gameWidth, gameHeight, gameZoom, canvas]
-    );
+    const domRect = useRect(canvas);
 
     const {
         color = '#FFFFFF',
@@ -65,7 +74,7 @@ const GameText = ({
     });
 
     return (
-        <div className={classes.textWrapper}>
+        <div className={classNames(classes.textWrapper, classes.textPositionWrapper)}>
             <Component className={classes.text}>
                 <FormattedMessage
                     id={translationKey}

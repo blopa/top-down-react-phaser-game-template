@@ -150,11 +150,12 @@ const Game = () => {
             );
 
             // TODO needs to re-run this function to: handleConfigureCamera
-            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
-            phaserGame.scale.resize(gameSize.width, gameSize.height);
             phaserGame.scale.setZoom(gameSize.zoom);
+            phaserGame.scale.resize(gameSize.width, gameSize.height);
+            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
         };
 
+        // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
         window.addEventListener('resize', () => {
             clearTimeout(timeOutFunctionId);
             timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
