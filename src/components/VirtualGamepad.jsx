@@ -10,20 +10,20 @@ import aButton from '../assets/images/a_button.png';
 import bButton from '../assets/images/b_button.png';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameSettings';
 
 // Utils
 import { simulateKeyEvent } from '../utils/utils';
 
 // Constants
 import {
+    ARROW_RIGHT_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
-    ARROW_RIGHT_KEY,
     ARROW_UP_KEY,
     ENTER_KEY,
     SPACE_KEY,
-} from '../constants';
+} from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
     buttonsWrapper: ({ zoom, height }) => ({
@@ -85,6 +85,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VirtualGamepad = () => {
+    // TODO redo this with that answer from stackoverflow
     const gameWidth = useSelector(selectGameWidth);
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);

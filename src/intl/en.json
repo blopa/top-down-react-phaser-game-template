@@ -1,0 +1,13 @@
+{
+    "game_title": "Game Title",
+    "new_game": "New Game",
+    "offline_game": "Offline Game",
+    "select_your_player": "Select your player",
+    "reconnect": "Reconnect",
+    "reconnecting_ellipsis": "Reconnecting...",
+    "failed_to_reconnect": "Failed to reconnect",
+    "waiting_for_players": "Waiting for other players",
+    "game_will_start_in_seconds": "Game will start in {seconds} seconds",
+    "exit": "Exit",
+    "go": "Go"
+}

@@ -10,6 +10,7 @@
 
 # production
 /build
+.env
 
 # misc
 .DS_Store
@@ -25,3 +26,5 @@ yarn-error.log*
 .idea/*
 .idea
 .idea/
+
+src/server/node_modules

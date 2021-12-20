@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 // Constants
-import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
+import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../utils/constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameSettings';
 import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redux/selectors/selectMenu';
+
+// Utils
+import { getTranslationVariables } from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     menuWrapper: ({ zoom }) => ({
@@ -118,24 +122,30 @@ const GameMenu = () => {
     return (
         <div className={classNames(classes.menuWrapper, classes.menuPositionWrapper)}>
             <ul className={classes.menuItemsWrapper}>
-                {items.map((item, index) => (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                    <li
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={index}
-                        className={classNames(classes.menuItem, {
-                            [classes.selectedMenuItem]: selectedItemIndex === index,
-                        })}
-                        onMouseEnter={() => {
-                            setSelectedItemIndex(index);
-                        }}
-                        onClick={() => {
-                            onSelected(items[selectedItemIndex]);
-                        }}
-                    >
-                        {item}
-                    </li>
-                ))}
+                {items.map((item, index) => {
+                    const [key, variables] = getTranslationVariables(item);
+
+                    return (
+                        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                        <li
+                            key={key}
+                            className={classNames(classes.menuItem, {
+                                [classes.selectedMenuItem]: selectedItemIndex === index,
+                            })}
+                            onMouseEnter={() => {
+                                setSelectedItemIndex(index);
+                            }}
+                            onClick={() => {
+                                onSelected(key, item);
+                            }}
+                        >
+                            <FormattedMessage
+                                id={key}
+                                values={variables}
+                            />
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );
