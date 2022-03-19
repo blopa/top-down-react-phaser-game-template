@@ -1,2 +1,0 @@
-(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[24],{104:function(t,e,a){"use strict";a.r(e),e.default=a.p+"static/media/heart_empty.47d79a15.png"}}]);
-//# sourceMappingURL=24.7b7a437a.chunk.js.map

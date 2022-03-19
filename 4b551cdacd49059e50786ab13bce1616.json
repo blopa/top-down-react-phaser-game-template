@@ -1,0 +1,271 @@
+{
+  "textures": [
+    {
+      "image": "npc_05.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 23,
+        "h": 134
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "walk_down_01",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 12,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_down_03",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 12,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 15,
+            "w": 12,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_up_01",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 12,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 30,
+            "w": 12,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_up_03",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 12,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 45,
+            "w": 12,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_left_01",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 11,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 60,
+            "w": 11,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_left_03",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 1,
+            "w": 11,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 75,
+            "w": 11,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_right_01",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 1,
+            "w": 11,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 90,
+            "w": 11,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_right_03",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 1,
+            "w": 11,
+            "h": 15
+          },
+          "frame": {
+            "x": 0,
+            "y": 105,
+            "w": 11,
+            "h": 15
+          }
+        },
+        {
+          "filename": "walk_down_02",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 2,
+            "w": 12,
+            "h": 14
+          },
+          "frame": {
+            "x": 0,
+            "y": 120,
+            "w": 12,
+            "h": 14
+          }
+        },
+        {
+          "filename": "walk_up_02",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 2,
+            "w": 12,
+            "h": 14
+          },
+          "frame": {
+            "x": 11,
+            "y": 60,
+            "w": 12,
+            "h": 14
+          }
+        },
+        {
+          "filename": "walk_left_02",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 2,
+            "w": 10,
+            "h": 14
+          },
+          "frame": {
+            "x": 11,
+            "y": 74,
+            "w": 10,
+            "h": 14
+          }
+        },
+        {
+          "filename": "walk_right_02",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 2,
+            "w": 10,
+            "h": 14
+          },
+          "frame": {
+            "x": 11,
+            "y": 88,
+            "w": 10,
+            "h": 14
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "http://github.com/odrick/free-tex-packer-core",
+    "version": "0.3.4"
+  }
+}

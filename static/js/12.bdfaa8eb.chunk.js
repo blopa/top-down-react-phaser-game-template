@@ -1,2 +1,0 @@
-(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[12],{68:function(e,t,a){"use strict";a.r(t),t.default=a.p+"static/media/enemy.7c0b72b1.png"}}]);
-//# sourceMappingURL=12.bdfaa8eb.chunk.js.map
