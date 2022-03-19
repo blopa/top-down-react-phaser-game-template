@@ -15,6 +15,9 @@ import setHeroInitialFrameAction from '../../redux/actions/setHeroInitialFrameAc
 import setMenuItemsAction from '../../redux/actions/setMenuItemsAction';
 import setMenuOnSelectAction from '../../redux/actions/setMenuOnSelectAction';
 
+// Utils
+import { changeScene } from '../../utils/sceneHelpers';
+
 export default class MainMenuScene extends Scene {
     constructor() {
         super('MainMenuScene');
@@ -49,15 +52,12 @@ export default class MainMenuScene extends Scene {
                 IDLE_FRAME.replace('position', DOWN_DIRECTION)
             )),
         ]).then(() => {
-            this.scene.start('LoadAssetsScene', {
-                nextScene: 'GameScene',
-                assets: {
-                    // fonts: ['"Press Start 2P"'],
-                    atlases: ['hero'],
-                    images: [],
-                    mapKey: 'sample_map',
-                    // mapKey: 'sample_indoor',
-                },
+            changeScene(this, 'GameScene', {
+                // fonts: ['"Press Start 2P"'],
+                atlases: ['hero'],
+                images: [],
+                mapKey: 'sample_map',
+                // mapKey: 'sample_indoor',
             });
         });
     }

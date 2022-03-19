@@ -43,7 +43,7 @@ export default class GameScene extends Scene {
         // Configure the main camera
         handleConfigureCamera(this);
 
-        // Animations
+        // Hero animations
         handleCreateHeroAnimations(this);
 
         // Handle characters movements

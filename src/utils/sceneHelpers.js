@@ -435,3 +435,10 @@ export const handleHeroMovement = (scene) => {
         scene.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
     }
 };
+
+export const changeScene = (scene, nextScene, assets = {}, config = {}) => {
+    scene.scene.start('LoadAssetsScene', {
+        nextScene,
+        assets,
+    });
+};
