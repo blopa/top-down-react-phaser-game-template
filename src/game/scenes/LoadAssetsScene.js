@@ -126,7 +126,7 @@ export default class LoadAssetsScene extends Scene {
                                     await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
+                                    await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
 
                                 dispatch(addLoadedAtlasAction(spriteName));
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
@@ -147,7 +147,7 @@ export default class LoadAssetsScene extends Scene {
                                     await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
+                                    await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
 
                                 dispatch(addLoadedAtlasAction(spriteName));
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
@@ -161,8 +161,8 @@ export default class LoadAssetsScene extends Scene {
                                 isImageFileAvailable('heart_full.png')
                                 && !loadedImages.includes(spriteName)
                             ) {
-                                // eslint-disable-next-line no-await-in-loop
-                                const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
+                                // eslint-disable-next-line no-await-in-loop, import/no-unresolved, import/no-webpack-loader-syntax
+                                const { default: imagePath } = await import('!!file-loader!../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
 
                                 dispatch(addLoadedImageAction(spriteName));
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -179,7 +179,7 @@ export default class LoadAssetsScene extends Scene {
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/images/${spriteName}.png`);
+                                    await import(`!!file-loader!../../assets/images/${spriteName}.png`);
 
                                 dispatch(addLoadedImageAction(spriteName));
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -196,7 +196,7 @@ export default class LoadAssetsScene extends Scene {
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`../../assets/images/${spriteName}.png`);
+                                    await import(`!!file-loader!../../assets/images/${spriteName}.png`);
 
                                 dispatch(addLoadedImageAction(spriteName));
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -284,14 +284,14 @@ export default class LoadAssetsScene extends Scene {
 
             // eslint-disable-next-line no-await-in-loop
             const { default: jsonPath } = await import(`../../assets/atlases/generated/${atlas}.json`);
-            const imageName = jsonPath.textures.find((texture) => texture.image.includes(atlas)).image;
+            const imageName = jsonPath.textures.find((texture) => texture.image.includes(atlas))?.image;
             if (!imageName || !isGeneratedAtlasFileAvailable(imageName)) {
                 // eslint-disable-next-line no-continue
                 continue;
             }
 
             // eslint-disable-next-line no-await-in-loop
-            const { default: imagePath } = await import(`../../assets/atlases/generated/${imageName}`);
+            const { default: imagePath } = await import(`!!file-loader!../../assets/atlases/generated/${imageName}`);
 
             dispatch(addLoadedAtlasAction(atlas));
             // eslint-disable-next-line no-await-in-loop
@@ -310,7 +310,7 @@ export default class LoadAssetsScene extends Scene {
             }
 
             // eslint-disable-next-line no-await-in-loop
-            const { default: imagePath } = await import(`../../assets/images/${image}.png`);
+            const { default: imagePath } = await import(`!!file-loader!../../assets/images/${image}.png`);
 
             dispatch(addLoadedImageAction(image));
             // eslint-disable-next-line no-await-in-loop

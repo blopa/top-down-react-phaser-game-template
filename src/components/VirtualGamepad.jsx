@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved, import/no-webpack-loader-syntax */
 import { useCallback, useEffect, useRef } from 'react';
 import { Geom } from 'phaser';
 import { makeStyles } from '@mui/styles';
@@ -5,9 +6,9 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
 // Images
-import dPadButton from '../assets/images/d_pad_button.png';
-import aButton from '../assets/images/a_button.png';
-import bButton from '../assets/images/b_button.png';
+import dPadButton from '!!file-loader!../assets/images/d_pad_button.png';
+import aButton from '!!file-loader!../assets/images/a_button.png';
+import bButton from '!!file-loader!../assets/images/b_button.png';
 
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
