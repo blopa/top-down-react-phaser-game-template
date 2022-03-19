@@ -4,6 +4,8 @@ This project came from this Medium post: https://javascript.plainenglish.io/i-ma
 
 <img src="/source_files/game_sample.gif?raw=true" width="890px" />
 
+## Test it here: https://blopa.github.io/top-down-react-phaser-game-template/
+
 # Features
 - Create React App
 - Phaser 3
@@ -67,9 +69,6 @@ A dialog box will automatically show up whenever the `state.dialog.messages` var
 dispatch(setDialogMessagesAction(['hello world', 'hello world 2']));
 ```
 
-# CRACO
-This project uses [CRACO](https://github.com/gsoft-inc/craco) to force Webpack to load images as files and not as base64 strings, which are not supported by Phaser.
-
 # Assets by Kenney.nl:
 - https://www.kenney.nl/assets/rpg-urban-pack
 - https://www.kenney.nl/assets/roguelike-rpg-pack
@@ -79,7 +78,7 @@ This project uses [CRACO](https://github.com/gsoft-inc/craco) to force Webpack t
 # License
 MIT License
 
-Copyright (c) 2021 Pablo
+Copyright (c) 2022 Pablo
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
