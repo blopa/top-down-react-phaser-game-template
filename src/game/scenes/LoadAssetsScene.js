@@ -54,6 +54,7 @@ export default class LoadAssetsScene extends Scene {
     }
 
     async create() {
+        const { width: gameWidth, height: gameHeight } = this.cameras.main;
         const {
             fonts = [],
             atlases = [],
@@ -63,16 +64,50 @@ export default class LoadAssetsScene extends Scene {
 
         const { getState, dispatch } = store;
         const state = getState();
+        const loadedFonts = selectLoadedFonts(state);
+
+        // setup loading bar
+        const progressBar = this.add.graphics();
+        const progressBox = this.add.graphics();
+
+        const barWidth = Math.round(gameWidth * 0.6);
+        const handleBarProgress = (value) => {
+            progressBar.clear();
+            progressBar.fillStyle(0xFFFFFF, 1);
+            progressBox.fillRect(
+                (gameWidth - barWidth) / 2,
+                gameHeight - 80,
+                barWidth * value,
+                20
+            );
+        };
+
+        this.load.on('progress', handleBarProgress);
+
+        this.load.on('fileprogress', (file) => {
+            console.log(file.key);
+        });
+
+        this.load.on('complete', () => {
+            progressBar.destroy();
+            progressBox.destroy();
+
+            this.load.off('progress');
+            this.load.off('fileprogress');
+            this.load.off('complete');
+        });
 
         // Pre-load all the fonts needed for the scene
         // so Phaser can render them properly
         let newFontsCount = 0;
-        fonts?.forEach((font) => {
-            const loadedFonts = selectLoadedFonts(state);
-
+        fonts?.forEach((font, idx) => {
             // If a font is already loaded, then skip this
             if (loadedFonts.includes(font)) {
                 return;
+            }
+
+            if (!mapKey && atlases.length === 0 && images.length === 0) {
+                handleBarProgress(fonts.length - (fonts.length - (idx + 1)));
             }
 
             // Set font as already loaded in the redux store
