@@ -6,6 +6,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",
     "@babel/eslint-plugin": "^7.17.7",
+    "@rtpa/phaser-bitmapfont-generator": "^1.2.2",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -49,6 +50,7 @@
     "redux-thunk": "^2.4.1"
   },
   "scripts": {
+    "generate-bitmap-font": "node scripts/generate-bitmap-font.js",
     "generate-atlases": "node scripts/generate-atlas-files.js",
     "copy-tileset-data": "node scripts/copy-tileset-data.js",
     "start": "PUBLIC_URL=/ react-scripts start",
