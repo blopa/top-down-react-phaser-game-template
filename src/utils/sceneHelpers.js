@@ -145,9 +145,10 @@ export const handleCreateHero = (scene) => {
         true
     );
 
-    const updateActionCollider = () => {
+    const updateActionCollider = (
+        { top, right, bottom, left } = heroSprite.body
+    ) => {
         const facingDirection = getSelectorData(selectHeroFacingDirection);
-        const { top, right, bottom, left } = heroSprite.getBounds();
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
@@ -192,7 +193,9 @@ export const handleCreateHero = (scene) => {
         }
     };
 
-    updateActionCollider();
+    // in the first render, the body is still not in its proper place
+    // so let's use the sprite bounds
+    updateActionCollider(heroSprite.getBounds());
     heroSprite.update = (time, delta) => {
         if (heroSprite.body.velocity.y === 0 && heroSprite.body.velocity.x === 0) {
             return;
