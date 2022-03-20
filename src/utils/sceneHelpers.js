@@ -383,18 +383,22 @@ export const handleHeroMovement = (scene, heroSpeed = 50) => {
     const { dispatch } = store;
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
+        scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
         dispatch(setHeroFacingDirectionAction(LEFT_DIRECTION));
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
+        scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
         dispatch(setHeroFacingDirectionAction(RIGHT_DIRECTION));
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
+        scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
         dispatch(setHeroFacingDirectionAction(UP_DIRECTION));
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
+        scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
         dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION));
