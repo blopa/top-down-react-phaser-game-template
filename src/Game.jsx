@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import GridEngine from 'grid-engine';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import isMobile from 'is-mobile';
@@ -94,15 +93,6 @@ const Game = () => {
                 arcade: {
                     debug: process?.env?.NODE_ENV !== 'production',
                 },
-            },
-            plugins: {
-                scene: [
-                    {
-                        key: 'gridEngine',
-                        plugin: GridEngine,
-                        mapping: 'gridEngine',
-                    },
-                ],
             },
             backgroundColor: '#000000',
         });

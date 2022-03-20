@@ -41,6 +41,7 @@ import { selectDialogMessages } from '../redux/selectors/selectDialog';
 import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
 import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
 import setDialogActionAction from '../redux/actions/setDialogActionAction';
+import setHeroFacingDirectionAction from '../redux/actions/setHeroFacingDirectionAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
@@ -72,36 +73,6 @@ export const createWalkingAnimation = (
         frameRate: 4,
         repeat: -1,
         yoyo: true,
-    });
-};
-
-export const handleCreateCharactersMovements = (scene) => {
-    // Movement started
-    scene.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
-        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.anims.play(`${char.texture.key}_walk_${direction}`);
-        }
-    });
-
-    // Movement ended
-    scene.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
-        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.anims.stop();
-            char.setFrame(IDLE_FRAME.replace('position', direction));
-        }
-    });
-
-    // Direction changed
-    scene.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
-        const char = scene.sprites.getChildren().find((sprite) => sprite.name === charId);
-
-        if (char) {
-            char.setFrame(IDLE_FRAME.replace('position', direction));
-        }
     });
 };
 
@@ -150,15 +121,21 @@ export const handleCreateMap = (scene) => {
 
 export const handleCreateHero = (scene) => {
     const initialFrame = getSelectorData(selectHeroInitialFrame);
+    const { x, y } = getSelectorData(selectHeroInitialPosition);
 
     // Create hero sprite
     const heroSprite = scene.physics.add
-        .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
+        .sprite(x * TILE_WIDTH, y * TILE_HEIGHT, HERO_SPRITE_NAME, initialFrame)
         .setName(HERO_SPRITE_NAME)
+        .setOrigin(0, 0)
         .setDepth(1);
 
+    // const facingDirection = getSelectorData(selectHeroFacingDirection);
+    // heroSprite.setFrame(
+    //     IDLE_FRAME.replace('position', facingDirection)
+    // );
+
     const actionColliderSizeOffset = 2;
-    // eslint-disable-next-line no-param-reassign
     heroSprite.actionCollider = createInteractiveGameObject(
         scene,
         0,
@@ -168,50 +145,42 @@ export const handleCreateHero = (scene) => {
         true
     );
 
-    // eslint-disable-next-line no-param-reassign
-    heroSprite.update = (time, delta) => {
-        const facingDirection = scene.gridEngine.getFacingDirection(HERO_SPRITE_NAME);
+    const updateActionCollider = () => {
+        const facingDirection = getSelectorData(selectHeroFacingDirection);
+        const { top, right, bottom, left } = heroSprite.getBounds();
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
                 heroSprite.actionCollider.setX(
-                    heroSprite.x + (actionColliderSizeOffset / 2)
+                    left + (actionColliderSizeOffset / 2)
                 );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y + TILE_HEIGHT
-                );
+                heroSprite.actionCollider.setY(bottom);
 
                 break;
             }
 
             case UP_DIRECTION: {
                 heroSprite.actionCollider.setX(
-                    heroSprite.x + (actionColliderSizeOffset / 2)
+                    left + (actionColliderSizeOffset / 2)
                 );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y - TILE_HEIGHT + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setY(top - heroSprite.body.height);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x - TILE_HEIGHT + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(left - heroSprite.body.width);
                 heroSprite.actionCollider.setY(
-                    heroSprite.y + (actionColliderSizeOffset / 2)
+                    top + (actionColliderSizeOffset / 2)
                 );
 
                 break;
             }
 
             case RIGHT_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x + TILE_WIDTH + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(right);
                 heroSprite.actionCollider.setY(
-                    heroSprite.y + (actionColliderSizeOffset / 2)
+                    top + (actionColliderSizeOffset / 2)
                 );
 
                 break;
@@ -221,6 +190,15 @@ export const handleCreateHero = (scene) => {
                 break;
             }
         }
+    };
+
+    updateActionCollider();
+    heroSprite.update = (time, delta) => {
+        if (heroSprite.body.velocity.y === 0 && heroSprite.body.velocity.x === 0) {
+            return;
+        }
+
+        updateActionCollider();
     };
 
     // eslint-disable-next-line no-param-reassign
@@ -241,21 +219,14 @@ export const handleObjectsLayer = (scene) => {
                     const enemy = scene.physics.add
                         .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
                         .setName(name)
+                        .setOrigin(0, 0)
                         .setDepth(1);
 
+                    enemy.body.setImmovable(true);
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
-                    scene.gridEngine.addCharacter({
-                        id: name,
-                        offsetY: 0, // default
-                        sprite: enemy,
-                        startPosition: {
-                            x: Math.floor(x / TILE_WIDTH),
-                            y: Math.floor(y / TILE_HEIGHT),
-                        },
-                    });
 
-                    const enemyActionHeroCollider = scene.physics.add.collider(
+                    const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
                         scene.heroSprite.actionCollider,
                         (e, a) => {
@@ -405,34 +376,33 @@ export const handleCreateHeroAnimations = (scene) => {
     });
 };
 
-export const handleConfigureGridEngine = (scene) => {
-    const initialPosition = getSelectorData(selectHeroInitialPosition);
-    const facingDirection = getSelectorData(selectHeroFacingDirection);
+export const handleHeroMovement = (scene, heroSpeed = 50) => {
+    const { dispatch } = store;
 
-    // Grid Engine
-    scene.gridEngine.create(scene.map, {
-        characterCollisionStrategy: 'BLOCK_TWO_TILES', // default
-        collisionTilePropertyName: 'ge_collide', // default
-        numberOfDirections: 4, // default
-        characters: [{
-            id: HERO_SPRITE_NAME,
-            offsetY: 0, // default
-            sprite: scene.heroSprite,
-            startPosition: initialPosition,
-            facingDirection,
-        }],
-    });
-};
-
-export const handleHeroMovement = (scene) => {
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, LEFT_DIRECTION);
+        scene.heroSprite.body.setVelocityX(-heroSpeed);
+        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
+        dispatch(setHeroFacingDirectionAction(LEFT_DIRECTION));
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, RIGHT_DIRECTION);
+        scene.heroSprite.body.setVelocityX(heroSpeed);
+        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
+        dispatch(setHeroFacingDirectionAction(RIGHT_DIRECTION));
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, UP_DIRECTION);
+        scene.heroSprite.body.setVelocityY(-heroSpeed);
+        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
+        dispatch(setHeroFacingDirectionAction(UP_DIRECTION));
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
-        scene.gridEngine.move(HERO_SPRITE_NAME, DOWN_DIRECTION);
+        scene.heroSprite.body.setVelocityY(heroSpeed);
+        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
+        dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION));
+    } else {
+        const facingDirection = getSelectorData(selectHeroFacingDirection);
+        scene.heroSprite.body.setVelocityX(0);
+        scene.heroSprite.body.setVelocityY(0);
+        scene.heroSprite.anims.stop();
+        scene.heroSprite.setFrame(
+            IDLE_FRAME.replace('position', facingDirection)
+        );
     }
 };
 
