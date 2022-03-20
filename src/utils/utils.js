@@ -8,6 +8,9 @@ import {
     ARROW_RIGHT_KEY,
 } from '../constants';
 
+// Store
+import store from '../redux/store';
+
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
 
@@ -40,6 +43,22 @@ export const simulateKeyEvent = (code, type = 'down') => {
 
     document.dispatchEvent(event);
 };
+
+export const getTranslationVariables = (item) => {
+    if (isObject(item)) {
+        return [item.key, item.variables];
+    }
+
+    return [item, {}];
+};
+
+export const getSelectorData = (selector) => {
+    const { getState } = store;
+
+    return selector(getState());
+};
+
+export const getDispatch = () => store.dispatch;
 
 export const createInteractiveGameObject = (
     scene,

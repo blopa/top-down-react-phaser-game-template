@@ -1,4 +1,4 @@
-import { SET_INITIAL_POSITION } from '../constants';
+import { SET_INITIAL_POSITION } from '../../constants';
 
 const setHeroInitialPositionAction = (payload) => (dispatch) => dispatch({
     type: SET_INITIAL_POSITION,

@@ -1,4 +1,4 @@
-import { SET_MAP_KEY } from '../constants';
+import { SET_MAP_KEY } from '../../constants';
 
 const setMapKeyAction = (payload) => (dispatch) => dispatch({
     type: SET_MAP_KEY,

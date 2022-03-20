@@ -38,10 +38,10 @@ import {
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
-import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
-import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/setDialogActionAction';
-import setHeroFacingDirectionAction from '../redux/actions/setHeroFacingDirectionAction';
+import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
+import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
+import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
+import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;

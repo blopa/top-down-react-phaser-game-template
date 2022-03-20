@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 import isMobile from 'is-mobile';
 
 // Utils
@@ -22,24 +23,42 @@ import LoadAssetsScene from './game/scenes/LoadAssetsScene';
 import MainMenuScene from './game/scenes/MainMenuScene';
 
 // Actions
-import setGameHeightAction from './redux/actions/setGameHeightAction';
-import setGameWidthAction from './redux/actions/setGameWidthAction';
-import setGameZoomAction from './redux/actions/setGameZoomAction';
+import setGameHeightAction from './redux/actions/game/setGameHeightAction';
+import setGameWidthAction from './redux/actions/game/setGameWidthAction';
+import setGameZoomAction from './redux/actions/game/setGameZoomAction';
+import setGameCanvasElementAction from './redux/actions/game/setGameCanvasElementAction';
 
 // Components
 import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
 import GameMenu from './components/GameMenu';
+import GameText from './components/GameText';
 
 // Selectors
 import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectMenuItems } from './redux/selectors/selectMenu';
+import { selectTexts } from './redux/selectors/selectText';
+import { selectGameLocale } from './redux/selectors/selectGameData';
 
 const Game = () => {
+    const isDevelopment = process?.env?.NODE_ENV !== 'production';
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
+    const gameTexts = useSelector(selectTexts);
+    const locale = useSelector(selectGameLocale);
+
+    const [messages, setMessages] = useState({});
+
+    useEffect(() => {
+        async function loadMessages() {
+            const module = await import(`./intl/${locale}.json`);
+            setMessages(module.default);
+        }
+
+        loadMessages();
+    }, [locale]);
 
     const updateGameReduxState = useCallback((
         gameWidth,
@@ -91,7 +110,7 @@ const Game = () => {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: process?.env?.NODE_ENV !== 'production',
+                    debug: isDevelopment,
                 },
             },
             backgroundColor: '#000000',
@@ -110,25 +129,36 @@ const Game = () => {
                 TILE_HEIGHT
             );
 
-            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
-            phaserGame.scale.resize(gameSize.width, gameSize.height);
+            // TODO needs to re-run this function to: handleConfigureCamera
             phaserGame.scale.setZoom(gameSize.zoom);
+            phaserGame.scale.resize(gameSize.width, gameSize.height);
+            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
         };
 
+        // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
         window.addEventListener('resize', () => {
             clearTimeout(timeOutFunctionId);
             timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
         });
 
         setGame(phaserGame);
-        // window.phaserGame = game;
+        dispatch(setGameCanvasElementAction(phaserGame.canvas));
+        if (isDevelopment) {
+            window.phaserGame = phaserGame;
+        }
     }, [
         game,
+        dispatch,
+        isDevelopment,
         updateGameReduxState,
     ]);
 
     return (
-        <div>
+        <IntlProvider
+            messages={messages}
+            locale={locale}
+            defaultLocale="en"
+        >
             <div
                 id="game-content"
                 key="game-content"
@@ -141,10 +171,22 @@ const Game = () => {
             {menuItems.length > 0 && (
                 <GameMenu />
             )}
+            {gameTexts.length > 0 && gameTexts.map((text) => {
+                const { key, variables, config } = text;
+
+                return (
+                    <GameText
+                        key={key}
+                        translationKey={key}
+                        variables={variables}
+                        config={config}
+                    />
+                );
+            })}
             {isMobile() && (
                 <VirtualGamepad />
             )}
-        </div>
+        </IntlProvider>
     );
 };
 

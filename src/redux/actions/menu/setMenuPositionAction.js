@@ -1,4 +1,4 @@
-import { SET_MENU_POSITION } from '../constants';
+import { SET_MENU_POSITION } from '../../constants';
 
 const setMenuPositionAction = (payload) => (dispatch) => dispatch({
     type: SET_MENU_POSITION,
