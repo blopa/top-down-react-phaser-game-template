@@ -146,8 +146,15 @@ export const handleCreateHero = (scene) => {
         0,
         0,
         TILE_WIDTH - actionColliderSizeOffset,
-        TILE_HEIGHT - actionColliderSizeOffset,
-        true
+        TILE_HEIGHT - actionColliderSizeOffset
+    );
+
+    heroSprite.attackCollider = createInteractiveGameObject(
+        scene,
+        0,
+        0,
+        TILE_WIDTH,
+        TILE_HEIGHT
     );
 
     const updateActionCollider = (
@@ -157,37 +164,41 @@ export const handleCreateHero = (scene) => {
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    left + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
                 heroSprite.actionCollider.setY(bottom);
+
+                heroSprite.attackCollider.setX(left);
+                heroSprite.attackCollider.setY(bottom);
 
                 break;
             }
 
             case UP_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    left + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
                 heroSprite.actionCollider.setY(top - heroSprite.body.height + actionColliderSizeOffset);
+
+                heroSprite.attackCollider.setX(left);
+                heroSprite.attackCollider.setY(top - heroSprite.body.height);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
                 heroSprite.actionCollider.setX(left - heroSprite.body.width + actionColliderSizeOffset);
-                heroSprite.actionCollider.setY(
-                    top + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+
+                heroSprite.attackCollider.setX(left - heroSprite.body.width);
+                heroSprite.attackCollider.setY(top);
 
                 break;
             }
 
             case RIGHT_DIRECTION: {
                 heroSprite.actionCollider.setX(right);
-                heroSprite.actionCollider.setY(
-                    top + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+
+                heroSprite.attackCollider.setX(right);
+                heroSprite.attackCollider.setY(top);
 
                 break;
             }

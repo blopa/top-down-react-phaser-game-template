@@ -66,7 +66,6 @@ export const createInteractiveGameObject = (
     y,
     width,
     height,
-    isDebug = false,
     origin = { x: 0, y: 0 }
 ) => {
     const customCollider = new GameObjects.Rectangle(
@@ -76,10 +75,6 @@ export const createInteractiveGameObject = (
         width,
         height
     ).setOrigin(origin.x, origin.y);
-
-    if (isDebug) {
-        customCollider.setFillStyle(0x741B47);
-    }
 
     scene.physics.add.existing(customCollider);
 
