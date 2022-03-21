@@ -99,6 +99,8 @@ export const handleCreateGroups = (scene) => {
     scene.enemies = scene.add.group();
     // eslint-disable-next-line no-param-reassign
     scene.items = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.mapLayers = scene.add.group();
 };
 
 export const handleCreateMap = (scene) => {
@@ -113,6 +115,8 @@ export const handleCreateMap = (scene) => {
 
     map.layers.forEach((layerData, index) => {
         const layer = map.createLayer(layerData.name, tilesets, 0, 0);
+        layer.setCollisionByProperty({ collides: true });
+        scene.mapLayers.add(layer);
     });
 
     // eslint-disable-next-line no-param-reassign
@@ -135,7 +139,8 @@ export const handleCreateHero = (scene) => {
     //     IDLE_FRAME.replace('position', facingDirection)
     // );
 
-    const actionColliderSizeOffset = 2;
+    scene.physics.add.collider(heroSprite, scene.mapLayers);
+    const actionColliderSizeOffset = 10;
     heroSprite.actionCollider = createInteractiveGameObject(
         scene,
         0,
@@ -164,13 +169,13 @@ export const handleCreateHero = (scene) => {
                 heroSprite.actionCollider.setX(
                     left + (actionColliderSizeOffset / 2)
                 );
-                heroSprite.actionCollider.setY(top - heroSprite.body.height);
+                heroSprite.actionCollider.setY(top - heroSprite.body.height + actionColliderSizeOffset);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
-                heroSprite.actionCollider.setX(left - heroSprite.body.width);
+                heroSprite.actionCollider.setX(left - heroSprite.body.width + actionColliderSizeOffset);
                 heroSprite.actionCollider.setY(
                     top + (actionColliderSizeOffset / 2)
                 );
