@@ -2,11 +2,16 @@ import { GameObjects } from 'phaser';
 import {
     ENTER_KEY,
     SPACE_KEY,
+    TILE_WIDTH,
+    TILE_HEIGHT,
     ARROW_UP_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
     ARROW_RIGHT_KEY,
 } from '../constants';
+
+// Store
+import store from '../redux/store';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
@@ -41,13 +46,30 @@ export const simulateKeyEvent = (code, type = 'down') => {
     document.dispatchEvent(event);
 };
 
+export const getTranslationVariables = (item) => {
+    if (isObject(item)) {
+        return [item.key, item.variables];
+    }
+
+    return [item, {}];
+};
+
+export const getSelectorData = (selector) => {
+    const { getState } = store;
+
+    return selector(getState());
+};
+
+export const getDispatch = () => store.dispatch;
+
+export const getState = () => store.getState();
+
 export const createInteractiveGameObject = (
     scene,
     x,
     y,
     width,
     height,
-    isDebug = false,
     origin = { x: 0, y: 0 }
 ) => {
     const customCollider = new GameObjects.Rectangle(
@@ -58,11 +80,8 @@ export const createInteractiveGameObject = (
         height
     ).setOrigin(origin.x, origin.y);
 
-    if (isDebug) {
-        customCollider.setFillStyle(0x741B47);
-    }
-
     scene.physics.add.existing(customCollider);
+    customCollider.body.setImmovable(true);
 
     return customCollider;
 };
@@ -110,3 +129,41 @@ export const isGeneratedAtlasFileAvailable = (file) => {
     }
 };
 
+export const getDegreeFromRadians = (radians) => (radians * (180 / Math.PI));
+
+export const getRadiansFromDegree = (degree) => (degree * (Math.PI / 180));
+
+export const rotateRectangleInsideTile = (x, y, width, height, degree) => {
+    switch (degree) {
+        case 90: {
+            return [
+                TILE_HEIGHT - (y + height),
+                x,
+                height,
+                width,
+            ];
+        }
+
+        case 180: {
+            return [
+                TILE_WIDTH - (x + width),
+                TILE_HEIGHT - (y + height),
+                width,
+                height,
+            ];
+        }
+
+        case 270: {
+            return [
+                y,
+                TILE_WIDTH - (x + width),
+                height,
+                width,
+            ];
+        }
+
+        default: {
+            return [x, y, width, height];
+        }
+    }
+};

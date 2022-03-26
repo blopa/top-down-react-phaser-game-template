@@ -3,12 +3,15 @@ import {
     SET_GAME_ZOOM,
     SET_GAME_WIDTH,
     SET_GAME_HEIGHT,
+    SET_GAME_CANVAS,
+    SET_GAME_LOCALE,
 } from '../constants';
 
 const defaultState = {
     width: MIN_GAME_WIDTH,
     height: MIN_GAME_HEIGHT,
     zoom: 1,
+    locale: 'en',
 };
 
 const gameDataReducer = (state = defaultState, action) => {
@@ -31,6 +34,20 @@ const gameDataReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 zoom: action.payload,
+            };
+        }
+
+        case SET_GAME_CANVAS: {
+            return {
+                ...state,
+                canvas: action.payload,
+            };
+        }
+
+        case SET_GAME_LOCALE: {
+            return {
+                ...state,
+                locale: action.payload,
             };
         }
 

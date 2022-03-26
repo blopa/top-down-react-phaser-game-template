@@ -3,20 +3,18 @@ import { Scene } from 'phaser';
 // Constants
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
-// Store
-import store from '../../redux/store';
-
 // Actions
-import setMapKeyAction from '../../redux/actions/setMapKeyAction';
-import setHeroFacingDirectionAction from '../../redux/actions/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../../redux/actions/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../../redux/actions/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../../redux/actions/setHeroInitialFrameAction';
-import setMenuItemsAction from '../../redux/actions/setMenuItemsAction';
-import setMenuOnSelectAction from '../../redux/actions/setMenuOnSelectAction';
+import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
+import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
+import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
+import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
+import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
+import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
+import { getDispatch } from '../../utils/utils';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -28,11 +26,11 @@ export default class MainMenuScene extends Scene {
     }
 
     create() {
-        const { dispatch } = store;
+        const dispatch = getDispatch();
 
-        dispatch(setMenuItemsAction(['Start Game', 'Exit']));
-        dispatch(setMenuOnSelectAction((item) => {
-            if (item === 'Start Game') {
+        dispatch(setMenuItemsAction(['start_game', 'exit']));
+        dispatch(setMenuOnSelectAction((key, item) => {
+            if (key === 'start_game') {
                 handleStartGameSelected();
             } else {
                 dispatch(setMenuItemsAction([]));

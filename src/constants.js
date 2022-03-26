@@ -19,6 +19,7 @@ export const COIN = 2;
 export const HEART = 3;
 export const CRYSTAL = 4;
 export const KEY = 5;
+export const DOOR = 6;
 
 export const IDLE_FRAME = 'walk_position_02';
 

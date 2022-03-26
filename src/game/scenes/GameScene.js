@@ -9,9 +9,7 @@ import {
     handleCreateGroups,
     handleCreateControls,
     handleConfigureCamera,
-    handleConfigureGridEngine,
     handleCreateHeroAnimations,
-    handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 
 export default class GameScene extends Scene {
@@ -29,13 +27,10 @@ export default class GameScene extends Scene {
         handleCreateGroups(this);
 
         // Create the map
-        handleCreateMap(this);
+        const customColliders = handleCreateMap(this);
 
         // Create hero sprite
         handleCreateHero(this);
-
-        // Configure grid engine
-        handleConfigureGridEngine(this);
 
         // Load game objects like items, enemies, etc
         handleObjectsLayer(this);
@@ -46,8 +41,9 @@ export default class GameScene extends Scene {
         // Hero animations
         handleCreateHeroAnimations(this);
 
-        // Handle characters movements
-        handleCreateCharactersMovements(this);
+        // Handle collisions
+        this.physics.add.collider(this.heroSprite, this.enemies);
+        this.physics.add.collider(this.heroSprite, customColliders);
     }
 
     update(time, delta) {
