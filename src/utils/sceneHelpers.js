@@ -24,7 +24,12 @@ import {
 } from '../constants';
 
 // Utils
-import { createInteractiveGameObject, getDegreeFromRadians, rotateRectangleInsideTile } from './utils';
+import {
+    getDispatch,
+    getDegreeFromRadians,
+    rotateRectangleInsideTile,
+    createInteractiveGameObject,
+} from './utils';
 
 // Store
 import store from '../redux/store';
@@ -43,14 +48,16 @@ import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogChara
 import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
 import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
+import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
+import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
 
     return selector(getState());
 };
-
-export const getDispatch = () => store.dispatch;
 
 /**
  * @param scene
@@ -427,6 +434,7 @@ export const handleObjectsLayer = (scene) => {
                 }
 
                 case DOOR: {
+                    const { type, map, position } = propertiesObject;
                     const customCollider = createInteractiveGameObject(
                         scene,
                         x,
@@ -434,6 +442,26 @@ export const handleObjectsLayer = (scene) => {
                         TILE_WIDTH,
                         TILE_HEIGHT
                     );
+
+                    scene.physics.add.collider(scene.heroSprite, customCollider, () => {
+                        const [posX, posY] = position.split(';');
+                        Promise.all([
+                            dispatch(setMapKeyAction(map)),
+                            dispatch(setHeroFacingDirectionAction(UP_DIRECTION)),
+                            dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
+                            dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),
+                            dispatch(setHeroInitialFrameAction(
+                                IDLE_FRAME.replace('position', UP_DIRECTION)
+                            )),
+                        ]).then(() => {
+                            // scene.scene.restart();
+                            changeScene(scene, 'GameScene', {
+                                atlases: ['hero'],
+                                images: [],
+                                mapKey: map,
+                            });
+                        });
+                    });
 
                     break;
                 }
@@ -487,7 +515,7 @@ export const handleCreateHeroAnimations = (scene) => {
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 50) => {
-    const { dispatch } = store;
+    const dispatch = getDispatch();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
@@ -521,6 +549,8 @@ export const handleHeroMovement = (scene, heroSpeed = 50) => {
 };
 
 export const changeScene = (scene, nextScene, assets = {}, config = {}) => {
+    // const sceneKey = scene.scene.key;
+    // scene.scene.stop(sceneKey);
     scene.scene.start('LoadAssetsScene', {
         nextScene,
         assets,

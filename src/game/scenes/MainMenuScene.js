@@ -3,9 +3,6 @@ import { Scene } from 'phaser';
 // Constants
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
-// Store
-import store from '../../redux/store';
-
 // Actions
 import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
@@ -17,6 +14,7 @@ import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectActio
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
+import { getDispatch } from '../../utils/utils';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -28,7 +26,7 @@ export default class MainMenuScene extends Scene {
     }
 
     create() {
-        const { dispatch } = store;
+        const dispatch = getDispatch();
 
         dispatch(setMenuItemsAction(['start_game', 'exit']));
         dispatch(setMenuOnSelectAction((key, item) => {

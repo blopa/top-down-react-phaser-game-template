@@ -62,6 +62,8 @@ export const getSelectorData = (selector) => {
 
 export const getDispatch = () => store.dispatch;
 
+export const getState = () => store.getState();
+
 export const createInteractiveGameObject = (
     scene,
     x,

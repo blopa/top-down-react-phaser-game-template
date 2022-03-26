@@ -1,8 +1,5 @@
 import { Scene, Display } from 'phaser';
 
-// Store
-import store from '../../redux/store';
-
 // Actions
 import addLoadedFontAction from '../../redux/actions/loadedAssets/addLoadedFontAction';
 import addLoadedAtlasAction from '../../redux/actions/loadedAssets/addLoadedAtlasAction';
@@ -22,6 +19,8 @@ import {
 
 // Utils
 import {
+    getState,
+    getDispatch,
     isMapFileAvailable,
     isImageFileAvailable,
     isTilesetFileAvailable,
@@ -62,7 +61,7 @@ export default class LoadAssetsScene extends Scene {
             mapKey = '',
         } = this.initData?.assets || {};
 
-        const { getState, dispatch } = store;
+        const dispatch = getDispatch();
         const state = getState();
         const loadedFonts = selectLoadedFonts(state);
 
