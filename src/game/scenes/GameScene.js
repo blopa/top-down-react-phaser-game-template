@@ -27,7 +27,7 @@ export default class GameScene extends Scene {
         handleCreateGroups(this);
 
         // Create the map
-        handleCreateMap(this);
+        const customColliders = handleCreateMap(this);
 
         // Create hero sprite
         handleCreateHero(this);
@@ -43,6 +43,7 @@ export default class GameScene extends Scene {
 
         // Handle collisions
         this.physics.add.collider(this.heroSprite, this.enemies);
+        this.physics.add.collider(this.heroSprite, customColliders);
     }
 
     update(time, delta) {

@@ -4,6 +4,7 @@ import { Input } from 'phaser';
 import {
     KEY,
     COIN,
+    DOOR,
     HEART,
     ENEMY,
     CRYSTAL,
@@ -23,7 +24,7 @@ import {
 } from '../constants';
 
 // Utils
-import { createInteractiveGameObject } from './utils';
+import { createInteractiveGameObject, getDegreeFromRadians, rotateRectangleInsideTile } from './utils';
 
 // Store
 import store from '../redux/store';
@@ -103,9 +104,14 @@ export const handleCreateGroups = (scene) => {
     scene.mapLayers = scene.add.group();
 };
 
+/**
+ * @param scene
+ * @returns Phaser.GameObjects.Group
+ */
 export const handleCreateMap = (scene) => {
     const mapKey = getSelectorData(selectMapKey);
     const tilesets = getSelectorData(selectTilesets);
+    const customColliders = scene.add.group();
 
     // Create the map
     const map = scene.make.tilemap({ key: mapKey });
@@ -113,14 +119,79 @@ export const handleCreateMap = (scene) => {
         map.addTilesetImage(tilesetName, tilesetName);
     });
 
-    map.layers.forEach((layerData, index) => {
+    map.layers.forEach((layerData, idx) => {
         const layer = map.createLayer(layerData.name, tilesets, 0, 0);
-        layer.setCollisionByProperty({ collides: true });
+
+        layer.layer.data.forEach((tileRows) => {
+            tileRows.forEach((tile) => {
+                const { index, tileset, properties } = tile;
+                const {
+                    collideLeft,
+                    collideRight,
+                    collideUp,
+                    collideDown,
+                } = properties;
+                const tilesetCustomColliders = tileset?.getTileData?.(index);
+
+                if (tilesetCustomColliders) {
+                    const { objectgroup } = tilesetCustomColliders;
+                    const { objects } = objectgroup;
+
+                    objects?.forEach((objectData) => {
+                        let { height, width, x, y, ellipse } = objectData;
+
+                        // if the custom collider is the same size as the tile
+                        // then we enable the normal tile collider from Phaser
+                        if (height === TILE_HEIGHT && width === TILE_WIDTH) {
+                            tile.setCollision(
+                                Boolean(collideLeft),
+                                Boolean(collideRight),
+                                Boolean(collideUp),
+                                Boolean(collideDown)
+                            );
+                            return;
+                        }
+
+                        const { rotation, flipX, flipY } = tile;
+                        if (flipX) {
+                            x = TILE_WIDTH - (x + width);
+                        }
+                        if (flipY) {
+                            y = TILE_HEIGHT - (y + height);
+                        }
+
+                        const degree = getDegreeFromRadians(rotation);
+                        [x, y, width, height] = rotateRectangleInsideTile(x, y, width, height, degree);
+
+                        const customCollider = createInteractiveGameObject(
+                            scene,
+                            (tile.x * TILE_WIDTH) + x,
+                            (tile.y * TILE_HEIGHT) + y,
+                            width,
+                            height
+                        );
+
+                        customColliders.add(customCollider);
+                    });
+                } else {
+                    tile.setCollision(
+                        Boolean(collideLeft),
+                        Boolean(collideRight),
+                        Boolean(collideUp),
+                        Boolean(collideDown)
+                    );
+                }
+            });
+        });
+
+        // scene.physics.add.collider(scene.heroSprite, customColliders);
+        // layer.setCollisionByProperty({ collides: true });
         scene.mapLayers.add(layer);
     });
 
     // eslint-disable-next-line no-param-reassign
     scene.map = map;
+    return customColliders;
 };
 
 export const handleCreateHero = (scene) => {
@@ -133,6 +204,10 @@ export const handleCreateHero = (scene) => {
         .setName(HERO_SPRITE_NAME)
         .setOrigin(0, 0)
         .setDepth(1);
+
+    // heroSprite.body.width = 10;
+    // heroSprite.body.height = 10;
+    // heroSprite.body.setOffset(6, 6);
 
     // const facingDirection = getSelectorData(selectHeroFacingDirection);
     // heroSprite.setFrame(
@@ -231,6 +306,9 @@ export const handleObjectsLayer = (scene) => {
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y } = object;
+            const propertiesObject = Object.fromEntries(
+                properties?.map((curr) => [curr.name, curr.value]) || []
+            );
 
             switch (gid) {
                 case ENEMY: {
@@ -347,6 +425,19 @@ export const handleObjectsLayer = (scene) => {
 
                     break;
                 }
+
+                case DOOR: {
+                    const customCollider = createInteractiveGameObject(
+                        scene,
+                        x,
+                        y,
+                        TILE_WIDTH,
+                        TILE_HEIGHT
+                    );
+
+                    break;
+                }
+
                 default: {
                     break;
                 }

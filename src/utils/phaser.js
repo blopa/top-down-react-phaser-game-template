@@ -22,32 +22,6 @@ export const calculateGameSize = (
     };
 };
 
-export const createInteractiveGameObject = (
-    scene,
-    x,
-    y,
-    width,
-    height,
-    isDebug = false,
-    origin = { x: 0, y: 0 }
-) => {
-    const customCollider = new GameObjects.Rectangle(
-        scene,
-        x,
-        y,
-        width,
-        height
-    ).setOrigin(origin.x, origin.y);
-
-    if (isDebug) {
-        customCollider.setFillStyle(0x741B47);
-    }
-
-    scene.physics.add.existing(customCollider);
-
-    return customCollider;
-};
-
 // Thanks yannick @ https://phaser.discourse.group/t/loading-audio/1306/4
 export const asyncLoader = (loaderPlugin) => new Promise((resolve, reject) => {
     loaderPlugin.on('filecomplete', resolve).on('loaderror', reject);
