@@ -48,6 +48,9 @@ export default class GameScene extends Scene {
 
         // Handle characters movements
         handleCreateCharactersMovements(this);
+
+        // Handle collisions
+        // this.physics.add.collider(this.heroSprite, customColliders);
     }
 
     update(time, delta) {

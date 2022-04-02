@@ -50143,6 +50143,35 @@
           "width": 16,
           "x": 496,
           "y": 800
+        },
+        {
+          "gid": 6,
+          "height": 16,
+          "id": 19,
+          "name": "",
+          "properties": [
+            {
+              "name": "map",
+              "type": "string",
+              "value": "sample_indoor"
+            },
+            {
+              "name": "position",
+              "type": "string",
+              "value": "10;10"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "value": "teleport"
+            }
+          ],
+          "rotation": 0,
+          "type": "",
+          "visible": true,
+          "width": 16,
+          "x": 480,
+          "y": 624
         }
       ],
       "opacity": 1,
@@ -50153,10 +50182,10 @@
     }
   ],
   "nextlayerid": 8,
-  "nextobjectid": 18,
+  "nextobjectid": 20,
   "orientation": "orthogonal",
   "renderorder": "right-down",
-  "tiledversion": "1.7.2",
+  "tiledversion": "1.8.2",
   "tileheight": 16,
   "tilesets": [
     {
@@ -50174,6 +50203,6 @@
   ],
   "tilewidth": 16,
   "type": "map",
-  "version": "1.6",
+  "version": "1.8",
   "width": 100
 }
