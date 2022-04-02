@@ -323,7 +323,7 @@ export const handleObjectsLayer = (scene) => {
                     const enemy = scene.physics.add
                         .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
                         .setName(name)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setDepth(1);
 
                     enemy.body.setImmovable(true);
@@ -370,7 +370,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${COIN_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const coin = scene.physics.add
                         .sprite(x, y, COIN_SPRITE_NAME, 'coin_idle_01')
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -398,7 +398,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${HEART_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const heart = scene.physics.add
                         .image(x, y, HEART_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -411,7 +411,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const crystal = scene.physics.add
                         .image(x, y, CRYSTAL_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -424,7 +424,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${KEY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const key = scene.physics.add
                         .image(x, y, KEY_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -440,7 +440,8 @@ export const handleObjectsLayer = (scene) => {
                         x,
                         y,
                         TILE_WIDTH,
-                        TILE_HEIGHT
+                        TILE_HEIGHT,
+                        { x: 0, y: 1 }
                     );
 
                     scene.physics.add.collider(scene.heroSprite, customCollider, () => {
