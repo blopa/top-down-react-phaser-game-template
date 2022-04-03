@@ -254,7 +254,7 @@ export const handleObjectsLayer = (scene) => {
                         sprite: enemy,
                         startPosition: {
                             x: Math.floor(x / TILE_WIDTH),
-                            y: Math.floor(y / TILE_HEIGHT),
+                            y: Math.floor(y / TILE_HEIGHT) - 1,
                         },
                     });
 
