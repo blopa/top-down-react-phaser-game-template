@@ -4,6 +4,7 @@ import { Input } from 'phaser';
 import {
     KEY,
     COIN,
+    DOOR,
     HEART,
     ENEMY,
     CRYSTAL,
@@ -23,7 +24,10 @@ import {
 } from '../constants';
 
 // Utils
-import { createInteractiveGameObject } from './utils';
+import {
+    getDispatch,
+    createInteractiveGameObject,
+} from './utils';
 
 // Store
 import store from '../redux/store';
@@ -38,17 +42,20 @@ import {
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
-import setDialogCharacterNameAction from '../redux/actions/setDialogCharacterNameAction';
-import setDialogMessagesAction from '../redux/actions/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/setDialogActionAction';
+import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
+import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
+import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
+import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
+import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
+import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
 
     return selector(getState());
 };
-
-export const getDispatch = () => store.dispatch;
 
 /**
  * @param scene
@@ -128,11 +135,14 @@ export const handleCreateGroups = (scene) => {
     scene.enemies = scene.add.group();
     // eslint-disable-next-line no-param-reassign
     scene.items = scene.add.group();
+    // eslint-disable-next-line no-param-reassign
+    scene.mapLayers = scene.add.group();
 };
 
 export const handleCreateMap = (scene) => {
     const mapKey = getSelectorData(selectMapKey);
     const tilesets = getSelectorData(selectTilesets);
+    const customColliders = scene.add.group();
 
     // Create the map
     const map = scene.make.tilemap({ key: mapKey });
@@ -140,7 +150,7 @@ export const handleCreateMap = (scene) => {
         map.addTilesetImage(tilesetName, tilesetName);
     });
 
-    map.layers.forEach((layerData, index) => {
+    map.layers.forEach((layerData, idx) => {
         const layer = map.createLayer(layerData.name, tilesets, 0, 0);
     });
 
@@ -155,6 +165,7 @@ export const handleCreateHero = (scene) => {
     const heroSprite = scene.physics.add
         .sprite(0, 0, HERO_SPRITE_NAME, initialFrame)
         .setName(HERO_SPRITE_NAME)
+        .setOrigin(0, 0)
         .setDepth(1);
 
     const actionColliderSizeOffset = 2;
@@ -164,55 +175,39 @@ export const handleCreateHero = (scene) => {
         0,
         0,
         TILE_WIDTH - actionColliderSizeOffset,
-        TILE_HEIGHT - actionColliderSizeOffset,
-        true
+        TILE_HEIGHT - actionColliderSizeOffset
     );
 
-    // eslint-disable-next-line no-param-reassign
-    heroSprite.update = (time, delta) => {
+    const updateActionCollider = (
+        { top, right, bottom, left } = heroSprite.body
+    ) => {
         const facingDirection = scene.gridEngine.getFacingDirection(HERO_SPRITE_NAME);
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x + (actionColliderSizeOffset / 2)
-                );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y + TILE_HEIGHT
-                );
+                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setY(bottom);
 
                 break;
             }
 
             case UP_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x + (actionColliderSizeOffset / 2)
-                );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y - TILE_HEIGHT + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setY(top - heroSprite.body.height + actionColliderSizeOffset);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x - TILE_HEIGHT + (actionColliderSizeOffset / 2)
-                );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(left - heroSprite.body.width + actionColliderSizeOffset);
+                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
 
                 break;
             }
 
             case RIGHT_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    heroSprite.x + TILE_WIDTH + (actionColliderSizeOffset / 2)
-                );
-                heroSprite.actionCollider.setY(
-                    heroSprite.y + (actionColliderSizeOffset / 2)
-                );
+                heroSprite.actionCollider.setX(right);
+                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
 
                 break;
             }
@@ -221,6 +216,10 @@ export const handleCreateHero = (scene) => {
                 break;
             }
         }
+    };
+
+    heroSprite.update = (time, delta) => {
+        updateActionCollider();
     };
 
     // eslint-disable-next-line no-param-reassign
@@ -234,6 +233,9 @@ export const handleObjectsLayer = (scene) => {
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y } = object;
+            const propertiesObject = Object.fromEntries(
+                properties?.map((curr) => [curr.name, curr.value]) || []
+            );
 
             switch (gid) {
                 case ENEMY: {
@@ -241,6 +243,7 @@ export const handleObjectsLayer = (scene) => {
                     const enemy = scene.physics.add
                         .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
                         .setName(name)
+                        .setOrigin(0, 1)
                         .setDepth(1);
 
                     scene.sprites.add(enemy);
@@ -255,7 +258,7 @@ export const handleObjectsLayer = (scene) => {
                         },
                     });
 
-                    const enemyActionHeroCollider = scene.physics.add.collider(
+                    const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
                         scene.heroSprite.actionCollider,
                         (e, a) => {
@@ -295,7 +298,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${COIN_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const coin = scene.physics.add
                         .sprite(x, y, COIN_SPRITE_NAME, 'coin_idle_01')
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -323,7 +326,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${HEART_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const heart = scene.physics.add
                         .image(x, y, HEART_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -336,7 +339,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const crystal = scene.physics.add
                         .image(x, y, CRYSTAL_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -349,7 +352,7 @@ export const handleObjectsLayer = (scene) => {
                     const name = `${KEY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const key = scene.physics.add
                         .image(x, y, KEY_SPRITE_NAME)
-                        .setOrigin(0, 0)
+                        .setOrigin(0, 1)
                         .setName(name)
                         .setDepth(1);
 
@@ -357,6 +360,44 @@ export const handleObjectsLayer = (scene) => {
 
                     break;
                 }
+
+                case DOOR: {
+                    const { type, map, position } = propertiesObject;
+                    const customCollider = createInteractiveGameObject(
+                        scene,
+                        x,
+                        y,
+                        TILE_WIDTH,
+                        TILE_HEIGHT,
+                        { x: 0, y: 1 }
+                    );
+
+                    const overlapCollider = scene.physics.add.overlap(scene.heroSprite, customCollider, () => {
+                        scene.physics.world.removeCollider(overlapCollider);
+                        const [posX, posY] = position.split(';').map((n) => Number.parseInt(n, 10));
+                        const facingDirection = scene.gridEngine.getFacingDirection(HERO_SPRITE_NAME);
+
+                        Promise.all([
+                            dispatch(setMapKeyAction(map)),
+                            dispatch(setHeroFacingDirectionAction(facingDirection)),
+                            dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
+                            dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),
+                            dispatch(setHeroInitialFrameAction(
+                                IDLE_FRAME.replace('position', facingDirection)
+                            )),
+                        ]).then(() => {
+                            // scene.scene.restart();
+                            changeScene(scene, 'GameScene', {
+                                atlases: ['hero'],
+                                images: [],
+                                mapKey: map,
+                            });
+                        });
+                    });
+
+                    break;
+                }
+
                 default: {
                     break;
                 }
@@ -411,12 +452,12 @@ export const handleConfigureGridEngine = (scene) => {
 
     // Grid Engine
     scene.gridEngine.create(scene.map, {
-        characterCollisionStrategy: 'BLOCK_TWO_TILES', // default
-        collisionTilePropertyName: 'ge_collide', // default
-        numberOfDirections: 4, // default
+        // characterCollisionStrategy: 'BLOCK_TWO_TILES', // default
+        // collisionTilePropertyName: 'ge_collide', // default
+        // numberOfDirections: 4, // default
         characters: [{
             id: HERO_SPRITE_NAME,
-            offsetY: 0, // default
+            // offsetY: 0, // default
             sprite: scene.heroSprite,
             startPosition: initialPosition,
             facingDirection,
@@ -437,6 +478,10 @@ export const handleHeroMovement = (scene) => {
 };
 
 export const changeScene = (scene, nextScene, assets = {}, config = {}) => {
+    // const sceneKey = scene.scene.key;
+    // scene.scene.restart(sceneKey);
+    // scene.scene.stop(sceneKey);
+
     scene.scene.start('LoadAssetsScene', {
         nextScene,
         assets,

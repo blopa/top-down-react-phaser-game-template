@@ -1,15 +1,12 @@
 import { Scene, Display } from 'phaser';
 
-// Store
-import store from '../../redux/store';
-
 // Actions
-import addLoadedFontAction from '../../redux/actions/addLoadedFontAction';
-import addLoadedAtlasAction from '../../redux/actions/addLoadedAtlasAction';
-import addLoadedImageAction from '../../redux/actions/addLoadedImageAction';
-import addLoadedMapAction from '../../redux/actions/addLoadedMapAction';
-import addLoadedJSONAction from '../../redux/actions/addLoadedJSONAction';
-import addTilesetAction from '../../redux/actions/addTilesetAction';
+import addLoadedFontAction from '../../redux/actions/loadedAssets/addLoadedFontAction';
+import addLoadedAtlasAction from '../../redux/actions/loadedAssets/addLoadedAtlasAction';
+import addLoadedImageAction from '../../redux/actions/loadedAssets/addLoadedImageAction';
+import addLoadedMapAction from '../../redux/actions/loadedAssets/addLoadedMapAction';
+import addLoadedJSONAction from '../../redux/actions/loadedAssets/addLoadedJSONAction';
+import addTilesetAction from '../../redux/actions/mapData/addTilesetAction';
 
 // Selectors
 import {
@@ -22,6 +19,8 @@ import {
 
 // Utils
 import {
+    getState,
+    getDispatch,
     isMapFileAvailable,
     isImageFileAvailable,
     isTilesetFileAvailable,
@@ -62,7 +61,7 @@ export default class LoadAssetsScene extends Scene {
             mapKey = '',
         } = this.initData?.assets || {};
 
-        const { getState, dispatch } = store;
+        const dispatch = getDispatch();
         const state = getState();
         const loadedFonts = selectLoadedFonts(state);
 
