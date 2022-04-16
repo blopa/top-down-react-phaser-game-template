@@ -42,13 +42,14 @@ import { selectTexts } from './redux/selectors/selectText';
 import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './redux/selectors/selectGameData';
 
 const Game = () => {
+    const defaultLocale = 'en';
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
     const gameTexts = useSelector(selectTexts);
-    const locale = useSelector(selectGameLocale);
+    const locale = useSelector(selectGameLocale) || defaultLocale;
     const cameraSizeUpdateCallback = useSelector(selectGameCameraSizeUpdateCallback);
 
     const [messages, setMessages] = useState({});
@@ -152,7 +153,7 @@ const Game = () => {
                     TILE_HEIGHT
                 );
 
-                // console.log(JSON.stringify(gameSize));
+                console.log(JSON.stringify(gameSize));
                 game.scale.setZoom(gameSize.zoom);
                 game.scale.resize(gameSize.width, gameSize.height);
                 // game.scale.setGameSize(gameSize.width, gameSize.height);
@@ -192,7 +193,7 @@ const Game = () => {
         <IntlProvider
             messages={messages}
             locale={locale}
-            defaultLocale="en"
+            defaultLocale={defaultLocale}
         >
             <div
                 id="game-content"

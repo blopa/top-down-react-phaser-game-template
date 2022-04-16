@@ -312,17 +312,17 @@ export const handleObjectsLayer = (scene) => {
     const dispatch = getDispatch();
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
-            const { gid, properties, x, y } = object;
+            const { gid, properties, x, y, name, width, height } = object;
             const propertiesObject = Object.fromEntries(
                 properties?.map((curr) => [curr.name, curr.value]) || []
             );
 
-            switch (gid) {
+            switch (gid || name) {
                 case ENEMY: {
-                    const name = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                    const spriteName = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const enemy = scene.physics.add
                         .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
-                        .setName(name)
+                        .setName(spriteName)
                         .setOrigin(0, 1)
                         .setDepth(1);
 
@@ -332,7 +332,7 @@ export const handleObjectsLayer = (scene) => {
 
                     // enemy.setInteractive();
                     // enemy.on('pointerdown', () => {
-                    //     console.log('HAHAHA OK OK OK');
+                    //     console.log('Debug click');
                     // });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
@@ -372,11 +372,11 @@ export const handleObjectsLayer = (scene) => {
                 }
 
                 case COIN: {
-                    const name = `${COIN_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                    const spriteName = `${COIN_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const coin = scene.physics.add
                         .sprite(x, y, COIN_SPRITE_NAME, 'coin_idle_01')
                         .setOrigin(0, 1)
-                        .setName(name)
+                        .setName(spriteName)
                         .setDepth(1);
 
                     const animationKey = `${COIN_SPRITE_NAME}_idle`;
@@ -400,11 +400,11 @@ export const handleObjectsLayer = (scene) => {
                 }
 
                 case HEART: {
-                    const name = `${HEART_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                    const spriteName = `${HEART_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const heart = scene.physics.add
                         .image(x, y, HEART_SPRITE_NAME)
                         .setOrigin(0, 1)
-                        .setName(name)
+                        .setName(spriteName)
                         .setDepth(1);
 
                     scene.items.add(heart);
@@ -413,11 +413,11 @@ export const handleObjectsLayer = (scene) => {
                 }
 
                 case CRYSTAL: {
-                    const name = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                    const spriteName = `${CRYSTAL_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const crystal = scene.physics.add
                         .image(x, y, CRYSTAL_SPRITE_NAME)
                         .setOrigin(0, 1)
-                        .setName(name)
+                        .setName(spriteName)
                         .setDepth(1);
 
                     scene.items.add(crystal);
@@ -426,11 +426,11 @@ export const handleObjectsLayer = (scene) => {
                 }
 
                 case KEY: {
-                    const name = `${KEY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
+                    const spriteName = `${KEY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const key = scene.physics.add
                         .image(x, y, KEY_SPRITE_NAME)
                         .setOrigin(0, 1)
-                        .setName(name)
+                        .setName(spriteName)
                         .setDepth(1);
 
                     scene.items.add(key);
@@ -474,6 +474,22 @@ export const handleObjectsLayer = (scene) => {
 
                     break;
                 }
+
+                // case 'encounter': {
+                //     const customCollider = createInteractiveGameObject(
+                //         scene,
+                //         x,
+                //         y,
+                //         width,
+                //         height
+                //     );
+                //
+                //     const overlapCollider = scene.physics.add.overlap(scene.heroSprite, customCollider, () => {
+                //         // TODO
+                //     });
+                //
+                //     break;
+                // }
 
                 default: {
                     break;

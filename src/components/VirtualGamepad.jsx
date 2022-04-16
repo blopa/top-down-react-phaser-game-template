@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
 
 const VirtualGamepad = () => {
     // TODO redo this with that answer from stackoverflow
+    // https://stackoverflow.com/a/70192263/4307769
     const gameWidth = useSelector(selectGameWidth);
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);
