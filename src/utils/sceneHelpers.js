@@ -449,15 +449,18 @@ export const handleObjectsLayer = (scene) => {
                         { x: 0, y: 1 }
                     );
 
-                    scene.physics.add.collider(scene.heroSprite, customCollider, () => {
+                    const overlapCollider = scene.physics.add.overlap(scene.heroSprite, customCollider, () => {
+                        scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
+                        const facingDirection = getSelectorData(selectHeroFacingDirection);
+
                         Promise.all([
                             dispatch(setMapKeyAction(map)),
-                            dispatch(setHeroFacingDirectionAction(UP_DIRECTION)),
+                            dispatch(setHeroFacingDirectionAction(facingDirection)),
                             dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
                             dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),
                             dispatch(setHeroInitialFrameAction(
-                                IDLE_FRAME.replace('position', UP_DIRECTION)
+                                IDLE_FRAME.replace('position', facingDirection)
                             )),
                         ]).then(() => {
                             // scene.scene.restart();
