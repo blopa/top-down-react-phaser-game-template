@@ -1,0 +1,2 @@
+(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[7],{126:function(e){!function(){var e=new Error("Cannot find module '!!/home/runner/work/top-down-react-phaser-game-template/top-down-react-phaser-game-template/node_modules/file-loader/dist/cjs.js!./hero.json'");throw e.code="MODULE_NOT_FOUND",e}()}}]);
+//# sourceMappingURL=7.2eabfef8.chunk.js.map
