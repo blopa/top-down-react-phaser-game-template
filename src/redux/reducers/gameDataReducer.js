@@ -5,7 +5,9 @@ import {
     SET_GAME_HEIGHT,
     SET_GAME_CANVAS,
     SET_GAME_LOCALE,
+    SET_GAME_CAMERA_SIZE_CALLBACK,
 } from '../constants';
+import setGameCameraSizeUpdateCallbackAction from '../actions/game/setGameCameraSizeUpdateCallbackAction';
 
 const defaultState = {
     width: MIN_GAME_WIDTH,
@@ -41,6 +43,13 @@ const gameDataReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 canvas: action.payload,
+            };
+        }
+
+        case SET_GAME_CAMERA_SIZE_CALLBACK: {
+            return {
+                ...state,
+                cameraSizeUpdateCallback: action.payload,
             };
         }
 

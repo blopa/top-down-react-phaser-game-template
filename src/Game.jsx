@@ -38,7 +38,7 @@ import GameText from './components/GameText';
 import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectMenuItems } from './redux/selectors/selectMenu';
 import { selectTexts } from './redux/selectors/selectText';
-import { selectGameLocale } from './redux/selectors/selectGameData';
+import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './redux/selectors/selectGameData';
 
 const Game = () => {
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
@@ -48,6 +48,7 @@ const Game = () => {
     const menuItems = useSelector(selectMenuItems);
     const gameTexts = useSelector(selectTexts);
     const locale = useSelector(selectGameLocale);
+    const cameraSizeUpdateCallback = useSelector(selectGameCameraSizeUpdateCallback);
 
     const [messages, setMessages] = useState({});
 
@@ -129,10 +130,13 @@ const Game = () => {
                 TILE_HEIGHT
             );
 
+            // console.log(JSON.stringify(gameSize));
             // TODO needs to re-run this function to: handleConfigureCamera
             phaserGame.scale.setZoom(gameSize.zoom);
             phaserGame.scale.resize(gameSize.width, gameSize.height);
             updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
+            debugger;
+            cameraSizeUpdateCallback?.();
         };
 
         // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
@@ -142,6 +146,8 @@ const Game = () => {
         });
 
         setGame(phaserGame);
+
+        // TODO canvas is not initialized yet
         dispatch(setGameCanvasElementAction(phaserGame.canvas));
         if (isDevelopment) {
             window.phaserGame = phaserGame;
@@ -151,6 +157,7 @@ const Game = () => {
         dispatch,
         isDevelopment,
         updateGameReduxState,
+        cameraSizeUpdateCallback,
     ]);
 
     return (

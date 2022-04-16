@@ -11,6 +11,8 @@ import {
     handleConfigureCamera,
     handleCreateHeroAnimations,
 } from '../../utils/sceneHelpers';
+import { getDispatch } from '../../utils/utils';
+import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -18,6 +20,8 @@ export default class GameScene extends Scene {
     }
 
     create() {
+        const dispatch = getDispatch();
+
         // All of these functions need to be called in order
 
         // Create controls
@@ -37,6 +41,10 @@ export default class GameScene extends Scene {
 
         // Configure the main camera
         handleConfigureCamera(this);
+        dispatch(setGameCameraSizeUpdateCallbackAction(() => {
+            console.log('run it');
+            handleConfigureCamera(this);
+        }));
 
         // Hero animations
         handleCreateHeroAnimations(this);
