@@ -5,6 +5,7 @@ import {
     SET_GAME_HEIGHT,
     SET_GAME_CANVAS,
     SET_GAME_LOCALE,
+    SET_GAME_CAMERA_SIZE_CALLBACK,
 } from '../constants';
 
 const defaultState = {
@@ -41,6 +42,13 @@ const gameDataReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 canvas: action.payload,
+            };
+        }
+
+        case SET_GAME_CAMERA_SIZE_CALLBACK: {
+            return {
+                ...state,
+                cameraSizeUpdateCallback: action.payload,
             };
         }
 

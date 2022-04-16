@@ -139,6 +139,10 @@ export const handleCreateGroups = (scene) => {
     scene.mapLayers = scene.add.group();
 };
 
+/**
+ * @param scene
+ * @returns Phaser.GameObjects.Group
+ */
 export const handleCreateMap = (scene) => {
     const mapKey = getSelectorData(selectMapKey);
     const tilesets = getSelectorData(selectTilesets);
@@ -409,6 +413,7 @@ export const handleObjectsLayer = (scene) => {
 export const handleConfigureCamera = (scene) => {
     const { game } = scene.sys;
     const camera = scene.cameras.main;
+    // console.log(JSON.stringify(game.scale.gameSize));
 
     // Configure the main camera
     camera.startFollow(scene.heroSprite, true);

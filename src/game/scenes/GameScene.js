@@ -14,12 +14,20 @@ import {
     handleCreateCharactersMovements,
 } from '../../utils/sceneHelpers';
 
+// Utils
+import { getDispatch } from '../../utils/utils';
+
+// Actions
+import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';
+
 export default class GameScene extends Scene {
     constructor() {
         super('GameScene');
     }
 
     create() {
+        const dispatch = getDispatch();
+
         // All of these functions need to be called in order
 
         // Create controls
@@ -42,15 +50,15 @@ export default class GameScene extends Scene {
 
         // Configure the main camera
         handleConfigureCamera(this);
+        dispatch(setGameCameraSizeUpdateCallbackAction(() => {
+            handleConfigureCamera(this);
+        }));
 
         // Hero animations
         handleCreateHeroAnimations(this);
 
         // Handle characters movements
         handleCreateCharactersMovements(this);
-
-        // Handle collisions
-        // this.physics.add.collider(this.heroSprite, customColliders);
     }
 
     update(time, delta) {

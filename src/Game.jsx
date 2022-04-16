@@ -15,6 +15,7 @@ import {
     MIN_GAME_WIDTH,
     MIN_GAME_HEIGHT,
     RESIZE_THRESHOLD,
+    RE_RESIZE_THRESHOLD,
 } from './constants';
 
 // Game Scenes
@@ -39,7 +40,7 @@ import GameText from './components/GameText';
 import { selectDialogMessages } from './redux/selectors/selectDialog';
 import { selectMenuItems } from './redux/selectors/selectMenu';
 import { selectTexts } from './redux/selectors/selectText';
-import { selectGameLocale } from './redux/selectors/selectGameData';
+import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './redux/selectors/selectGameData';
 
 const Game = () => {
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
@@ -49,6 +50,7 @@ const Game = () => {
     const menuItems = useSelector(selectMenuItems);
     const gameTexts = useSelector(selectTexts);
     const locale = useSelector(selectGameLocale);
+    const cameraSizeUpdateCallback = useSelector(selectGameCameraSizeUpdateCallback);
 
     const [messages, setMessages] = useState({});
 
@@ -127,32 +129,8 @@ const Game = () => {
         });
 
         updateGameReduxState(width, height, zoom);
-
-        // Create listener to resize the game
-        // when the window is resized
-        let timeOutFunctionId;
-        const workAfterResizeIsDone = () => {
-            const gameSize = calculateGameSize(
-                MIN_GAME_WIDTH,
-                MIN_GAME_HEIGHT,
-                TILE_WIDTH,
-                TILE_HEIGHT
-            );
-
-            // TODO needs to re-run this function to: handleConfigureCamera
-            phaserGame.scale.setZoom(gameSize.zoom);
-            phaserGame.scale.resize(gameSize.width, gameSize.height);
-            updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
-        };
-
-        // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
-        window.addEventListener('resize', () => {
-            clearTimeout(timeOutFunctionId);
-            timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
-        });
-
         setGame(phaserGame);
-        dispatch(setGameCanvasElementAction(phaserGame.canvas));
+
         if (isDevelopment) {
             window.phaserGame = phaserGame;
         }
@@ -161,6 +139,63 @@ const Game = () => {
         dispatch,
         isDevelopment,
         updateGameReduxState,
+    ]);
+
+    useEffect(() => {
+        if (!game) {
+            return () => {};
+        }
+
+        if (game.canvas) {
+            dispatch(setGameCanvasElementAction(game.canvas));
+        }
+
+        // Create listener to resize the game
+        // when the window is resized
+        let timeOutFunctionId;
+        const workAfterResizeIsDone = () => {
+            const scaleGame = () => {
+                const gameSize = calculateGameSize(
+                    MIN_GAME_WIDTH,
+                    MIN_GAME_HEIGHT,
+                    TILE_WIDTH,
+                    TILE_HEIGHT
+                );
+
+                // console.log(JSON.stringify(gameSize));
+                game.scale.setZoom(gameSize.zoom);
+                game.scale.resize(gameSize.width, gameSize.height);
+                // game.scale.setGameSize(gameSize.width, gameSize.height);
+                // game.scale.displaySize.resize(gameSize.width, gameSize.height);
+                // game.scale.resize(gameSize.width, gameSize.height).getParentBounds();
+                updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
+                // game.canvas.style.width = `${gameSize.width}px`;
+                // game.canvas.style.height = `${gameSize.height}px`;
+                cameraSizeUpdateCallback?.();
+            };
+
+            scaleGame();
+
+            // re-run function after resize is done to re-trigger css calculations
+            setTimeout(scaleGame, RE_RESIZE_THRESHOLD);
+        };
+
+        const canvasResizeCallback = () => {
+            clearTimeout(timeOutFunctionId);
+            timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
+        };
+
+        // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
+        window.addEventListener('resize', canvasResizeCallback);
+
+        return () => {
+            window.removeEventListener('resize', canvasResizeCallback);
+        };
+    }, [
+        game,
+        dispatch,
+        updateGameReduxState,
+        cameraSizeUpdateCallback,
     ]);
 
     return (
