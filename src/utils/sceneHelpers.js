@@ -330,6 +330,11 @@ export const handleObjectsLayer = (scene) => {
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
 
+                    // enemy.setInteractive();
+                    // enemy.on('pointerdown', () => {
+                    //     console.log('HAHAHA OK OK OK');
+                    // });
+
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
                         scene.heroSprite.actionCollider,
@@ -478,6 +483,7 @@ export const handleObjectsLayer = (scene) => {
 export const handleConfigureCamera = (scene) => {
     const { game } = scene.sys;
     const camera = scene.cameras.main;
+    // console.log(JSON.stringify(game.scale.gameSize));
 
     // Configure the main camera
     camera.startFollow(scene.heroSprite, true);

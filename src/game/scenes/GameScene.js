@@ -42,7 +42,6 @@ export default class GameScene extends Scene {
         // Configure the main camera
         handleConfigureCamera(this);
         dispatch(setGameCameraSizeUpdateCallbackAction(() => {
-            console.log('run it');
             handleConfigureCamera(this);
         }));
 

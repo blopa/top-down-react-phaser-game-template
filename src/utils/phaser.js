@@ -1,5 +1,3 @@
-import { GameObjects } from 'phaser';
-
 export const calculateGameSize = (
     width,
     height,

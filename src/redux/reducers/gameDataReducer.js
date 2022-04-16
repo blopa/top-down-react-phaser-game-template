@@ -7,7 +7,6 @@ import {
     SET_GAME_LOCALE,
     SET_GAME_CAMERA_SIZE_CALLBACK,
 } from '../constants';
-import setGameCameraSizeUpdateCallbackAction from '../actions/game/setGameCameraSizeUpdateCallbackAction';
 
 const defaultState = {
     width: MIN_GAME_WIDTH,
