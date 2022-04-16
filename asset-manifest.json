@@ -45,8 +45,8 @@
     "main.js.map": "./static/js/main.6184cb3a.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.1b984a1e.js",
     "runtime-main.js.map": "./static/js/runtime-main.1b984a1e.js.map",
-    "static/js/22.1be2ac3a.chunk.js": "./static/js/22.1be2ac3a.chunk.js",
-    "static/js/22.1be2ac3a.chunk.js.map": "./static/js/22.1be2ac3a.chunk.js.map",
+    "static/js/22.018d00f5.chunk.js": "./static/js/22.018d00f5.chunk.js",
+    "static/js/22.018d00f5.chunk.js.map": "./static/js/22.018d00f5.chunk.js.map",
     "static/js/23.38b73d51.chunk.js": "./static/js/23.38b73d51.chunk.js",
     "static/js/23.38b73d51.chunk.js.map": "./static/js/23.38b73d51.chunk.js.map",
     "static/js/24.2b5c9085.chunk.js": "./static/js/24.2b5c9085.chunk.js",
@@ -109,14 +109,14 @@
     "npc_02.json": "./edf7b79683b8af85c86206e639b1b1af.json",
     "index.html": "./index.html",
     "static/css/main.cf69d9c4.chunk.css.map": "./static/css/main.cf69d9c4.chunk.css.map",
-    "static/js/22.1be2ac3a.chunk.js.LICENSE.txt": "./static/js/22.1be2ac3a.chunk.js.LICENSE.txt",
+    "static/js/22.018d00f5.chunk.js.LICENSE.txt": "./static/js/22.018d00f5.chunk.js.LICENSE.txt",
     "static/media/index.css": "./static/media/PressStart2P-Regular.c5b47093.ttf",
     "static/media/city.png": "./static/media/city.6f70933e.png",
     "static/media/village.png": "./static/media/village.42d6eb49.png"
   },
   "entrypoints": [
     "static/js/runtime-main.1b984a1e.js",
-    "static/js/22.1be2ac3a.chunk.js",
+    "static/js/22.018d00f5.chunk.js",
     "static/css/main.cf69d9c4.chunk.css",
     "static/js/main.6184cb3a.chunk.js"
   ]
