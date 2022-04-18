@@ -34,6 +34,7 @@ import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
 import GameMenu from './components/GameMenu';
 import GameText from './components/GameText';
+import Battle from './components/Battle';
 
 // Selectors
 import { selectDialogMessages } from './redux/selectors/selectDialog';
@@ -153,7 +154,7 @@ const Game = () => {
                     TILE_HEIGHT
                 );
 
-                console.log(JSON.stringify(gameSize));
+                // console.log(JSON.stringify(gameSize));
                 game.scale.setZoom(gameSize.zoom);
                 game.scale.resize(gameSize.width, gameSize.height);
                 // game.scale.setGameSize(gameSize.width, gameSize.height);
@@ -201,6 +202,7 @@ const Game = () => {
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
+            <Battle />
             {dialogMessages.length > 0 && (
                 <DialogBox />
             )}
