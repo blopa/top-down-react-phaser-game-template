@@ -6,6 +6,7 @@ export const MIN_GAME_HEIGHT = 14 * TILE_HEIGHT; // 224
 
 export const RESIZE_THRESHOLD = 500;
 export const RE_RESIZE_THRESHOLD = 10;
+export const OVERLAY_DIV_RESIZE_THRESHOLD = RE_RESIZE_THRESHOLD;
 
 export const HERO_SPRITE_NAME = 'hero';
 export const ENEMY_SPRITE_NAME = 'enemy';
