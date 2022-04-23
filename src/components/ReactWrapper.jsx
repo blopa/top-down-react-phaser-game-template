@@ -12,6 +12,7 @@ import useMutationObserver from '../hooks/useMutationObserver';
 import DialogBox from './DialogBox';
 import GameMenu from './GameMenu';
 import GameText from './GameText';
+import Battle from './Battle';
 
 // Selectors
 import { selectGameCanvasElement } from '../redux/selectors/selectGameData';
@@ -48,6 +49,7 @@ const ReactWrapper = () => {
                 ...mutatedStyles,
             }}
         >
+            <Battle />
             {dialogMessages.length > 0 && (
                 <DialogBox />
             )}
