@@ -30,16 +30,10 @@ import setGameZoomAction from './redux/actions/game/setGameZoomAction';
 import setGameCanvasElementAction from './redux/actions/game/setGameCanvasElementAction';
 
 // Components
-import DialogBox from './components/DialogBox';
 import VirtualGamepad from './components/VirtualGamepad';
-import GameMenu from './components/GameMenu';
-import GameText from './components/GameText';
-import Battle from './components/Battle';
+import ReactWrapper from './components/ReactWrapper';
 
 // Selectors
-import { selectDialogMessages } from './redux/selectors/selectDialog';
-import { selectMenuItems } from './redux/selectors/selectMenu';
-import { selectTexts } from './redux/selectors/selectText';
 import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './redux/selectors/selectGameData';
 
 const Game = () => {
@@ -47,9 +41,6 @@ const Game = () => {
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
     const dispatch = useDispatch();
     const [game, setGame] = useState(null);
-    const dialogMessages = useSelector(selectDialogMessages);
-    const menuItems = useSelector(selectMenuItems);
-    const gameTexts = useSelector(selectTexts);
     const locale = useSelector(selectGameLocale) || defaultLocale;
     const cameraSizeUpdateCallback = useSelector(selectGameCameraSizeUpdateCallback);
 
@@ -202,25 +193,7 @@ const Game = () => {
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
-            <Battle />
-            {dialogMessages.length > 0 && (
-                <DialogBox />
-            )}
-            {menuItems.length > 0 && (
-                <GameMenu />
-            )}
-            {gameTexts.length > 0 && gameTexts.map((text) => {
-                const { key, variables, config } = text;
-
-                return (
-                    <GameText
-                        key={key}
-                        translationKey={key}
-                        variables={variables}
-                        config={config}
-                    />
-                );
-            })}
+            <ReactWrapper />
             {isMobile() && (
                 <VirtualGamepad />
             )}

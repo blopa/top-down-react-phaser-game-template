@@ -330,10 +330,10 @@ export const handleObjectsLayer = (scene) => {
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
 
-                    // enemy.setInteractive();
-                    // enemy.on('pointerdown', () => {
-                    //     console.log('Debug click');
-                    // });
+                    enemy.setInteractive();
+                    enemy.on('pointerdown', () => {
+                        console.log('Debug click');
+                    });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
