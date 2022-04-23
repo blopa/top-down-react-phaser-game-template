@@ -212,9 +212,9 @@ export const handleCreateHero = (scene) => {
         .setOrigin(0, 0)
         .setDepth(1);
 
-    // heroSprite.body.width = 10;
-    // heroSprite.body.height = 10;
-    // heroSprite.body.setOffset(6, 6);
+    heroSprite.body.width = 10;
+    heroSprite.body.height = 8;
+    heroSprite.body.setOffset(3, 8);
 
     // const facingDirection = getSelectorData(selectHeroFacingDirection);
     // heroSprite.setFrame(
@@ -231,56 +231,64 @@ export const handleCreateHero = (scene) => {
         TILE_HEIGHT - actionColliderSizeOffset
     );
 
-    heroSprite.attackCollider = createInteractiveGameObject(
-        scene,
-        0,
-        0,
-        TILE_WIDTH,
-        TILE_HEIGHT
-    );
+    // heroSprite.attackCollider = createInteractiveGameObject(
+    //     scene,
+    //     0,
+    //     0,
+    //     TILE_WIDTH,
+    //     TILE_HEIGHT
+    // );
 
     const updateActionCollider = (
-        { top, right, bottom, left } = heroSprite.body
+        { top, right, bottom, left, width, height } = heroSprite.body
     ) => {
         const facingDirection = getSelectorData(selectHeroFacingDirection);
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
-                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setX(
+                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
+                );
                 heroSprite.actionCollider.setY(bottom);
 
-                heroSprite.attackCollider.setX(left);
-                heroSprite.attackCollider.setY(bottom);
+                // heroSprite.attackCollider.setX(left);
+                // heroSprite.attackCollider.setY(bottom);
 
                 break;
             }
 
             case UP_DIRECTION: {
-                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
-                heroSprite.actionCollider.setY(top - heroSprite.body.height + actionColliderSizeOffset);
+                heroSprite.actionCollider.setX(
+                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
+                );
+                heroSprite.actionCollider.setY(top - height + actionColliderSizeOffset - (heroSprite.height - height));
 
-                heroSprite.attackCollider.setX(left);
-                heroSprite.attackCollider.setY(top - heroSprite.body.height);
+                // heroSprite.attackCollider.setX(left);
+                // heroSprite.attackCollider.setY(top - height);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
-                heroSprite.actionCollider.setX(left - heroSprite.body.width + actionColliderSizeOffset);
-                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setX(left - width + actionColliderSizeOffset - (heroSprite.width - width));
+                heroSprite.actionCollider.setY(
+                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
+                );
 
-                heroSprite.attackCollider.setX(left - heroSprite.body.width);
-                heroSprite.attackCollider.setY(top);
+                // heroSprite.attackCollider.setX(left - width);
+                // heroSprite.attackCollider.setY(top);
 
                 break;
             }
 
             case RIGHT_DIRECTION: {
                 heroSprite.actionCollider.setX(right);
-                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setY(
+                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
+                );
 
-                heroSprite.attackCollider.setX(right);
-                heroSprite.attackCollider.setY(top);
+                // heroSprite.attackCollider.setX(right);
+                // heroSprite.attackCollider.setY(top);
 
                 break;
             }
@@ -330,10 +338,10 @@ export const handleObjectsLayer = (scene) => {
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
 
-                    enemy.setInteractive();
-                    enemy.on('pointerdown', () => {
-                        console.log('Debug click');
-                    });
+                    // enemy.setInteractive();
+                    // enemy.on('pointerdown', () => {
+                    //     console.log('Debug click');
+                    // });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
