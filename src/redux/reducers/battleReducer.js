@@ -1,13 +1,15 @@
 import {
     SET_BATTLE_ITEMS,
-    SET_BATTLE_ENEMIES,
     SET_BATTLE_SKILLS,
+    SET_BATTLE_ENEMIES,
+    SET_BATTLE_ON_SELECT,
 } from '../constants';
 
 const defaultState = {
     items: [],
     enemies: [],
     skills: [],
+    onSelect: null,
 };
 
 const battleReducer = (state = defaultState, action) => {
@@ -30,6 +32,13 @@ const battleReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 skills: action.payload,
+            };
+        }
+
+        case SET_BATTLE_ON_SELECT: {
+            return {
+                ...state,
+                onSelect: action.payload,
             };
         }
 

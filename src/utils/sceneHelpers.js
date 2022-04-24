@@ -53,6 +53,7 @@ import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroIniti
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
+import setBattleOnSelectAction from '../redux/actions/battle/setBattleOnSelectAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
@@ -346,6 +347,12 @@ export const handleObjectsLayer = (scene) => {
 
                         dispatch(setBattleItemsAction(
                             ['melee', 'magic', 'defend', 'run']
+                        ));
+
+                        dispatch(setBattleOnSelectAction(
+                            (item, itemIndex) => {
+                                debugger;
+                            }
                         ));
                     });
 

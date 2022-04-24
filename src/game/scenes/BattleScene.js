@@ -12,8 +12,8 @@ export default class BattleScene extends Scene {
     create() {
         console.log(2222);
         this.add.image(0, 0, 'background_grass');
-        this.add.image(200, 120, 'enemy_01').setScale(2);
-        this.add.image(300, 120, 'enemy_02').setScale(2);
+        this.add.image(200, 120, 'enemy_01').setScale(3);
+        this.add.image(300, 120, 'enemy_02').setScale(3);
 
         this.input.on('pointerdown', () => {
             console.log('click');

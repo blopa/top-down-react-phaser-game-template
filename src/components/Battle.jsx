@@ -6,8 +6,7 @@ import classNames from 'classnames';
 
 // Selectors
 import { selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectMenuOnSelect } from '../redux/selectors/selectMenu';
-import { selectBattleItems } from '../redux/selectors/selectBattle';
+import { selectBattleItems, selectBattleOnSelect } from '../redux/selectors/selectBattle';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
@@ -69,7 +68,7 @@ const Battle = () => {
     });
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-    const onSelected = useSelector(selectMenuOnSelect);
+    const onSelected = useSelector(selectBattleOnSelect);
 
     // TODO for now only works for four items
     const battleItems = useSelector(selectBattleItems);
@@ -78,7 +77,7 @@ const Battle = () => {
         const handleKeyPressed = (e) => {
             switch (e.code) {
                 case ENTER_KEY: {
-                    onSelected(battleItems[selectedItemIndex]);
+                    onSelected(battleItems[selectedItemIndex], selectedItemIndex);
                     break;
                 }
 
@@ -144,7 +143,7 @@ const Battle = () => {
                                 setSelectedItemIndex(index);
                             }}
                             onClick={() => {
-                                onSelected(item);
+                                onSelected(item, index);
                             }}
                         >
                             <FormattedMessage
