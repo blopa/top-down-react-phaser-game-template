@@ -19,11 +19,13 @@ import { selectGameCanvasElement } from '../redux/selectors/selectGameData';
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
 import { selectMenuItems } from '../redux/selectors/selectMenu';
 import { selectTexts } from '../redux/selectors/selectText';
+import { selectBattleItems } from '../redux/selectors/selectBattle';
 
 const ReactWrapper = () => {
     const canvas = useSelector(selectGameCanvasElement);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
+    const battleItems = useSelector(selectBattleItems);
     const gameTexts = useSelector(selectTexts);
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
@@ -49,7 +51,9 @@ const ReactWrapper = () => {
                 ...mutatedStyles,
             }}
         >
-            <Battle />
+            {battleItems.length > 0 && (
+                <Battle />
+            )}
             {dialogMessages.length > 0 && (
                 <DialogBox />
             )}

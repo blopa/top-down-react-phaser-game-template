@@ -39,3 +39,8 @@ export const ADD_TEXT = 'ADD_TEXT';
 export const SET_TEXTS = 'SET_TEXTS';
 export const REMOVE_TEXT = 'REMOVE_TEXT';
 export const UPDATE_TEXT_VARIABLES = 'UPDATE_TEXT_VARIABLES';
+
+// Battle
+export const SET_BATTLE_ITEMS = 'SET_BATTLE_ITEMS';
+export const SET_BATTLE_ENEMIES = 'SET_BATTLE_ENEMIES';
+export const SET_BATTLE_SKILLS = 'SET_BATTLE_SKILLS';

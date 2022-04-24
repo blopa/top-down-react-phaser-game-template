@@ -2,21 +2,26 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 
 // Selectors
-import classNames from 'classnames';
 import { selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectMenuOnSelect } from '../redux/selectors/selectMenu';
+import { selectBattleItems } from '../redux/selectors/selectBattle';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
+
+// Utils
 import { getTranslationVariables } from '../utils/utils';
-import { selectMenuOnSelect } from '../redux/selectors/selectMenu';
 
 const useStyles = makeStyles((theme) => ({
     battleItemsWrapper: ({ width, height, zoom }) => {
         const borderSize = zoom;
 
         return {
+            userSelect: 'none',
+            userDrag: 'none',
             position: 'absolute',
             fontSize: `${10 * zoom}px`,
             listStyle: 'none',
@@ -67,13 +72,13 @@ const Battle = () => {
     const onSelected = useSelector(selectMenuOnSelect);
 
     // TODO for now only works for four items
-    const items = ['melee', 'magic', 'defend', 'run'];
+    const battleItems = useSelector(selectBattleItems);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
             switch (e.code) {
                 case ENTER_KEY: {
-                    onSelected(items[selectedItemIndex]);
+                    onSelected(battleItems[selectedItemIndex]);
                     break;
                 }
 
@@ -87,7 +92,7 @@ const Battle = () => {
                 }
 
                 case ARROW_DOWN_KEY: {
-                    const increment = selectedItemIndex === items.length / 2 ? -1 : 2;
+                    const increment = selectedItemIndex === battleItems.length / 2 ? -1 : 2;
                     setSelectedItemIndex(
                         Math.min(3, selectedItemIndex + increment)
                     );
@@ -116,15 +121,16 @@ const Battle = () => {
                 }
             }
         };
+
         window.addEventListener('keydown', handleKeyPressed);
 
         return () => window.removeEventListener('keydown', handleKeyPressed);
-    }, [items, onSelected, selectedItemIndex]);
+    }, [battleItems, onSelected, selectedItemIndex]);
 
     return (
         <div>
             <ul className={classes.battleItemsWrapper}>
-                {items.map((item, index) => {
+                {battleItems.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
 
                     return (

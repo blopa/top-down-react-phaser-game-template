@@ -52,6 +52,7 @@ import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
+import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
 
 export const getSelectorData = (selector) => {
     const { getState } = store;
@@ -338,10 +339,15 @@ export const handleObjectsLayer = (scene) => {
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
 
-                    // enemy.setInteractive();
-                    // enemy.on('pointerdown', () => {
-                    //     console.log('Debug click');
-                    // });
+                    enemy.setInteractive();
+                    enemy.on('pointerdown', () => {
+                        scene.scene.pause('GameScene');
+                        scene.scene.launch('BattleScene');
+
+                        dispatch(setBattleItemsAction(
+                            ['melee', 'magic', 'defend', 'run']
+                        ));
+                    });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,

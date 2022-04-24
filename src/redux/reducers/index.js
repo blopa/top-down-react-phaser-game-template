@@ -6,6 +6,7 @@ import gameDataReducer from './gameDataReducer';
 import heroDataReducer from './heroDataReducer';
 import mapDataReducer from './mapDataReducer';
 import dialogReducer from './dialogReducer';
+import battleReducer from './battleReducer';
 import menuReducer from './menuReducer';
 import textReducer from './textReducer';
 
@@ -15,6 +16,7 @@ export default combineReducers({
     mapData: mapDataReducer,
     game: gameDataReducer,
     dialog: dialogReducer,
+    battle: battleReducer,
     menu: menuReducer,
     text: textReducer,
 });
