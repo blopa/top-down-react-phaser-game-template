@@ -2,8 +2,8 @@
     "game_title": "Game Title",
     "start_game": "Start Game",
     "exit": "Exit",
-    "melee": "Melee",
-    "magic": "Magic",
-    "defend": "Defend",
+    "rock": "Rock",
+    "paper": "Paper",
+    "scissors": "Scissors",
     "run": "Run"
 }

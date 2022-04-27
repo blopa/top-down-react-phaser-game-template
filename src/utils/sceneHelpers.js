@@ -20,7 +20,7 @@ import {
     COIN_SPRITE_NAME,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    CRYSTAL_SPRITE_NAME, MELEE_BATTLE_ITEM, MAGIC_BATTLE_ITEM, DEFEND_BATTLE_ITEM, RUN_BATTLE_ITEM,
+    CRYSTAL_SPRITE_NAME, ROCK_BATTLE_ITEM, PAPER_BATTLE_ITEM, SCISSORS_BATTLE_ITEM, RUN_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -346,24 +346,24 @@ export const handleObjectsLayer = (scene) => {
                         scene.scene.launch('BattleScene');
 
                         dispatch(setBattleItemsAction([
-                            MELEE_BATTLE_ITEM,
-                            MAGIC_BATTLE_ITEM,
-                            DEFEND_BATTLE_ITEM,
+                            ROCK_BATTLE_ITEM,
+                            PAPER_BATTLE_ITEM,
+                            SCISSORS_BATTLE_ITEM,
                             RUN_BATTLE_ITEM,
                         ]));
 
                         dispatch(setBattleOnSelectAction(
                             (item, itemIndex) => {
                                 switch (item) {
-                                    case MELEE_BATTLE_ITEM: {
+                                    case ROCK_BATTLE_ITEM: {
                                         // TODO: melee attack
                                         break;
                                     }
-                                    case MAGIC_BATTLE_ITEM: {
+                                    case PAPER_BATTLE_ITEM: {
                                         // TODO: melee attack
                                         break;
                                     }
-                                    case DEFEND_BATTLE_ITEM: {
+                                    case SCISSORS_BATTLE_ITEM: {
                                         // TODO: melee attack
                                         break;
                                     }

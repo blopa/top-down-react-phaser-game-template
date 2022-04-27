@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useResizeObserver } from 'beautiful-react-hooks';
 
@@ -44,12 +44,17 @@ const ReactWrapper = () => {
         });
     });
 
+    const handleWrapperClicked = useCallback(() => {
+        // TODO: handle wrapper clicked
+    }, [canvas]);
+
     return (
         <div
             style={{
                 ...defaultStyles,
                 ...mutatedStyles,
             }}
+            onClick={handleWrapperClicked}
         >
             {battleItems.length > 0 && (
                 <Battle />
