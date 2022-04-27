@@ -10,10 +10,29 @@ export default class BattleScene extends Scene {
     }
 
     create() {
-        console.log(2222);
+        const enemies = [];
         this.add.image(0, 0, 'background_grass');
-        this.add.image(200, 120, 'enemy_01').setScale(3);
-        this.add.image(300, 120, 'enemy_02').setScale(3);
+        [
+            { sprite: 'enemy_01', position: { x: 200, y: 120 } },
+            { sprite: 'enemy_02', position: { x: 300, y: 120 } },
+        ]
+            .forEach(({ sprite, position }) => {
+                // TODO do this https://medium.com/@junhongwang/sprite-outline-with-phaser-3-9c17190b04bc
+                const outline = this.add.image(position.x, position.y, sprite)
+                    .setScale(3.5)
+                    .setTintFill(0x85F9DC)
+                    .setVisible(false);
+                const enemy = this.add.image(position.x, position.y, sprite).setScale(3);
+                enemy.outline = outline;
+                enemy.setInteractive();
+                enemy.on('pointerover', () => {
+                    enemy.outline.setVisible(true);
+                });
+                enemy.on('pointerout', () => {
+                    enemy.outline.setVisible(false);
+                });
+                enemies.push(enemy);
+            });
 
         this.input.on('pointerdown', () => {
             console.log('click');

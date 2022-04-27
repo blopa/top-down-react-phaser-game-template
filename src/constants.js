@@ -41,3 +41,13 @@ export const ARROW_LEFT_KEY = 'ArrowLeft';
 export const ARROW_UP_KEY = 'ArrowUp';
 export const ARROW_RIGHT_KEY = 'ArrowRight';
 export const ARROW_DOWN_KEY = 'ArrowDown';
+
+// Battle
+// export const MELEE_ITEM_INDEX = 0;
+// export const MAGIC_ITEM_INDEX = 1;
+// export const DEFEND_ITEM_INDEX = 2;
+// export const RUN_ITEM_INDEX = 3;
+export const MELEE_BATTLE_ITEM = 'melee';
+export const MAGIC_BATTLE_ITEM = 'magic';
+export const DEFEND_BATTLE_ITEM = 'defend';
+export const RUN_BATTLE_ITEM = 'run';

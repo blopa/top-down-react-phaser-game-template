@@ -20,7 +20,7 @@ import {
     COIN_SPRITE_NAME,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    CRYSTAL_SPRITE_NAME,
+    CRYSTAL_SPRITE_NAME, MELEE_BATTLE_ITEM, MAGIC_BATTLE_ITEM, DEFEND_BATTLE_ITEM, RUN_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -345,13 +345,37 @@ export const handleObjectsLayer = (scene) => {
                         scene.scene.pause('GameScene');
                         scene.scene.launch('BattleScene');
 
-                        dispatch(setBattleItemsAction(
-                            ['melee', 'magic', 'defend', 'run']
-                        ));
+                        dispatch(setBattleItemsAction([
+                            MELEE_BATTLE_ITEM,
+                            MAGIC_BATTLE_ITEM,
+                            DEFEND_BATTLE_ITEM,
+                            RUN_BATTLE_ITEM,
+                        ]));
 
                         dispatch(setBattleOnSelectAction(
                             (item, itemIndex) => {
-                                debugger;
+                                switch (item) {
+                                    case MELEE_BATTLE_ITEM: {
+                                        // TODO: melee attack
+                                        break;
+                                    }
+                                    case MAGIC_BATTLE_ITEM: {
+                                        // TODO: melee attack
+                                        break;
+                                    }
+                                    case DEFEND_BATTLE_ITEM: {
+                                        // TODO: melee attack
+                                        break;
+                                    }
+                                    case RUN_BATTLE_ITEM: {
+                                        // TODO: melee attack
+                                        break;
+                                    }
+                                    default: {
+                                        // no default
+                                        break;
+                                    }
+                                }
                             }
                         ));
                     });
