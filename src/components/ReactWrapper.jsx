@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useResizeObserver } from 'beautiful-react-hooks';
 
@@ -17,9 +17,9 @@ import Battle from './Battle';
 // Selectors
 import { selectGameCanvasElement } from '../redux/selectors/selectGameData';
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectBattleItems } from '../redux/selectors/selectBattle';
 import { selectMenuItems } from '../redux/selectors/selectMenu';
 import { selectTexts } from '../redux/selectors/selectText';
-import { selectBattleItems } from '../redux/selectors/selectBattle';
 
 const ReactWrapper = () => {
     const canvas = useSelector(selectGameCanvasElement);
@@ -44,9 +44,14 @@ const ReactWrapper = () => {
         });
     });
 
-    const handleWrapperClicked = useCallback(() => {
-        // TODO: handle wrapper clicked
-    }, [canvas]);
+    // const handleWrapperClicked = useCallback((event) => {
+    //     const { clientX, clientY } = event;
+    //
+    //     canvas.dispatchEvent(new Event('click', {
+    //         clientX,
+    //         clientY,
+    //     }));
+    // }, [canvas]);
 
     return (
         <div
@@ -54,7 +59,7 @@ const ReactWrapper = () => {
                 ...defaultStyles,
                 ...mutatedStyles,
             }}
-            onClick={handleWrapperClicked}
+            // onClick={handleWrapperClicked}
         >
             {battleItems.length > 0 && (
                 <Battle />

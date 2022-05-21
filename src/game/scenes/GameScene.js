@@ -20,9 +20,9 @@ export default class GameScene extends Scene {
     }
 
     create() {
-        this.input.on('pointerup', (pointer) => {
-            console.log('clicky click');
-        });
+        // this.input.on('pointerup', (pointer) => {
+        //     console.log('clicky click');
+        // });
         const dispatch = getDispatch();
 
         // All of these functions need to be called in order
