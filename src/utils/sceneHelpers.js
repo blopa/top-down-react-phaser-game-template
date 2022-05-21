@@ -40,19 +40,22 @@ import {
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectBattleEnemies } from '../redux/selectors/selectBattle';
 
 // Actions
-import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
-import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
-import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
-import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
-import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setBattleEnemiesPickedItemAction from '../redux/actions/battle/setBattleEnemiesPickedItemAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
+import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
+import setBattlePickedItemAction from '../redux/actions/battle/setBattlePickedItemAction';
 import setBattleOnSelectAction from '../redux/actions/battle/setBattleOnSelectAction';
+import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
 import setBattleEnemiesAction from '../redux/actions/battle/setBattleEnemiesAction';
+import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
+import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
+import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 
 /**
  * @param scene
@@ -346,39 +349,22 @@ export const handleObjectsLayer = (scene) => {
                         ]));
 
                         dispatch(setBattleEnemiesAction([
-                            { sprite: 'enemy_01', position: { x: 200, y: 140 }, type: ROCK_BATTLE_ITEM, health: 100, attack: 10 },
-                            { sprite: 'enemy_02', position: { x: 300, y: 140 }, type: PAPER_BATTLE_ITEM, health: 100, attack: 10 },
-                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, type: PAPER_BATTLE_ITEM, health: 100, attack: 10 },
+                            { sprite: 'enemy_01', position: { x: 200, y: 140 }, types: [ROCK_BATTLE_ITEM], health: 100, attack: 10 },
+                            { sprite: 'enemy_02', position: { x: 300, y: 140 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
+                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
                         ]));
 
                         dispatch(setBattleOnSelectAction(
                             (item, itemIndex) => {
-                                switch (item) {
-                                    case ROCK_BATTLE_ITEM: {
-                                        console.log('rock');
-                                        // TODO: melee attack
-                                        break;
-                                    }
-                                    case PAPER_BATTLE_ITEM: {
-                                        console.log('paper');
-                                        // TODO: melee attack
-                                        break;
-                                    }
-                                    case SCISSORS_BATTLE_ITEM: {
-                                        console.log('scissors');
-                                        // TODO: melee attack
-                                        break;
-                                    }
-                                    case RUN_BATTLE_ITEM: {
-                                        console.log('run');
-                                        // TODO: melee attack
-                                        break;
-                                    }
-                                    default: {
-                                        // no default
-                                        break;
-                                    }
+                                if (item === RUN_BATTLE_ITEM) {
+                                    // TODO
+                                    return;
                                 }
+
+                                const enemies = getSelectorData(selectBattleEnemies);
+                                dispatch(setBattleItemsAction([]));
+                                dispatch(setBattlePickedItemAction(item));
+                                dispatch(setBattleEnemiesPickedItemAction(enemies));
                             }
                         ));
                     });
