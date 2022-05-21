@@ -20,19 +20,17 @@ import {
     COIN_SPRITE_NAME,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    CRYSTAL_SPRITE_NAME,
+    CRYSTAL_SPRITE_NAME, ROCK_BATTLE_ITEM, PAPER_BATTLE_ITEM, SCISSORS_BATTLE_ITEM, RUN_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
 import {
     getDispatch,
+    getSelectorData,
     getDegreeFromRadians,
     rotateRectangleInsideTile,
     createInteractiveGameObject,
 } from './utils';
-
-// Store
-import store from '../redux/store';
 
 // Selectors
 import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
@@ -42,22 +40,22 @@ import {
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectBattleEnemies } from '../redux/selectors/selectBattle';
 
 // Actions
-import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
-import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
-import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
-import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
-import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setBattleEnemiesPickedItemAction from '../redux/actions/battle/setBattleEnemiesPickedItemAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
+import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
+import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
+import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-
-export const getSelectorData = (selector) => {
-    const { getState } = store;
-
-    return selector(getState());
-};
+import setBattlePickedItemAction from '../redux/actions/battle/setBattlePickedItemAction';
+import setBattleOnSelectAction from '../redux/actions/battle/setBattleOnSelectAction';
+import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
+import setBattleEnemiesAction from '../redux/actions/battle/setBattleEnemiesAction';
+import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
+import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
+import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 
 /**
  * @param scene
@@ -212,9 +210,9 @@ export const handleCreateHero = (scene) => {
         .setOrigin(0, 0)
         .setDepth(1);
 
-    // heroSprite.body.width = 10;
-    // heroSprite.body.height = 10;
-    // heroSprite.body.setOffset(6, 6);
+    heroSprite.body.width = 10;
+    heroSprite.body.height = 8;
+    heroSprite.body.setOffset(3, 8);
 
     // const facingDirection = getSelectorData(selectHeroFacingDirection);
     // heroSprite.setFrame(
@@ -231,56 +229,64 @@ export const handleCreateHero = (scene) => {
         TILE_HEIGHT - actionColliderSizeOffset
     );
 
-    heroSprite.attackCollider = createInteractiveGameObject(
-        scene,
-        0,
-        0,
-        TILE_WIDTH,
-        TILE_HEIGHT
-    );
+    // heroSprite.attackCollider = createInteractiveGameObject(
+    //     scene,
+    //     0,
+    //     0,
+    //     TILE_WIDTH,
+    //     TILE_HEIGHT
+    // );
 
     const updateActionCollider = (
-        { top, right, bottom, left } = heroSprite.body
+        { top, right, bottom, left, width, height } = heroSprite.body
     ) => {
         const facingDirection = getSelectorData(selectHeroFacingDirection);
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
-                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setX(
+                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
+                );
                 heroSprite.actionCollider.setY(bottom);
 
-                heroSprite.attackCollider.setX(left);
-                heroSprite.attackCollider.setY(bottom);
+                // heroSprite.attackCollider.setX(left);
+                // heroSprite.attackCollider.setY(bottom);
 
                 break;
             }
 
             case UP_DIRECTION: {
-                heroSprite.actionCollider.setX(left + (actionColliderSizeOffset / 2));
-                heroSprite.actionCollider.setY(top - heroSprite.body.height + actionColliderSizeOffset);
+                heroSprite.actionCollider.setX(
+                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
+                );
+                heroSprite.actionCollider.setY(top - height + actionColliderSizeOffset - (heroSprite.height - height));
 
-                heroSprite.attackCollider.setX(left);
-                heroSprite.attackCollider.setY(top - heroSprite.body.height);
+                // heroSprite.attackCollider.setX(left);
+                // heroSprite.attackCollider.setY(top - height);
 
                 break;
             }
 
             case LEFT_DIRECTION: {
-                heroSprite.actionCollider.setX(left - heroSprite.body.width + actionColliderSizeOffset);
-                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setX(left - width + actionColliderSizeOffset - (heroSprite.width - width));
+                heroSprite.actionCollider.setY(
+                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
+                );
 
-                heroSprite.attackCollider.setX(left - heroSprite.body.width);
-                heroSprite.attackCollider.setY(top);
+                // heroSprite.attackCollider.setX(left - width);
+                // heroSprite.attackCollider.setY(top);
 
                 break;
             }
 
             case RIGHT_DIRECTION: {
                 heroSprite.actionCollider.setX(right);
-                heroSprite.actionCollider.setY(top + (actionColliderSizeOffset / 2));
+                heroSprite.actionCollider.setY(
+                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
+                );
 
-                heroSprite.attackCollider.setX(right);
-                heroSprite.attackCollider.setY(top);
+                // heroSprite.attackCollider.setX(right);
+                // heroSprite.attackCollider.setY(top);
 
                 break;
             }
@@ -330,10 +336,38 @@ export const handleObjectsLayer = (scene) => {
                     scene.sprites.add(enemy);
                     scene.enemies.add(enemy);
 
-                    // enemy.setInteractive();
-                    // enemy.on('pointerdown', () => {
-                    //     console.log('Debug click');
-                    // });
+                    enemy.setInteractive();
+                    enemy.on('pointerdown', () => {
+                        scene.scene.pause('GameScene');
+                        scene.scene.launch('BattleScene');
+
+                        dispatch(setBattleItemsAction([
+                            ROCK_BATTLE_ITEM,
+                            PAPER_BATTLE_ITEM,
+                            SCISSORS_BATTLE_ITEM,
+                            RUN_BATTLE_ITEM,
+                        ]));
+
+                        dispatch(setBattleEnemiesAction([
+                            { sprite: 'enemy_01', position: { x: 200, y: 140 }, types: [ROCK_BATTLE_ITEM], health: 100, attack: 10 },
+                            { sprite: 'enemy_02', position: { x: 300, y: 140 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
+                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
+                        ]));
+
+                        dispatch(setBattleOnSelectAction(
+                            (item, itemIndex) => {
+                                if (item === RUN_BATTLE_ITEM) {
+                                    // TODO
+                                    return;
+                                }
+
+                                const enemies = getSelectorData(selectBattleEnemies);
+                                dispatch(setBattleItemsAction([]));
+                                dispatch(setBattlePickedItemAction(item));
+                                dispatch(setBattleEnemiesPickedItemAction(enemies));
+                            }
+                        ));
+                    });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,
