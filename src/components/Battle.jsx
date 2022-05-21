@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: '#83a37d',
             outline: `${borderSize}px solid #53814b`,
             outlineOffset: `-${borderSize}px`,
+            justifyContent: 'center',
         };
     },
     battleItem: ({ width, zoom }) => {
@@ -45,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
             cursor: 'pointer',
             padding: '3% 0',
             minWidth: `${Math.floor((width * zoom) / 2) - (margin * 2) - (borderSize * 2)}px`,
-            margin: `${margin}px`,
+            // margin: `${margin}px`,
+            margin: '0.22%',
             textAlign: 'center',
             border: `${borderSize}px solid black`,
             // '&:hover': {
