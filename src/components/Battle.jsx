@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
             justifyContent: 'center',
         };
     },
-    battleItem: ({ width, zoom }) => {
+    battleItem: ({ width, zoom, quantity }) => {
         const margin = Math.round(width * zoom * 0.003);
         const borderSize = zoom;
 
@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
             cursor: 'pointer',
             padding: '3% 0',
             minWidth: `${Math.floor((width * zoom) / 2) - (margin * 2) - (borderSize * 2)}px`,
+            ...quantity < 3 && {
+                width: width * zoom,
+            },
             // margin: `${margin}px`,
             margin: '0.22%',
             textAlign: 'center',
@@ -64,16 +67,18 @@ const Battle = () => {
     // Game
     const gameWidth = useSelector(selectGameWidth);
     const gameZoom = useSelector(selectGameZoom);
+
+    // TODO for now only works for four items
+    const battleItems = useSelector(selectBattleItems);
+
     const classes = useStyles({
         width: gameWidth,
         zoom: gameZoom,
+        quantity: battleItems.length,
     });
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const onSelected = useSelector(selectBattleOnSelect);
-
-    // TODO for now only works for four items
-    const battleItems = useSelector(selectBattleItems);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
