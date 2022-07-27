@@ -19,7 +19,7 @@ export default class BattleScene extends Scene {
         // TODO
         const backgroundImage = this.add.image(0, 0, 'background_grass');
         backgroundImage.setScale(
-            Math.max(1, 2 - ((backgroundImage.width / this.game.config.width) - 1))
+            Math.max(1, (backgroundImage.width / this.game.config.width) - 1)
         );
 
         const enemies = getSelectorData(selectBattleEnemies);
