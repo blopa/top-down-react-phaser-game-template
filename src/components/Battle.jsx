@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
             padding: '3% 0',
             minWidth: `${Math.floor((width * zoom) / 2) - (margin * 2) - (borderSize * 2)}px`,
             ...quantity < 3 && {
-                width: width * zoom,
+                width: `${(width * zoom) - (borderSize * 2)}px`,
             },
             // margin: `${margin}px`,
             margin: '0.22%',
