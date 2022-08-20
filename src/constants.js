@@ -51,3 +51,6 @@ export const ROCK_BATTLE_ITEM = 'rock';
 export const PAPER_BATTLE_ITEM = 'paper';
 export const SCISSORS_BATTLE_ITEM = 'scissors';
 export const RUN_BATTLE_ITEM = 'run';
+
+// DOM identifiers
+export const GAME_CONTENT_ID = 'game-content';

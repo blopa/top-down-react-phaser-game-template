@@ -44,6 +44,13 @@ const ReactWrapper = () => {
         });
     });
 
+    const inlineStyles = useMemo(() => ({
+        marginLeft: canvas?.style?.marginLeft,
+        marginTop: canvas?.style?.marginTop,
+        ...defaultStyles,
+        ...mutatedStyles,
+    }), [canvas?.style?.marginLeft, canvas?.style?.marginTop, defaultStyles, mutatedStyles]);
+
     // const handleWrapperClicked = useCallback((event) => {
     //     const { clientX, clientY } = event;
     //
@@ -59,10 +66,7 @@ const ReactWrapper = () => {
     return (
         <div
             id="react-content"
-            style={{
-                ...defaultStyles,
-                ...mutatedStyles,
-            }}
+            style={inlineStyles}
             // onClick={handleWrapperClicked}
         >
             {battleItems.length > 0 && (

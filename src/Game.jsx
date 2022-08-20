@@ -12,6 +12,7 @@ import {
     TILE_WIDTH,
     TILE_HEIGHT,
     MIN_GAME_WIDTH,
+    GAME_CONTENT_ID,
     MIN_GAME_HEIGHT,
     RESIZE_THRESHOLD,
     RE_RESIZE_THRESHOLD,
@@ -44,7 +45,6 @@ const Game = () => {
     const [game, setGame] = useState(null);
     const locale = useSelector(selectGameLocale) || defaultLocale;
     const cameraSizeUpdateCallback = useSelector(selectGameCameraSizeUpdateCallback);
-
     const [messages, setMessages] = useState({});
 
     useEffect(() => {
@@ -85,7 +85,7 @@ const Game = () => {
         const phaserGame = new Phaser.Game({
             type: Phaser.AUTO,
             title: 'some-game-title',
-            parent: 'game-content',
+            parent: GAME_CONTENT_ID,
             orientation: Phaser.Scale.LANDSCAPE,
             localStorageName: 'some-game-title',
             width,
@@ -127,12 +127,14 @@ const Game = () => {
     ]);
 
     useEffect(() => {
+        if (game?.canvas) {
+            dispatch(setGameCanvasElementAction(game.canvas));
+        }
+    }, [dispatch, game?.canvas]);
+
+    useEffect(() => {
         if (!game) {
             return () => {};
-        }
-
-        if (game.canvas) {
-            dispatch(setGameCanvasElementAction(game.canvas));
         }
 
         // Create listener to resize the game
@@ -190,8 +192,8 @@ const Game = () => {
             defaultLocale={defaultLocale}
         >
             <div
-                id="game-content"
-                key="game-content"
+                id={GAME_CONTENT_ID}
+                key={GAME_CONTENT_ID}
             >
                 {/* this is where the game canvas will be rendered */}
             </div>
