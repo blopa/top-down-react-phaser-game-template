@@ -53,8 +53,12 @@ const ReactWrapper = () => {
     //     }));
     // }, [canvas]);
 
+    // TODO maybe this is not needed anymore
+    // console.log(defaultStyles, mutatedStyles);
+
     return (
         <div
+            id="react-content"
             style={{
                 ...defaultStyles,
                 ...mutatedStyles,
