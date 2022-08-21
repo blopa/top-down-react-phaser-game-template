@@ -24,7 +24,7 @@ const useMutationObserver = (
     }, [options]);
 
     useEffect(() => {
-        if (ref.current !== currentRef.current) {
+        if (ref.current && ref.current !== currentRef.current) {
             currentRef.current = ref.current;
             const observer = new MutationObserver(callback);
             observer.observe(ref.current, observerOptions);
