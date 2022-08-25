@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 // Selectors
@@ -13,6 +13,9 @@ import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KE
 
 // Utils
 import { getTranslationVariables } from '../utils/utils';
+
+// Actions
+import setBattleItemsListDOMAction from '../redux/actions/battle/setBattleItemsListDOMAction';
 
 const useStyles = makeStyles((theme) => ({
     battleItemsWrapper: ({ width, height, zoom }) => {
@@ -67,9 +70,12 @@ const Battle = () => {
     // Game
     const gameWidth = useSelector(selectGameWidth);
     const gameZoom = useSelector(selectGameZoom);
+    const battleListRef = useRef();
 
     // TODO for now only works for four items
     const battleItems = useSelector(selectBattleItems);
+
+    const dispatch = useDispatch();
 
     const classes = useStyles({
         width: gameWidth,
@@ -79,6 +85,10 @@ const Battle = () => {
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const onSelected = useSelector(selectBattleOnSelect);
+
+    useEffect(() => {
+        dispatch(setBattleItemsListDOMAction(battleListRef.current));
+    }, [dispatch, battleListRef]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
@@ -135,7 +145,7 @@ const Battle = () => {
 
     return (
         <div>
-            <ul className={classes.battleItemsWrapper}>
+            <ul ref={battleListRef} className={classes.battleItemsWrapper}>
                 {battleItems.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
 

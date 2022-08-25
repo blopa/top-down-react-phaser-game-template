@@ -29,7 +29,7 @@ const useMutationObserver = (
         }
 
         return () => {};
-    }, [callback, observerOptions, ref.current]);
+    }, [callback, observerOptions, ref]);
 };
 
 export default useMutationObserver;

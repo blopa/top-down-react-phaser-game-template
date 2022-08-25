@@ -5,5 +5,8 @@
     "rock": "Rock",
     "paper": "Paper",
     "scissors": "Scissors",
+    "attack": "Attack",
+    "defense": "Defense",
+    "config_dice": "Config. Dice",
     "run": "Run"
 }

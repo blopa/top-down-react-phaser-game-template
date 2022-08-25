@@ -4,6 +4,7 @@ import {
     SET_BATTLE_ENEMIES,
     SET_BATTLE_ON_SELECT,
     SET_BATTLE_PICKED_ATTACK,
+    SET_BATTLE_ITEMS_LIST_DOM,
     SET_BATTLE_ENEMIES_PICKED_ATTACK,
 } from '../constants';
 
@@ -57,6 +58,13 @@ const battleReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 onSelect: action.payload,
+            };
+        }
+
+        case SET_BATTLE_ITEMS_LIST_DOM: {
+            return {
+                ...state,
+                itemsListDOM: action.payload,
             };
         }
 

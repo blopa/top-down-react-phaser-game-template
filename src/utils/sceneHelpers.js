@@ -15,12 +15,16 @@ import {
     LEFT_DIRECTION,
     DOWN_DIRECTION,
     RIGHT_DIRECTION,
+    RUN_BATTLE_ITEM,
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
+    ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    CRYSTAL_SPRITE_NAME, ROCK_BATTLE_ITEM, PAPER_BATTLE_ITEM, SCISSORS_BATTLE_ITEM, RUN_BATTLE_ITEM,
+    PAPER_BATTLE_ITEM,
+    CRYSTAL_SPRITE_NAME,
+    SCISSORS_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -342,10 +346,14 @@ export const handleObjectsLayer = (scene) => {
                         scene.scene.launch('BattleScene');
 
                         dispatch(setBattleItemsAction([
-                            ROCK_BATTLE_ITEM,
-                            PAPER_BATTLE_ITEM,
-                            SCISSORS_BATTLE_ITEM,
-                            RUN_BATTLE_ITEM,
+                            // ROCK_BATTLE_ITEM,
+                            // PAPER_BATTLE_ITEM,
+                            // SCISSORS_BATTLE_ITEM,
+                            // RUN_BATTLE_ITEM,
+                            'attack',
+                            'config_dice',
+                            'defense',
+                            'run',
                         ]));
 
                         dispatch(setBattleEnemiesAction([
