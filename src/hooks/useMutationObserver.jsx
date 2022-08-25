@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const useMutationObserver = (
     ref,
     callback,
     options = null
 ) => {
-    const currentRef = useRef();
-
     const observerOptions = useMemo(() => {
         if (options) {
             return options;
@@ -24,15 +22,14 @@ const useMutationObserver = (
     }, [options]);
 
     useEffect(() => {
-        if (ref.current && ref.current !== currentRef.current) {
-            currentRef.current = ref.current;
+        if (ref.current) {
             const observer = new MutationObserver(callback);
             observer.observe(ref.current, observerOptions);
             return () => observer.disconnect();
         }
 
         return () => {};
-    }, [callback, observerOptions, ref.current, currentRef.current]);
+    }, [callback, observerOptions, ref.current]);
 };
 
 export default useMutationObserver;

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useResizeObserver } from 'beautiful-react-hooks';
 
@@ -37,12 +37,16 @@ const ReactWrapper = () => {
         ...DOMRect,
     }), [DOMRect]);
 
-    useMutationObserver(ref, () => {
+    const mutationObserverCallback = useCallback((mutations) => {
+        const { target } = mutations.at(0);
+
         setMutatedStyles({
-            marginLeft: canvas?.style?.marginLeft,
-            marginTop: canvas?.style?.marginTop,
+            marginLeft: target?.style?.marginLeft,
+            marginTop: target?.style?.marginTop,
         });
-    });
+    }, []);
+
+    useMutationObserver(ref, mutationObserverCallback);
 
     const inlineStyles = useMemo(() => ({
         marginLeft: canvas?.style?.marginLeft,
@@ -62,6 +66,7 @@ const ReactWrapper = () => {
 
     // TODO maybe this is not needed anymore
     // console.log(defaultStyles, mutatedStyles);
+    // console.log(mutatedStyles);
 
     return (
         <div

@@ -574,7 +574,7 @@ export const handleCreateHeroAnimations = (scene) => {
     });
 };
 
-export const handleHeroMovement = (scene, heroSpeed = 50) => {
+export const handleHeroMovement = (scene, heroSpeed = 60) => {
     const dispatch = getDispatch();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
