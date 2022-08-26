@@ -23,8 +23,11 @@ import {
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     PAPER_BATTLE_ITEM,
+    ATTACK_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
+    DEFENSE_BATTLE_ITEM,
     SCISSORS_BATTLE_ITEM,
+    CONFIG_DICE_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -346,27 +349,34 @@ export const handleObjectsLayer = (scene) => {
                         scene.scene.launch('BattleScene');
 
                         dispatch(setBattleItemsAction([
-                            // ROCK_BATTLE_ITEM,
-                            // PAPER_BATTLE_ITEM,
-                            // SCISSORS_BATTLE_ITEM,
-                            // RUN_BATTLE_ITEM,
-                            'attack',
-                            'config_dice',
-                            'defense',
-                            'run',
+                            ATTACK_BATTLE_ITEM,
+                            CONFIG_DICE_BATTLE_ITEM,
+                            DEFENSE_BATTLE_ITEM,
+                            RUN_BATTLE_ITEM,
                         ]));
 
                         dispatch(setBattleEnemiesAction([
                             { sprite: 'enemy_01', position: { x: 200, y: 140 }, types: [ROCK_BATTLE_ITEM], health: 100, attack: 10 },
                             { sprite: 'enemy_02', position: { x: 300, y: 140 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
-                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
+                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, types: [SCISSORS_BATTLE_ITEM], health: 100, attack: 10 },
                         ]));
 
                         dispatch(setBattleOnSelectAction(
                             (item, itemIndex) => {
-                                if (item === RUN_BATTLE_ITEM) {
-                                    // TODO
-                                    return;
+                                switch (item) {
+                                    case ATTACK_BATTLE_ITEM: {
+                                        break;
+                                    }
+                                    case CONFIG_DICE_BATTLE_ITEM: {
+                                        break;
+                                    }
+                                    case DEFENSE_BATTLE_ITEM: {
+                                        break;
+                                    }
+                                    case RUN_BATTLE_ITEM:
+                                    default: {
+                                        break;
+                                    }
                                 }
 
                                 const enemies = getSelectorData(selectBattleEnemies);
