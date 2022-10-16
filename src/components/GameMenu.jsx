@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         transform: 'translate(-50%, 0%)',
     }),
     menuPositionWrapper: ({ zoom, position, width, height }) => {
-        const left = window.innerWidth - (width * zoom);
+        const left = window.innerWidth - width * zoom;
         const menuWidth = 160 * zoom;
         if (position === 'center') {
             return {
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         if (position === 'left') {
             return {
                 minWidth: `${menuWidth}px`,
-                left: `${(95 * zoom) + left / 2}px`,
+                left: `${95 * zoom + left / 2}px`,
                 top: `${50 * zoom}px`,
             };
         }
@@ -91,9 +91,7 @@ const GameMenu = () => {
 
                 case ARROW_UP_KEY: {
                     if (selectedItemIndex > 0) {
-                        setSelectedItemIndex(
-                            selectedItemIndex - 1
-                        );
+                        setSelectedItemIndex(selectedItemIndex - 1);
                     }
 
                     break;
@@ -101,9 +99,7 @@ const GameMenu = () => {
 
                 case ARROW_DOWN_KEY: {
                     if (items.length - 1 > selectedItemIndex) {
-                        setSelectedItemIndex(
-                            selectedItemIndex + 1
-                        );
+                        setSelectedItemIndex(selectedItemIndex + 1);
                     }
 
                     break;
@@ -139,10 +135,7 @@ const GameMenu = () => {
                                 onSelected(key, item);
                             }}
                         >
-                            <FormattedMessage
-                                id={key}
-                                values={variables}
-                            />
+                            <FormattedMessage id={key} values={variables} />
                         </li>
                     );
                 })}

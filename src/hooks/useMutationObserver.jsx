@@ -1,10 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-const useMutationObserver = (
-    ref,
-    callback,
-    options = null
-) => {
+const useMutationObserver = (ref, callback, options = null) => {
     const observerOptions = useMemo(() => {
         if (options) {
             return options;

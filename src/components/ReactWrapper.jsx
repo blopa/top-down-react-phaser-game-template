@@ -31,11 +31,14 @@ const ReactWrapper = () => {
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
 
     const [mutatedStyles, setMutatedStyles] = useState({});
-    const defaultStyles = useMemo(() => ({
-        // backgroundColor: '#fff',
-        position: 'absolute',
-        ...DOMRect,
-    }), [DOMRect]);
+    const defaultStyles = useMemo(
+        () => ({
+            // backgroundColor: '#fff',
+            position: 'absolute',
+            ...DOMRect,
+        }),
+        [DOMRect]
+    );
 
     const mutationObserverCallback = useCallback((mutations) => {
         const { target } = mutations.at(0);
@@ -48,12 +51,15 @@ const ReactWrapper = () => {
 
     useMutationObserver(ref, mutationObserverCallback);
 
-    const inlineStyles = useMemo(() => ({
-        marginLeft: canvas?.style?.marginLeft,
-        marginTop: canvas?.style?.marginTop,
-        ...defaultStyles,
-        ...mutatedStyles,
-    }), [canvas?.style?.marginLeft, canvas?.style?.marginTop, defaultStyles, mutatedStyles]);
+    const inlineStyles = useMemo(
+        () => ({
+            marginLeft: canvas?.style?.marginLeft,
+            marginTop: canvas?.style?.marginTop,
+            ...defaultStyles,
+            ...mutatedStyles,
+        }),
+        [canvas?.style?.marginLeft, canvas?.style?.marginTop, defaultStyles, mutatedStyles]
+    );
 
     // const handleWrapperClicked = useCallback((event) => {
     //     const { clientX, clientY } = event;
@@ -74,27 +80,15 @@ const ReactWrapper = () => {
             style={inlineStyles}
             // onClick={handleWrapperClicked}
         >
-            {battleItems.length > 0 && (
-                <Battle />
-            )}
-            {dialogMessages.length > 0 && (
-                <DialogBox />
-            )}
-            {menuItems.length > 0 && (
-                <GameMenu />
-            )}
-            {gameTexts.length > 0 && gameTexts.map((text) => {
-                const { key, variables, config } = text;
+            {battleItems.length > 0 && <Battle />}
+            {dialogMessages.length > 0 && <DialogBox />}
+            {menuItems.length > 0 && <GameMenu />}
+            {gameTexts.length > 0 &&
+                gameTexts.map((text) => {
+                    const { key, variables, config } = text;
 
-                return (
-                    <GameText
-                        key={key}
-                        translationKey={key}
-                        variables={variables}
-                        config={config}
-                    />
-                );
-            })}
+                    return <GameText key={key} translationKey={key} variables={variables} config={config} />;
+                })}
         </div>
     );
 };

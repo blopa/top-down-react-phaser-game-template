@@ -16,12 +16,12 @@ import useRect from '../hooks/useRect';
 
 const useStyles = makeStyles((theme) => ({
     textWrapper: ({ zoom, top, position, domRect }) => ({
-        top: `${(domRect?.top || 0) + (top * zoom)}px`,
+        top: `${(domRect?.top || 0) + top * zoom}px`,
         userSelect: 'none',
         userDrag: 'none',
         position: 'absolute',
         textAlign: position,
-        width: `calc(100% - ${((domRect?.left || 0) * 2) + (10 * zoom)}px)`,
+        width: `calc(100% - ${(domRect?.left || 0) * 2 + 10 * zoom}px)`,
         transform: 'translate(-50%, 0%)',
     }),
     textPositionWrapper: ({ position }) => {
@@ -42,12 +42,7 @@ const useStyles = makeStyles((theme) => ({
     }),
 }));
 
-const GameText = ({
-    translationKey,
-    variables = {},
-    config = {},
-    component: Component = 'p',
-}) => {
+const GameText = ({ translationKey, variables = {}, config = {}, component: Component = 'p' }) => {
     // Game
     const gameWidth = useSelector(selectGameWidth);
     const gameHeight = useSelector(selectGameHeight);
@@ -55,12 +50,7 @@ const GameText = ({
     const canvas = useSelector(selectGameCanvasElement);
     const domRect = useRect(canvas);
 
-    const {
-        color = '#FFFFFF',
-        position = 'center',
-        top = 0,
-        size = 10,
-    } = config;
+    const { color = '#FFFFFF', position = 'center', top = 0, size = 10 } = config;
 
     const classes = useStyles({
         height: gameHeight,
@@ -76,10 +66,7 @@ const GameText = ({
     return (
         <div className={classNames(classes.textWrapper, classes.textPositionWrapper)}>
             <Component className={classes.text}>
-                <FormattedMessage
-                    id={translationKey}
-                    values={variables}
-                />
+                <FormattedMessage id={translationKey} values={variables} />
             </Component>
         </div>
     );

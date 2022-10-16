@@ -48,10 +48,10 @@ const useStyles = makeStyles((theme) => ({
         return {
             cursor: 'pointer',
             padding: '3% 0',
-            minWidth: `${Math.floor((width * zoom) / 2) - (margin * 2) - (borderSize * 2)}px`,
-            ...quantity < 3 && {
-                width: `${(width * zoom) - (borderSize * 2)}px`,
-            },
+            minWidth: `${Math.floor((width * zoom) / 2) - margin * 2 - borderSize * 2}px`,
+            ...(quantity < 3 && {
+                width: `${width * zoom - borderSize * 2}px`,
+            }),
             // margin: `${margin}px`,
             margin: '0.22%',
             textAlign: 'center',
@@ -100,34 +100,26 @@ const Battle = () => {
 
                 case ARROW_UP_KEY: {
                     const increment = selectedItemIndex === 1 ? 1 : -2;
-                    setSelectedItemIndex(
-                        Math.max(0, selectedItemIndex + increment)
-                    );
+                    setSelectedItemIndex(Math.max(0, selectedItemIndex + increment));
 
                     break;
                 }
 
                 case ARROW_DOWN_KEY: {
                     const increment = selectedItemIndex === battleItems.length / 2 ? -1 : 2;
-                    setSelectedItemIndex(
-                        Math.min(3, selectedItemIndex + increment)
-                    );
+                    setSelectedItemIndex(Math.min(3, selectedItemIndex + increment));
 
                     break;
                 }
 
                 case ARROW_LEFT_KEY: {
-                    setSelectedItemIndex(
-                        Math.max(0, selectedItemIndex - 1)
-                    );
+                    setSelectedItemIndex(Math.max(0, selectedItemIndex - 1));
 
                     break;
                 }
 
                 case ARROW_RIGHT_KEY: {
-                    setSelectedItemIndex(
-                        Math.min(3, selectedItemIndex + 1)
-                    );
+                    setSelectedItemIndex(Math.min(3, selectedItemIndex + 1));
 
                     break;
                 }
@@ -163,10 +155,7 @@ const Battle = () => {
                                 onSelected(item, index);
                             }}
                         >
-                            <FormattedMessage
-                                id={key}
-                                values={variables}
-                            />
+                            <FormattedMessage id={key} values={variables} />
                         </li>
                     );
                 })}

@@ -1,9 +1,4 @@
-import {
-    ADD_TEXT,
-    SET_TEXTS,
-    REMOVE_TEXT,
-    UPDATE_TEXT_VARIABLES,
-} from '../constants';
+import { ADD_TEXT, SET_TEXTS, REMOVE_TEXT, UPDATE_TEXT_VARIABLES } from '../constants';
 
 // example = {
 //     key: 'go',
@@ -31,18 +26,12 @@ const textReducer = (state = defaultState, action) => {
         case ADD_TEXT: {
             return {
                 ...state,
-                texts: [
-                    ...state.texts,
-                    action.payload,
-                ],
+                texts: [...state.texts, action.payload],
             };
         }
 
         case UPDATE_TEXT_VARIABLES: {
-            const {
-                key,
-                variables,
-            } = action.payload;
+            const { key, variables } = action.payload;
 
             return {
                 ...state,
@@ -64,11 +53,7 @@ const textReducer = (state = defaultState, action) => {
         case REMOVE_TEXT: {
             return {
                 ...state,
-                texts: [
-                    ...state.texts.filter(
-                        (text) => text.key !== action.payload
-                    ),
-                ],
+                texts: [...state.texts.filter((text) => text.key !== action.payload)],
             };
         }
 

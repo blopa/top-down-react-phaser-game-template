@@ -13,14 +13,11 @@ import {
 // Store
 import store from '../redux/store';
 
-export const isObject = (obj) =>
-    typeof obj === 'object' && obj?.constructor === Object;
+export const isObject = (obj) => typeof obj === 'object' && obj?.constructor === Object;
 
-export const isObjectEmpty = (obj) =>
-    isObject(obj) && Object.keys(obj).length === 0;
+export const isObjectEmpty = (obj) => isObject(obj) && Object.keys(obj).length === 0;
 
-export const isObjectNotEmpty = (obj) =>
-    isObject(obj) && Object.keys(obj).length > 0;
+export const isObjectNotEmpty = (obj) => isObject(obj) && Object.keys(obj).length > 0;
 
 /**
  * source https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2
@@ -64,21 +61,8 @@ export const getDispatch = () => store.dispatch;
 
 export const getState = () => store.getState();
 
-export const createInteractiveGameObject = (
-    scene,
-    x,
-    y,
-    width,
-    height,
-    origin = { x: 0, y: 0 }
-) => {
-    const customCollider = new GameObjects.Rectangle(
-        scene,
-        x,
-        y,
-        width,
-        height
-    ).setOrigin(origin.x, origin.y);
+export const createInteractiveGameObject = (scene, x, y, width, height, origin = { x: 0, y: 0 }) => {
+    const customCollider = new GameObjects.Rectangle(scene, x, y, width, height).setOrigin(origin.x, origin.y);
 
     scene.physics.add.existing(customCollider);
     customCollider.body.setImmovable(true);
@@ -129,37 +113,22 @@ export const isGeneratedAtlasFileAvailable = (file) => {
     }
 };
 
-export const getDegreeFromRadians = (radians) => (radians * (180 / Math.PI));
+export const getDegreeFromRadians = (radians) => radians * (180 / Math.PI);
 
-export const getRadiansFromDegree = (degree) => (degree * (Math.PI / 180));
+export const getRadiansFromDegree = (degree) => degree * (Math.PI / 180);
 
 export const rotateRectangleInsideTile = (x, y, width, height, degree) => {
     switch (degree) {
         case 90: {
-            return [
-                TILE_HEIGHT - (y + height),
-                x,
-                height,
-                width,
-            ];
+            return [TILE_HEIGHT - (y + height), x, height, width];
         }
 
         case 180: {
-            return [
-                TILE_WIDTH - (x + width),
-                TILE_HEIGHT - (y + height),
-                width,
-                height,
-            ];
+            return [TILE_WIDTH - (x + width), TILE_HEIGHT - (y + height), width, height];
         }
 
         case 270: {
-            return [
-                y,
-                TILE_WIDTH - (x + width),
-                height,
-                width,
-            ];
+            return [y, TILE_WIDTH - (x + width), height, width];
         }
 
         default: {

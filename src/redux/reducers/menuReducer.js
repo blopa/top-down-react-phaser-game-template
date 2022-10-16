@@ -1,9 +1,4 @@
-import {
-    ADD_MENU_ITEM,
-    SET_MENU_ITEMS,
-    SET_MENU_POSITION,
-    SET_MENU_ON_SELECT,
-} from '../constants';
+import { ADD_MENU_ITEM, SET_MENU_ITEMS, SET_MENU_POSITION, SET_MENU_ON_SELECT } from '../constants';
 
 const defaultState = {
     items: [],
@@ -37,10 +32,7 @@ const menuReducer = (state = defaultState, action) => {
         case ADD_MENU_ITEM: {
             return {
                 ...state,
-                items: [
-                    ...state.items,
-                    action.payload,
-                ],
+                items: [...state.items, action.payload],
             };
         }
 

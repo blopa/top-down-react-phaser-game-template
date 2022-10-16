@@ -17,14 +17,7 @@ import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/sele
 import { simulateKeyEvent } from '../utils/utils';
 
 // Constants
-import {
-    ARROW_DOWN_KEY,
-    ARROW_LEFT_KEY,
-    ARROW_RIGHT_KEY,
-    ARROW_UP_KEY,
-    ENTER_KEY,
-    SPACE_KEY,
-} from '../constants';
+import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY, SPACE_KEY } from '../constants';
 
 const useStyles = makeStyles((theme) => ({
     buttonsWrapper: ({ zoom, height }) => ({
@@ -32,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-between',
         padding: `0 ${15 * zoom}px`,
         // marginTop: `-${85 * zoom}px`,
-        marginTop: `${Math.ceil(window.innerHeight - (height * zoom) - (100 * zoom))}px`,
+        marginTop: `${Math.ceil(window.innerHeight - height * zoom - 100 * zoom)}px`,
         position: 'relative',
         userSelect: 'none',
         userDrag: 'none',
@@ -106,132 +99,156 @@ const VirtualGamepad = () => {
     const bButtonRef = useRef(null);
     const eventRef = useRef({});
 
-    const wasAButtonClicked = useCallback((x, y) => {
-        const { width, x: elX, y: elY } = aButtonRef.current.getBoundingClientRect();
-        const radius = width / 2;
-        const circle = new Geom.Circle(
-            // this is needed because Circles have origin set to 0.5
-            elX + radius,
-            elY + radius,
-            radius
-        );
+    const wasAButtonClicked = useCallback(
+        (x, y) => {
+            const { width, x: elX, y: elY } = aButtonRef.current.getBoundingClientRect();
+            const radius = width / 2;
+            const circle = new Geom.Circle(
+                // this is needed because Circles have origin set to 0.5
+                elX + radius,
+                elY + radius,
+                radius
+            );
 
-        return circle.contains(x, y);
-    }, [aButtonRef]);
+            return circle.contains(x, y);
+        },
+        [aButtonRef]
+    );
 
-    const wasBButtonClicked = useCallback((x, y) => {
-        const { width, x: elX, y: elY } = bButtonRef.current.getBoundingClientRect();
-        const radius = width / 2;
-        const circle = new Geom.Circle(
-            // this is needed because Circles have origin set to 0.5
-            elX + radius,
-            elY + radius,
-            radius
-        );
+    const wasBButtonClicked = useCallback(
+        (x, y) => {
+            const { width, x: elX, y: elY } = bButtonRef.current.getBoundingClientRect();
+            const radius = width / 2;
+            const circle = new Geom.Circle(
+                // this is needed because Circles have origin set to 0.5
+                elX + radius,
+                elY + radius,
+                radius
+            );
 
-        return circle.contains(x, y);
-    }, [bButtonRef]);
+            return circle.contains(x, y);
+        },
+        [bButtonRef]
+    );
 
-    const wasLeftButtonClicked = useCallback((x, y) => {
-        const { left, right, top, bottom, height } = dPadLeftRef.current.getBoundingClientRect();
-        const polygon = new Geom.Polygon([
-            { x: left, y: top },
-            { x: right - 31, y: top },
-            { x: right, y: top + (height / 2) },
-            { x: right - 31, y: bottom },
-            { x: left, y: bottom },
-        ]);
+    const wasLeftButtonClicked = useCallback(
+        (x, y) => {
+            const { left, right, top, bottom, height } = dPadLeftRef.current.getBoundingClientRect();
+            const polygon = new Geom.Polygon([
+                { x: left, y: top },
+                { x: right - 31, y: top },
+                { x: right, y: top + height / 2 },
+                { x: right - 31, y: bottom },
+                { x: left, y: bottom },
+            ]);
 
-        return polygon.contains(x, y);
-    }, [dPadLeftRef]);
+            return polygon.contains(x, y);
+        },
+        [dPadLeftRef]
+    );
 
-    const wasUpButtonClicked = useCallback((x, y) => {
-        const { left, right, top, bottom, width } = dPadUpRef.current.getBoundingClientRect();
-        const polygon = new Geom.Polygon([
-            { x: left, y: top },
-            { x: right, y: top },
-            { x: right, y: bottom - 31 },
-            { x: left + (width / 2), y: bottom },
-            { x: left, y: bottom - 31 },
-        ]);
+    const wasUpButtonClicked = useCallback(
+        (x, y) => {
+            const { left, right, top, bottom, width } = dPadUpRef.current.getBoundingClientRect();
+            const polygon = new Geom.Polygon([
+                { x: left, y: top },
+                { x: right, y: top },
+                { x: right, y: bottom - 31 },
+                { x: left + width / 2, y: bottom },
+                { x: left, y: bottom - 31 },
+            ]);
 
-        return polygon.contains(x, y);
-    }, [dPadUpRef]);
+            return polygon.contains(x, y);
+        },
+        [dPadUpRef]
+    );
 
-    const wasRightButtonClicked = useCallback((x, y) => {
-        const { left, right, top, bottom, height } = dPadRightRef.current.getBoundingClientRect();
-        const polygon = new Geom.Polygon([
-            { x: left, y: top + (height / 2) },
-            { x: left + 31, y: top },
-            { x: right, y: top },
-            { x: right, y: bottom },
-            { x: left + 31, y: bottom },
-        ]);
+    const wasRightButtonClicked = useCallback(
+        (x, y) => {
+            const { left, right, top, bottom, height } = dPadRightRef.current.getBoundingClientRect();
+            const polygon = new Geom.Polygon([
+                { x: left, y: top + height / 2 },
+                { x: left + 31, y: top },
+                { x: right, y: top },
+                { x: right, y: bottom },
+                { x: left + 31, y: bottom },
+            ]);
 
-        return polygon.contains(x, y);
-    }, [dPadRightRef]);
+            return polygon.contains(x, y);
+        },
+        [dPadRightRef]
+    );
 
-    const wasDownButtonClicked = useCallback((x, y) => {
-        const { left, right, top, bottom, width } = dPadDownRef.current.getBoundingClientRect();
-        const polygon = new Geom.Polygon([
-            { x: left + (width / 2), y: top },
-            { x: right, y: top + 31 },
-            { x: right, y: bottom },
-            { x: left, y: bottom },
-            { x: left, y: top + 31 },
-        ]);
+    const wasDownButtonClicked = useCallback(
+        (x, y) => {
+            const { left, right, top, bottom, width } = dPadDownRef.current.getBoundingClientRect();
+            const polygon = new Geom.Polygon([
+                { x: left + width / 2, y: top },
+                { x: right, y: top + 31 },
+                { x: right, y: bottom },
+                { x: left, y: bottom },
+                { x: left, y: top + 31 },
+            ]);
 
-        return polygon.contains(x, y);
-    }, [dPadDownRef]);
+            return polygon.contains(x, y);
+        },
+        [dPadDownRef]
+    );
 
-    const getPressedButton = useCallback((x, y) => {
-        if (wasLeftButtonClicked(x, y)) {
-            return [ARROW_LEFT_KEY, dPadLeftRef];
-        }
-
-        if (wasRightButtonClicked(x, y)) {
-            return [ARROW_RIGHT_KEY, dPadRightRef];
-        }
-
-        if (wasUpButtonClicked(x, y)) {
-            return [ARROW_UP_KEY, dPadUpRef];
-        }
-
-        if (wasDownButtonClicked(x, y)) {
-            return [ARROW_DOWN_KEY, dPadDownRef];
-        }
-
-        if (wasAButtonClicked(x, y)) {
-            return [SPACE_KEY, aButtonRef];
-        }
-
-        if (wasBButtonClicked(x, y)) {
-            return [ENTER_KEY, bButtonRef];
-        }
-
-        return [];
-    }, [
-        wasAButtonClicked,
-        wasBButtonClicked,
-        wasUpButtonClicked,
-        wasDownButtonClicked,
-        wasLeftButtonClicked,
-        wasRightButtonClicked,
-    ]);
-
-    const handleButtonPressed = useCallback((event, type) => {
-        const { x, y } = event;
-
-        const [pressedButton, element] = getPressedButton(x, y);
-        if (pressedButton && element) {
-            simulateKeyEvent(pressedButton, type);
-            if (type === 'down') {
-                element.current.classList.add('is-touched');
-            } else {
-                element.current.classList.remove('is-touched');
+    const getPressedButton = useCallback(
+        (x, y) => {
+            if (wasLeftButtonClicked(x, y)) {
+                return [ARROW_LEFT_KEY, dPadLeftRef];
             }
-        }
-    }, [getPressedButton]);
+
+            if (wasRightButtonClicked(x, y)) {
+                return [ARROW_RIGHT_KEY, dPadRightRef];
+            }
+
+            if (wasUpButtonClicked(x, y)) {
+                return [ARROW_UP_KEY, dPadUpRef];
+            }
+
+            if (wasDownButtonClicked(x, y)) {
+                return [ARROW_DOWN_KEY, dPadDownRef];
+            }
+
+            if (wasAButtonClicked(x, y)) {
+                return [SPACE_KEY, aButtonRef];
+            }
+
+            if (wasBButtonClicked(x, y)) {
+                return [ENTER_KEY, bButtonRef];
+            }
+
+            return [];
+        },
+        [
+            wasAButtonClicked,
+            wasBButtonClicked,
+            wasUpButtonClicked,
+            wasDownButtonClicked,
+            wasLeftButtonClicked,
+            wasRightButtonClicked,
+        ]
+    );
+
+    const handleButtonPressed = useCallback(
+        (event, type) => {
+            const { x, y } = event;
+
+            const [pressedButton, element] = getPressedButton(x, y);
+            if (pressedButton && element) {
+                simulateKeyEvent(pressedButton, type);
+                if (type === 'down') {
+                    element.current.classList.add('is-touched');
+                } else {
+                    element.current.classList.remove('is-touched');
+                }
+            }
+        },
+        [getPressedButton]
+    );
 
     useEffect(() => {
         const handlePointerDown = (event) => {

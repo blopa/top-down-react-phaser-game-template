@@ -29,34 +29,35 @@ export default class MainMenuScene extends Scene {
         const dispatch = getDispatch();
 
         dispatch(setMenuItemsAction(['start_game', 'exit']));
-        dispatch(setMenuOnSelectAction((key, item) => {
-            if (key === 'start_game') {
-                handleStartGameSelected();
-            } else {
-                dispatch(setMenuItemsAction([]));
-                dispatch(setMenuOnSelectAction(null));
-                window.location.reload();
-            }
-        }));
+        dispatch(
+            setMenuOnSelectAction((key, item) => {
+                if (key === 'start_game') {
+                    handleStartGameSelected();
+                } else {
+                    dispatch(setMenuItemsAction([]));
+                    dispatch(setMenuOnSelectAction(null));
+                    window.location.reload();
+                }
+            })
+        );
 
-        const handleStartGameSelected = () => Promise.all([
-            dispatch(setMenuItemsAction([])),
-            dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMapKeyAction('sample_map')), // sample_indoor
-            dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroInitialFrameAction(
-                IDLE_FRAME.replace('position', DOWN_DIRECTION)
-            )),
-        ]).then(() => {
-            changeScene(this, 'GameScene', {
-                // fonts: ['"Press Start 2P"'],
-                atlases: ['hero'],
-                images: [],
-                mapKey: 'sample_map',
-                // mapKey: 'sample_indoor',
+        const handleStartGameSelected = () =>
+            Promise.all([
+                dispatch(setMenuItemsAction([])),
+                dispatch(setMenuOnSelectAction(null)),
+                dispatch(setMapKeyAction('sample_map')), // sample_indoor
+                dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
+                dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
+                dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
+                dispatch(setHeroInitialFrameAction(IDLE_FRAME.replace('position', DOWN_DIRECTION))),
+            ]).then(() => {
+                changeScene(this, 'GameScene', {
+                    // fonts: ['"Press Start 2P"'],
+                    atlases: ['hero'],
+                    images: [],
+                    mapKey: 'sample_map',
+                    // mapKey: 'sample_indoor',
+                });
             });
-        });
     }
 }

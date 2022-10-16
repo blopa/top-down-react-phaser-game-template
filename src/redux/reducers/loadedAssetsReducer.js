@@ -1,10 +1,4 @@
-import {
-    ADD_LOADED_MAP,
-    ADD_LOADED_FONT,
-    ADD_LOADED_JSON,
-    ADD_LOADED_ATLAS,
-    ADD_LOADED_IMAGE,
-} from '../constants';
+import { ADD_LOADED_MAP, ADD_LOADED_FONT, ADD_LOADED_JSON, ADD_LOADED_ATLAS, ADD_LOADED_IMAGE } from '../constants';
 
 const defaultState = {
     fonts: [],
@@ -19,50 +13,35 @@ const loadedAssetsReducer = (state = defaultState, action) => {
         case ADD_LOADED_FONT: {
             return {
                 ...state,
-                fonts: [
-                    ...state.fonts,
-                    action.payload,
-                ],
+                fonts: [...state.fonts, action.payload],
             };
         }
 
         case ADD_LOADED_ATLAS: {
             return {
                 ...state,
-                atlases: [
-                    ...state.atlases,
-                    action.payload,
-                ],
+                atlases: [...state.atlases, action.payload],
             };
         }
 
         case ADD_LOADED_IMAGE: {
             return {
                 ...state,
-                images: [
-                    ...state.images,
-                    action.payload,
-                ],
+                images: [...state.images, action.payload],
             };
         }
 
         case ADD_LOADED_MAP: {
             return {
                 ...state,
-                maps: [
-                    ...state.maps,
-                    action.payload,
-                ],
+                maps: [...state.maps, action.payload],
             };
         }
 
         case ADD_LOADED_JSON: {
             return {
                 ...state,
-                jsons: [
-                    ...state.jsons,
-                    action.payload,
-                ],
+                jsons: [...state.jsons, action.payload],
             };
         }
 

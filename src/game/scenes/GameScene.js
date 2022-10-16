@@ -44,9 +44,11 @@ export default class GameScene extends Scene {
 
         // Configure the main camera
         handleConfigureCamera(this);
-        dispatch(setGameCameraSizeUpdateCallbackAction(() => {
-            handleConfigureCamera(this);
-        }));
+        dispatch(
+            setGameCameraSizeUpdateCallbackAction(() => {
+                handleConfigureCamera(this);
+            })
+        );
 
         // Hero animations
         handleCreateHeroAnimations(this);

@@ -56,15 +56,14 @@ const Game = () => {
         loadMessages();
     }, [locale]);
 
-    const updateGameReduxState = useCallback((
-        gameWidth,
-        gameHeight,
-        gameZoom
-    ) => {
-        dispatch(setGameHeightAction(gameHeight));
-        dispatch(setGameWidthAction(gameWidth));
-        dispatch(setGameZoomAction(gameZoom));
-    }, [dispatch]);
+    const updateGameReduxState = useCallback(
+        (gameWidth, gameHeight, gameZoom) => {
+            dispatch(setGameHeightAction(gameHeight));
+            dispatch(setGameWidthAction(gameWidth));
+            dispatch(setGameZoomAction(gameZoom));
+        },
+        [dispatch]
+    );
 
     // Create the game inside a useEffect
     // to create it only once
@@ -75,12 +74,7 @@ const Game = () => {
             return;
         }
 
-        const { width, height, zoom } = calculateGameSize(
-            MIN_GAME_WIDTH,
-            MIN_GAME_HEIGHT,
-            TILE_WIDTH,
-            TILE_HEIGHT
-        );
+        const { width, height, zoom } = calculateGameSize(MIN_GAME_WIDTH, MIN_GAME_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 
         const phaserGame = new Phaser.Game({
             type: Phaser.AUTO,
@@ -97,13 +91,7 @@ const Game = () => {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.NONE,
             },
-            scene: [
-                BootScene,
-                LoadAssetsScene,
-                GameScene,
-                MainMenuScene,
-                BattleScene,
-            ],
+            scene: [BootScene, LoadAssetsScene, GameScene, MainMenuScene, BattleScene],
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -119,12 +107,7 @@ const Game = () => {
         if (isDevelopment) {
             window.phaserGame = phaserGame;
         }
-    }, [
-        game,
-        dispatch,
-        isDevelopment,
-        updateGameReduxState,
-    ]);
+    }, [game, dispatch, isDevelopment, updateGameReduxState]);
 
     useEffect(() => {
         if (game?.canvas) {
@@ -142,12 +125,7 @@ const Game = () => {
         let timeOutFunctionId;
         const workAfterResizeIsDone = () => {
             const scaleGame = () => {
-                const gameSize = calculateGameSize(
-                    MIN_GAME_WIDTH,
-                    MIN_GAME_HEIGHT,
-                    TILE_WIDTH,
-                    TILE_HEIGHT
-                );
+                const gameSize = calculateGameSize(MIN_GAME_WIDTH, MIN_GAME_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 
                 // console.log(JSON.stringify(gameSize));
                 game.scale.setZoom(gameSize.zoom);
@@ -178,29 +156,15 @@ const Game = () => {
         return () => {
             window.removeEventListener('resize', canvasResizeCallback);
         };
-    }, [
-        game,
-        dispatch,
-        updateGameReduxState,
-        cameraSizeUpdateCallback,
-    ]);
+    }, [game, dispatch, updateGameReduxState, cameraSizeUpdateCallback]);
 
     return (
-        <IntlProvider
-            messages={messages}
-            locale={locale}
-            defaultLocale={defaultLocale}
-        >
-            <div
-                id={GAME_CONTENT_ID}
-                key={GAME_CONTENT_ID}
-            >
+        <IntlProvider messages={messages} locale={locale} defaultLocale={defaultLocale}>
+            <div id={GAME_CONTENT_ID} key={GAME_CONTENT_ID}>
                 {/* this is where the game canvas will be rendered */}
             </div>
             <ReactWrapper />
-            {isMobile() && (
-                <VirtualGamepad />
-            )}
+            {isMobile() && <VirtualGamepad />}
         </IntlProvider>
     );
 };

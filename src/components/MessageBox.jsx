@@ -55,9 +55,7 @@ const MessageBox = ({
 
     return (
         <div className={dialogWindowClassname}>
-            <div className={dialogTitleClassname}>
-                {characterName}
-            </div>
+            <div className={dialogTitleClassname}>{characterName}</div>
             <Message
                 message={dialogMessages[currentMessage]}
                 key={currentMessage}
@@ -68,11 +66,8 @@ const MessageBox = ({
                 }}
             />
             {showNext && (
-                <div
-                    onClick={handleClick}
-                    className={dialogFooterClassname}
-                >
-                    {(currentMessage === dialogMessages.length - 1 && messageEnded) ? 'Ok' : 'Next'}
+                <div onClick={handleClick} className={dialogFooterClassname}>
+                    {currentMessage === dialogMessages.length - 1 && messageEnded ? 'Ok' : 'Next'}
                 </div>
             )}
         </div>

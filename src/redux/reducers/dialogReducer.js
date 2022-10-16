@@ -1,8 +1,4 @@
-import {
-    SET_DIALOG_ACTION,
-    SET_DIALOG_MESSAGES,
-    SET_DIALOG_CHARACTER_NAME,
-} from '../constants';
+import { SET_DIALOG_ACTION, SET_DIALOG_MESSAGES, SET_DIALOG_CHARACTER_NAME } from '../constants';
 
 const defaultState = {
     messages: [],

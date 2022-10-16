@@ -11,19 +11,17 @@ const useStyles = makeStyles((theme) => ({
     }),
 }));
 
-const Message = ({
-    message = [],
-    trail = 35,
-    zoom = 1,
-    onMessageEnded = () => {},
-    forceShowFullMessage = false,
-}) => {
+const Message = ({ message = [], trail = 35, zoom = 1, onMessageEnded = () => {}, forceShowFullMessage = false }) => {
     const classes = useStyles({ zoom });
     const items = useMemo(
-        () => message.trim().split('').map((letter, index) => ({
-            item: letter,
-            key: index,
-        })),
+        () =>
+            message
+                .trim()
+                .split('')
+                .map((letter, index) => ({
+                    item: letter,
+                    key: index,
+                })),
         [message]
     );
 
@@ -40,15 +38,14 @@ const Message = ({
 
     return (
         <div className={classes.dialogMessage}>
-            {forceShowFullMessage && (
-                <span>{message}</span>
-            )}
+            {forceShowFullMessage && <span>{message}</span>}
 
-            {!forceShowFullMessage && transitions((styles, { item, key }) => (
-                <animated.span key={key} style={styles}>
-                    {item}
-                </animated.span>
-            ))}
+            {!forceShowFullMessage &&
+                transitions((styles, { item, key }) => (
+                    <animated.span key={key} style={styles}>
+                        {item}
+                    </animated.span>
+                ))}
         </div>
     );
 };

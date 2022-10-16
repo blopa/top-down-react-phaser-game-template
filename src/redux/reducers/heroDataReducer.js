@@ -1,9 +1,4 @@
-import {
-    SET_INITIAL_FRAME,
-    SET_INITIAL_POSITION,
-    SET_FACING_DIRECTION,
-    SET_PREVIOUS_POSITION,
-} from '../constants';
+import { SET_INITIAL_FRAME, SET_INITIAL_POSITION, SET_FACING_DIRECTION, SET_PREVIOUS_POSITION } from '../constants';
 
 const defaultState = {
     facingDirection: '',

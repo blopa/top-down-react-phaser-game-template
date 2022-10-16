@@ -10,8 +10,8 @@ export const calculateGameSize = (
     const heightScale = Math.floor(window.innerHeight / height);
     const zoom = Math.min(widthScale, heightScale) || 1;
 
-    const newWidth = Math.floor(window.innerWidth / tileWidth) * tileWidth / zoom;
-    const newHeight = Math.floor(window.innerHeight / tileHeight) * tileHeight / zoom;
+    const newWidth = (Math.floor(window.innerWidth / tileWidth) * tileWidth) / zoom;
+    const newHeight = (Math.floor(window.innerHeight / tileHeight) * tileHeight) / zoom;
 
     return {
         zoom,
@@ -21,7 +21,8 @@ export const calculateGameSize = (
 };
 
 // Thanks yannick @ https://phaser.discourse.group/t/loading-audio/1306/4
-export const asyncLoader = (loaderPlugin) => new Promise((resolve, reject) => {
-    loaderPlugin.on('filecomplete', resolve).on('loaderror', reject);
-    loaderPlugin.start();
-});
+export const asyncLoader = (loaderPlugin) =>
+    new Promise((resolve, reject) => {
+        loaderPlugin.on('filecomplete', resolve).on('loaderror', reject);
+        loaderPlugin.start();
+    });
