@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 
 // Components
@@ -7,8 +7,14 @@ import MessageBox from './MessageBox';
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
 
-const useStyles = makeStyles((theme) => ({
-    dialogWindow: ({ width, height, zoom }) => ({
+const classes = {
+    dialogWindow: `DialogBox-dialogWindow`,
+    dialogTitle: `DialogBox-dialogTitle`,
+    dialogFooter: `DialogBox-dialogFooter`,
+};
+
+const StyledMessageBox = styled(MessageBox)(({ theme }) => ({
+    [`& .${classes.dialogWindow}`]: ({ width, height, zoom }) => ({
         imageRendering: 'pixelated',
         fontFamily: '"Press Start 2P"',
         textTransform: 'uppercase',
@@ -25,12 +31,14 @@ const useStyles = makeStyles((theme) => ({
         minHeight: `${Math.ceil((height / 4) * zoom)}px`,
         maxHeight: `${Math.ceil((height / 3) * zoom)}px`,
     }),
-    dialogTitle: ({ zoom }) => ({
+
+    [`& .${classes.dialogTitle}`]: ({ zoom }) => ({
         fontSize: `${8 * zoom}px`,
         marginBottom: `${6 * zoom}px`,
         fontWeight: 'bold',
     }),
-    dialogFooter: ({ zoom }) => ({
+
+    [`& .${classes.dialogFooter}`]: ({ zoom }) => ({
         fontSize: `${8 * zoom}px`,
         cursor: 'pointer',
         textAlign: 'end',
@@ -45,18 +53,15 @@ const DialogBox = () => {
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);
 
-    const classes = useStyles({
-        width: gameWidth,
-        height: gameHeight,
-        zoom: gameZoom,
-    });
-
     return (
-        <MessageBox
+        <StyledMessageBox
             dialogWindowClassname={classes.dialogWindow}
             dialogTitleClassname={classes.dialogTitle}
             dialogFooterClassname={classes.dialogFooter}
             showNext
+            width={gameWidth}
+            height={gameHeight}
+            zoom={gameZoom}
         />
     );
 };

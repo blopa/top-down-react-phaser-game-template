@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { styled } from '@mui/material/styles';
 import { FormattedMessage } from 'react-intl';
-import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
@@ -17,8 +17,14 @@ import { getTranslationVariables } from '../utils/utils';
 // Actions
 import setBattleItemsListDOMAction from '../redux/actions/battle/setBattleItemsListDOMAction';
 
-const useStyles = makeStyles((theme) => ({
-    battleItemsWrapper: ({ width, height, zoom }) => {
+const classes = {
+    battleItemsWrapper: `Battle-battleItemsWrapper`,
+    battleItem: `Battle-battleItem`,
+    selectedBattleItem: `Battle-selectedBattleItem`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`& .${classes.battleItemsWrapper}`]: ({ width, height, zoom }) => {
         const borderSize = zoom;
 
         return {
@@ -41,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
             justifyContent: 'center',
         };
     },
-    battleItem: ({ width, zoom, quantity }) => {
+
+    [`& .${classes.battleItem}`]: ({ width, zoom, quantity }) => {
         const margin = Math.round(width * zoom * 0.003);
         const borderSize = zoom;
 
@@ -61,7 +68,8 @@ const useStyles = makeStyles((theme) => ({
             // },
         };
     },
-    selectedBattleItem: {
+
+    [`& .${classes.selectedBattleItem}`]: {
         backgroundColor: '#53814b',
     },
 }));
@@ -76,13 +84,6 @@ const Battle = () => {
     const battleItems = useSelector(selectBattleItems);
 
     const dispatch = useDispatch();
-
-    const classes = useStyles({
-        width: gameWidth,
-        zoom: gameZoom,
-        quantity: battleItems.length,
-    });
-
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const onSelected = useSelector(selectBattleOnSelect);
 
@@ -136,7 +137,7 @@ const Battle = () => {
     }, [battleItems, onSelected, selectedItemIndex]);
 
     return (
-        <div>
+        <Root width={gameWidth} zoom={gameZoom} quantity={battleItems.length}>
             <ul ref={battleListRef} className={classes.battleItemsWrapper}>
                 {battleItems.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
@@ -160,7 +161,7 @@ const Battle = () => {
                     );
                 })}
             </ul>
-        </div>
+        </Root>
     );
 };
 

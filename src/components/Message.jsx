@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
+import { styled } from '@mui/material/styles';
 import { animated, useTransition } from 'react-spring';
-import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
-    dialogMessage: ({ zoom }) => ({
+const classes = {
+    dialogMessage: 'Message-dialogMessage',
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.dialogMessage}`]: ({ zoom }) => ({
         fontFamily: '"Press Start 2P"',
         fontSize: `${6 * zoom}px`,
         textTransform: 'uppercase',
@@ -12,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Message = ({ message = [], trail = 35, zoom = 1, onMessageEnded = () => {}, forceShowFullMessage = false }) => {
-    const classes = useStyles({ zoom });
     const items = useMemo(
         () =>
             message
@@ -37,7 +40,7 @@ const Message = ({ message = [], trail = 35, zoom = 1, onMessageEnded = () => {}
     });
 
     return (
-        <div className={classes.dialogMessage}>
+        <Root className={classes.dialogMessage}>
             {forceShowFullMessage && <span>{message}</span>}
 
             {!forceShowFullMessage &&
@@ -46,7 +49,7 @@ const Message = ({ message = [], trail = 35, zoom = 1, onMessageEnded = () => {}
                         {item}
                     </animated.span>
                 ))}
-        </div>
+        </Root>
     );
 };
 

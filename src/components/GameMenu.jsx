@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -14,15 +14,26 @@ import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redu
 // Utils
 import { getTranslationVariables } from '../utils/utils';
 
-const useStyles = makeStyles((theme) => ({
-    menuWrapper: ({ zoom }) => ({
+const PREFIX = 'GameMenu';
+
+const classes = {
+    menuWrapper: `${PREFIX}-menuWrapper`,
+    menuPositionWrapper: `${PREFIX}-menuPositionWrapper`,
+    menuItemsWrapper: `${PREFIX}-menuItemsWrapper`,
+    menuItem: `${PREFIX}-menuItem`,
+    selectedMenuItem: `${PREFIX}-selectedMenuItem`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.menuWrapper}`]: ({ zoom }) => ({
         fontFamily: '"Press Start 2P"',
         fontSize: `${10 * zoom}px`,
         textTransform: 'uppercase',
         position: 'absolute',
         transform: 'translate(-50%, 0%)',
     }),
-    menuPositionWrapper: ({ zoom, position, width, height }) => {
+
+    [`&.${classes.menuPositionWrapper}`]: ({ zoom, position, width, height }) => {
         const left = window.innerWidth - width * zoom;
         const menuWidth = 160 * zoom;
         if (position === 'center') {
@@ -43,11 +54,13 @@ const useStyles = makeStyles((theme) => ({
 
         return {};
     },
-    menuItemsWrapper: {
+
+    [`& .${classes.menuItemsWrapper}`]: {
         textAlign: 'center',
         padding: 0,
     },
-    menuItem: ({ zoom }) => ({
+
+    [`& .${classes.menuItem}`]: ({ zoom }) => ({
         cursor: 'pointer',
         listStyle: 'none',
         padding: `${5 * zoom}px`,
@@ -55,7 +68,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#94785c',
         border: `${zoom}px solid #79584f`,
     }),
-    selectedMenuItem: ({ zoom }) => ({
+
+    [`& .${classes.selectedMenuItem}`]: ({ zoom }) => ({
         fontSize: `${11 * zoom}px`,
         border: `${zoom}px solid #ddd`,
     }),
@@ -71,13 +85,6 @@ const GameMenu = () => {
     const position = useSelector(selectMenuPosition);
     const items = useSelector(selectMenuItems);
     const onSelected = useSelector(selectMenuOnSelect);
-
-    const classes = useStyles({
-        width: gameWidth,
-        height: gameHeight,
-        zoom: gameZoom,
-        position,
-    });
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
@@ -116,7 +123,13 @@ const GameMenu = () => {
     }, [items, onSelected, selectedItemIndex]);
 
     return (
-        <div className={classNames(classes.menuWrapper, classes.menuPositionWrapper)}>
+        <Root
+            className={classNames(classes.menuWrapper, classes.menuPositionWrapper)}
+            width={gameWidth}
+            height={gameHeight}
+            zoom={gameZoom}
+            position={position}
+        >
             <ul className={classes.menuItemsWrapper}>
                 {items.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
@@ -140,7 +153,7 @@ const GameMenu = () => {
                     );
                 })}
             </ul>
-        </div>
+        </Root>
     );
 };
 

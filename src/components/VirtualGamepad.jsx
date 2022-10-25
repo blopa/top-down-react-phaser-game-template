@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved, import/no-webpack-loader-syntax */
 import { useCallback, useEffect, useRef } from 'react';
+import { styled } from '@mui/material/styles';
 import { Geom } from 'phaser';
-import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
@@ -19,8 +19,22 @@ import { simulateKeyEvent } from '../utils/utils';
 // Constants
 import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY, SPACE_KEY } from '../constants';
 
-const useStyles = makeStyles((theme) => ({
-    buttonsWrapper: ({ zoom, height }) => ({
+const PREFIX = 'VirtualGamepad';
+
+const classes = {
+    buttonsWrapper: `${PREFIX}-buttonsWrapper`,
+    button: `${PREFIX}-button`,
+    aButton: `${PREFIX}-aButton`,
+    bButton: `${PREFIX}-bButton`,
+    dPadWrapper: `${PREFIX}-dPadWrapper`,
+    dPadLeft: `${PREFIX}-dPadLeft`,
+    dPadRight: `${PREFIX}-dPadRight`,
+    dPadUp: `${PREFIX}-dPadUp`,
+    dPadDown: `${PREFIX}-dPadDown`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.buttonsWrapper}`]: ({ zoom, height }) => ({
         display: 'flex',
         justifyContent: 'space-between',
         padding: `0 ${15 * zoom}px`,
@@ -31,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
         userDrag: 'none',
         zIndex: 10,
     }),
-    button: ({ zoom, width }) => ({
+
+    [`& .${classes.button}`]: ({ zoom, width }) => ({
         pointerEvents: 'none',
         '-webkit-touch-callout': 'none',
         userSelect: 'none',
@@ -40,36 +55,43 @@ const useStyles = makeStyles((theme) => ({
             filter: 'saturate(300%) brightness(70%)',
         },
     }),
-    aButton: ({ zoom, width }) => ({
+
+    [`& .${classes.aButton}`]: ({ zoom, width }) => ({
         width: `${40 * zoom}px`,
         height: `${40 * zoom}px`,
     }),
-    bButton: ({ zoom, width }) => ({
+
+    [`& .${classes.bButton}`]: ({ zoom, width }) => ({
         width: `${40 * zoom}px`,
         height: `${40 * zoom}px`,
     }),
-    dPadWrapper: ({ zoom, width }) => ({
+
+    [`& .${classes.dPadWrapper}`]: ({ zoom, width }) => ({
         width: `${76 * zoom}px`,
         height: `${76 * zoom}px`,
     }),
-    dPadLeft: ({ zoom, width }) => ({
+
+    [`& .${classes.dPadLeft}`]: ({ zoom, width }) => ({
         width: `${38 * zoom}px`,
         height: `${30.5 * zoom}px`,
         marginBottom: `-${19 * zoom}px`,
     }),
-    dPadRight: ({ zoom, width }) => ({
+
+    [`& .${classes.dPadRight}`]: ({ zoom, width }) => ({
         transform: 'rotate(180deg)',
         width: `${38 * zoom}px`,
         height: `${30.5 * zoom}px`,
         marginBottom: `-${19 * zoom}px`,
     }),
-    dPadUp: ({ zoom, width }) => ({
+
+    [`& .${classes.dPadUp}`]: ({ zoom, width }) => ({
         transform: 'rotate(90deg)',
         width: `${38 * zoom}px`,
         height: `${30.5 * zoom}px`,
         marginLeft: `-${57 * zoom}px`,
     }),
-    dPadDown: ({ zoom, width }) => ({
+
+    [`& .${classes.dPadDown}`]: ({ zoom, width }) => ({
         transform: 'rotate(270deg)',
         width: `${38 * zoom}px`,
         height: `${30.5 * zoom}px`,
@@ -84,12 +106,6 @@ const VirtualGamepad = () => {
     const gameWidth = useSelector(selectGameWidth);
     const gameHeight = useSelector(selectGameHeight);
     const gameZoom = useSelector(selectGameZoom);
-
-    const classes = useStyles({
-        width: gameWidth,
-        height: gameHeight,
-        zoom: gameZoom,
-    });
 
     const dPadLeftRef = useRef(null);
     const dPadRightRef = useRef(null);
@@ -276,7 +292,7 @@ const VirtualGamepad = () => {
     }, []);
 
     return (
-        <div className={classes.buttonsWrapper}>
+        <Root className={classes.buttonsWrapper} width={gameWidth} height={gameHeight} zoom={gameZoom}>
             <div className={classes.dPadWrapper}>
                 <img
                     ref={dPadLeftRef}
@@ -323,7 +339,7 @@ const VirtualGamepad = () => {
                     onContextMenu={handleContextMenuCallback}
                 />
             </div>
-        </div>
+        </Root>
     );
 };
 
