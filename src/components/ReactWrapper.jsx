@@ -7,6 +7,7 @@ import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
 
 // Hooks
 import useMutationObserver from '../hooks/useMutationObserver';
+import useStore from '../zustand/store';
 
 // Components
 import DialogBox from './DialogBox';
@@ -26,7 +27,8 @@ const ReactWrapper = () => {
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useSelector(selectMenuItems);
     const battleItems = useSelector(selectBattleItems);
-    const gameTexts = useSelector(selectTexts);
+    const gameTexts = useStore(selectTexts);
+    console.log({gameTexts});
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
 

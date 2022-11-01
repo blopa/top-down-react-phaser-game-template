@@ -50,7 +50,8 @@
     "react-scripts": "^4.0.3",
     "react-spring": "^9.5.2",
     "redux": "^4.2.0",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "zustand": "^4.1.4"
   },
   "scripts": {
     "generate-bitmap-font": "node scripts/generate-bitmap-font.js",
