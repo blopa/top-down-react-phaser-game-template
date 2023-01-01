@@ -1,2 +1,0 @@
-(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[26],{172:function(e,a,t){"use strict";t.r(a),a.default=t.p+"de20da93ca2f229f92fdd9fb5d653a60.png"}}]);
-//# sourceMappingURL=26.ad13ed93.chunk.js.map
