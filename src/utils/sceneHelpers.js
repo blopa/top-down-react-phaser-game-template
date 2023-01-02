@@ -15,19 +15,12 @@ import {
     LEFT_DIRECTION,
     DOWN_DIRECTION,
     RIGHT_DIRECTION,
-    RUN_BATTLE_ITEM,
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
-    ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    PAPER_BATTLE_ITEM,
-    ATTACK_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
-    DEFENSE_BATTLE_ITEM,
-    SCISSORS_BATTLE_ITEM,
-    CONFIG_DICE_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -47,23 +40,16 @@ import {
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
 import { selectDialogMessages } from '../redux/selectors/selectDialog';
-import { selectBattleEnemies } from '../redux/selectors/selectBattle';
 
 // Actions
-import setBattleEnemiesPickedItemAction from '../redux/actions/battle/setBattleEnemiesPickedItemAction';
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
 import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
 import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-import setBattlePickedItemAction from '../redux/actions/battle/setBattlePickedItemAction';
-import setBattleOnSelectAction from '../redux/actions/battle/setBattleOnSelectAction';
 import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
-import setBattleEnemiesAction from '../redux/actions/battle/setBattleEnemiesAction';
 import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
-import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
 import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
-
 
 import useStore from '../zustand/store';
 

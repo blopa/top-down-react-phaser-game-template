@@ -12,10 +12,6 @@ import {
     handleCreateHeroAnimations,
 } from '../../utils/sceneHelpers';
 import { getDispatch } from '../../utils/utils';
-import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';
-
-// Utils
-import { getDispatch } from '../../utils/utils';
 
 // Actions
 import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';

@@ -35,7 +35,7 @@
     "@mui/core": "^5.0.0-alpha.54",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.114",
-    "@mui/material": "^5.11.2",
+    "@mui/material": "^5.11.3",
     "@mui/styles": "^5.11.2",
     "beautiful-react-hooks": "^1.2.0",
     "classnames": "^2.3.2",
@@ -61,7 +61,8 @@
     "build": "cross-env CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "bump": "ncu -u -t minor"
+    "bump": "ncu -u -t minor",
+    "clean": "rm node_modules/.cache/.eslintcache"
   },
   "browserslist": {
     "production": [

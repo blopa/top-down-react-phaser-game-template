@@ -28,7 +28,7 @@ const ReactWrapper = () => {
     const menuItems = useSelector(selectMenuItems);
     const battleItems = useSelector(selectBattleItems);
     const gameTexts = useStore(selectTexts);
-    console.log({gameTexts});
+    console.log({ gameTexts, menuItems });
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
 
