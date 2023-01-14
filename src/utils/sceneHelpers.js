@@ -40,7 +40,6 @@ import {
 } from './utils';
 
 // Selectors
-import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
 import {
     selectHeroInitialFrame,
     selectHeroFacingDirection,
@@ -56,7 +55,6 @@ import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogChara
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
 import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
-import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 
 import store from '../zustand/store';
 
@@ -112,8 +110,10 @@ export const handleCreateGroups = (scene) => {
  * @returns Phaser.GameObjects.Group
  */
 export const handleCreateMap = (scene) => {
-    const mapKey = getSelectorData(selectMapKey);
-    const tilesets = getSelectorData(selectTilesets);
+    const { mapData } = store.getState();
+
+    const { mapKey } = mapData;
+    const { tilesets } = mapData;
     const customColliders = scene.add.group();
 
     // Create the map
@@ -512,9 +512,10 @@ export const handleObjectsLayer = (scene) => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
                         const facingDirection = getSelectorData(selectHeroFacingDirection);
+                        const { setMapKey } = store.getState();
+                        setMapKey(map);
 
                         Promise.all([
-                            dispatch(setMapKeyAction(map)),
                             dispatch(setHeroFacingDirectionAction(facingDirection)),
                             dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
                             dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),

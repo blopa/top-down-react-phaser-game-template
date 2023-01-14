@@ -213,7 +213,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                fonts: [...fonts, ...state.loadedAssets.fonts],
+                fonts: [...state.loadedAssets.fonts, ...fonts],
             },
         })),
     addLoadedAtlas: (atlases) =>
@@ -222,7 +222,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                atlases: [...atlases, ...state.loadedAssets.atlases],
+                atlases: [...state.loadedAssets.atlases, ...atlases],
             },
         })),
     addLoadedImage: (images) =>
@@ -231,7 +231,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                images: [...images, ...state.loadedAssets.images],
+                images: [...state.loadedAssets.images, ...images],
             },
         })),
     addLoadedMap: (maps) =>
@@ -240,7 +240,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                maps: [...maps, ...state.loadedAssets.maps],
+                maps: [...state.loadedAssets.maps, ...maps],
             },
         })),
     addLoadedJson: (jsons) =>
@@ -249,7 +249,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                jsons: [...jsons, ...state.loadedAssets.jsons],
+                jsons: [...state.loadedAssets.jsons, ...jsons],
             },
         })),
     setMapKey: (mapKey) =>
@@ -266,7 +266,7 @@ const store = create((set) => ({
             mapData: {
                 ...state.mapData,
                 // TODO make this a Set()
-                tilesets: [...tilesets, ...state.mapData.tilesets],
+                tilesets: [...state.mapData.tilesets, tilesets],
             },
         })),
     setMenuItems: (items) =>
@@ -299,7 +299,7 @@ const store = create((set) => ({
             menu: {
                 ...state.menu,
                 // TODO make this a Set()
-                items: [...items, ...state.menu.items],
+                items: [...state.menu.items, ...items],
             },
         })),
     setTextTexts: (texts) =>
@@ -316,7 +316,7 @@ const store = create((set) => ({
             text: {
                 ...state.text,
                 // TODO make this a Set()
-                texts: [...texts, ...state.text.texts],
+                texts: [...state.text.texts, ...texts],
             },
         })),
     updateTextTexts: (key, variables) =>

@@ -4,7 +4,6 @@ import { Scene } from 'phaser';
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
 // Actions
-import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
 import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
 import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
 import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
@@ -28,7 +27,7 @@ export default class MainMenuScene extends Scene {
 
     create() {
         const dispatch = getDispatch();
-        const { setMenuItems, setMenuOnSelect } = store.getState();
+        const { setMenuItems, setMenuOnSelect, setMapKey } = store.getState();
 
         setMenuItems(['start_game', 'exit']);
         setMenuOnSelect((key, item) => {
@@ -41,24 +40,27 @@ export default class MainMenuScene extends Scene {
             }
         });
 
-        const handleStartGameSelected = () => Promise.all([
-            setMenuItems([]),
-            setMenuOnSelect(null),
-            dispatch(setMapKeyAction('sample_map')), // sample_indoor
-            dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroInitialFrameAction(
-                IDLE_FRAME.replace('position', DOWN_DIRECTION)
-            )),
-        ]).then(() => {
-            changeScene(this, 'GameScene', {
-                // fonts: ['"Press Start 2P"'],
-                atlases: ['hero'],
-                images: [],
-                mapKey: 'sample_map',
-                // mapKey: 'sample_indoor',
+        const handleStartGameSelected = () => {
+            setMenuItems([]);
+            setMenuOnSelect(null);
+            setMapKey('sample_map');
+
+            return Promise.all([
+                dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
+                dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
+                dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
+                dispatch(setHeroInitialFrameAction(
+                    IDLE_FRAME.replace('position', DOWN_DIRECTION)
+                )),
+            ]).then(() => {
+                changeScene(this, 'GameScene', {
+                    // fonts: ['"Press Start 2P"'],
+                    atlases: ['hero'],
+                    images: [],
+                    mapKey: 'sample_map',
+                    // mapKey: 'sample_indoor',
+                });
             });
-        });
+        };
     }
 }
