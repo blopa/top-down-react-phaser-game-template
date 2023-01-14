@@ -51,7 +51,7 @@ import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAc
 import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
 import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
 
-import useStore from '../zustand/store';
+import store from '../zustand/store';
 
 /**
  * @param scene
@@ -312,7 +312,7 @@ export const handleObjectsLayer = (scene) => {
 
                     enemy.setInteractive();
                     enemy.on('pointerdown', () => {
-                        const { setTextTexts } = useStore.getState();
+                        const { setTextTexts } = store.getState();
                         setTextTexts([{
                             key: 'game_title',
                             variables: {},

@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { useStore } from '../zustand/store';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
@@ -68,9 +69,9 @@ const GameMenu = () => {
     const gameZoom = useSelector(selectGameZoom);
 
     // Menu
-    const position = useSelector(selectMenuPosition);
-    const items = useSelector(selectMenuItems);
-    const onSelected = useSelector(selectMenuOnSelect);
+    const position = useStore(selectMenuPosition);
+    const items = useStore(selectMenuItems);
+    const onSelected = useStore(selectMenuOnSelect);
 
     const classes = useStyles({
         width: gameWidth,

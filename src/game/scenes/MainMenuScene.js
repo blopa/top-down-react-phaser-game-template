@@ -9,12 +9,13 @@ import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFa
 import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
 import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
-import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
-import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
 import { getDispatch } from '../../utils/utils';
+
+// Store
+import store from '../../zustand/store';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -27,21 +28,22 @@ export default class MainMenuScene extends Scene {
 
     create() {
         const dispatch = getDispatch();
+        const { setMenuItems, setMenuOnSelect } = store.getState();
 
-        dispatch(setMenuItemsAction(['start_game', 'exit']));
-        dispatch(setMenuOnSelectAction((key, item) => {
+        setMenuItems(['start_game', 'exit']);
+        setMenuOnSelect((key, item) => {
             if (key === 'start_game') {
                 handleStartGameSelected();
             } else {
-                dispatch(setMenuItemsAction([]));
-                dispatch(setMenuOnSelectAction(null));
+                setMenuItems([]);
+                setMenuOnSelect(null);
                 window.location.reload();
             }
-        }));
+        });
 
         const handleStartGameSelected = () => Promise.all([
-            dispatch(setMenuItemsAction([])),
-            dispatch(setMenuOnSelectAction(null)),
+            setMenuItems([]),
+            setMenuOnSelect(null),
             dispatch(setMapKeyAction('sample_map')), // sample_indoor
             dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
             dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),

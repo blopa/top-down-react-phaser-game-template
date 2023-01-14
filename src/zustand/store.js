@@ -1,14 +1,49 @@
 import create from 'zustand';
+import { MIN_GAME_HEIGHT, MIN_GAME_WIDTH } from '../constants';
 
 // define the store
-const useStore = create((set) => ({
-    loadedAssets: {},
-    heroData: {},
-    mapData: {},
-    game: {},
-    dialog: {},
-    battle: {},
-    menu: {},
+const store = create((set) => ({
+    loadedAssets: {
+        fonts: [],
+        atlases: [],
+        images: [],
+        maps: [],
+        jsons: [],
+    },
+    heroData: {
+        facingDirection: '',
+        initialPosition: {},
+        previousPosition: {},
+        initialFrame: '',
+    },
+    mapData: {
+        mapKey: '',
+        tilesets: [],
+    },
+    game: {
+        width: MIN_GAME_WIDTH,
+        height: MIN_GAME_HEIGHT,
+        zoom: 1,
+        locale: 'en',
+    },
+    dialog: {
+        messages: [],
+        action: null,
+        characterName: '',
+    },
+    battle: {
+        items: [],
+        enemies: [],
+        skills: [],
+        onSelect: null,
+        pickedItem: null,
+        enemiesPickedItem: null,
+    },
+    menu: {
+        items: [],
+        position: 'center',
+        onSelect: null,
+    },
     text: {
         texts: [],
     },
@@ -313,4 +348,6 @@ const useStore = create((set) => ({
         })),
 }));
 
-export default useStore;
+// TODO https://github.com/pmndrs/zustand#using-zustand-without-react
+export const useStore = store;
+export default store;

@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useResizeObserver } from 'beautiful-react-hooks';
+import { useStore } from '../zustand/store';
 
 // Constants
 import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
 
 // Hooks
 import useMutationObserver from '../hooks/useMutationObserver';
-import useStore from '../zustand/store';
 
 // Components
 import DialogBox from './DialogBox';
@@ -25,7 +25,7 @@ import { selectTexts } from '../redux/selectors/selectText';
 const ReactWrapper = () => {
     const canvas = useSelector(selectGameCanvasElement);
     const dialogMessages = useSelector(selectDialogMessages);
-    const menuItems = useSelector(selectMenuItems);
+    const menuItems = useStore(selectMenuItems);
     const battleItems = useSelector(selectBattleItems);
     const gameTexts = useStore(selectTexts);
     console.log({ gameTexts, menuItems });
