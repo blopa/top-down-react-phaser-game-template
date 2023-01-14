@@ -4,8 +4,8 @@ import { Scene } from 'phaser';
 import { getSelectorData } from '../../utils/utils';
 
 // Selectors
-import { selectBattleEnemies } from '../../redux/selectors/selectBattle';
 import { selectGameWidth } from '../../redux/selectors/selectGameData';
+import store from '../../zustand/store';
 
 export default class BattleScene extends Scene {
     constructor() {
@@ -21,7 +21,8 @@ export default class BattleScene extends Scene {
         const gameWidth = getSelectorData(selectGameWidth);
         backgroundImage.setScale(gameWidth / backgroundImage.width);
 
-        const enemies = getSelectorData(selectBattleEnemies);
+        const { battle } = store.getState();
+        const { enemies } = battle;
         enemies.forEach(({ sprite, position }) => {
             // TODO do this https://medium.com/@junhongwang/sprite-outline-with-phaser-3-9c17190b04bc
             // const outline = this.add.image(position.x, position.y, sprite)

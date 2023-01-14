@@ -21,6 +21,13 @@ import {
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
     CRYSTAL_SPRITE_NAME,
+    ATTACK_BATTLE_ITEM,
+    CONFIG_DICE_BATTLE_ITEM,
+    DEFENSE_BATTLE_ITEM,
+    RUN_BATTLE_ITEM,
+    ROCK_BATTLE_ITEM,
+    PAPER_BATTLE_ITEM,
+    SCISSORS_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -319,70 +326,73 @@ export const handleObjectsLayer = (scene) => {
                             config: {},
                         }]);
                     });
-                    // enemy.on('pointerdown', () => {
-                    //     scene.scene.pause('GameScene');
-                    //     scene.scene.launch('BattleScene');
-                    //
-                    //     dispatch(
-                    //         setBattleItemsAction([
-                    //             ATTACK_BATTLE_ITEM,
-                    //             CONFIG_DICE_BATTLE_ITEM,
-                    //             DEFENSE_BATTLE_ITEM,
-                    //             RUN_BATTLE_ITEM,
-                    //         ])
-                    //     );
-                    //
-                    //     dispatch(
-                    //         setBattleEnemiesAction([
-                    //             {
-                    //                 sprite: 'enemy_01',
-                    //                 position: { x: 200, y: 140 },
-                    //                 types: [ROCK_BATTLE_ITEM],
-                    //                 health: 100,
-                    //                 attack: 10,
-                    //             },
-                    //             {
-                    //                 sprite: 'enemy_02',
-                    //                 position: { x: 300, y: 140 },
-                    //                 types: [PAPER_BATTLE_ITEM],
-                    //                 health: 100,
-                    //                 attack: 10,
-                    //             },
-                    //             {
-                    //                 sprite: 'enemy_03',
-                    //                 position: { x: 400, y: 160 },
-                    //                 types: [SCISSORS_BATTLE_ITEM],
-                    //                 health: 100,
-                    //                 attack: 10,
-                    //             },
-                    //         ])
-                    //     );
-                    //
-                    //     dispatch(
-                    //         setBattleOnSelectAction((item, itemIndex) => {
-                    //             switch (item) {
-                    //                 case ATTACK_BATTLE_ITEM: {
-                    //                     break;
-                    //                 }
-                    //                 case CONFIG_DICE_BATTLE_ITEM: {
-                    //                     break;
-                    //                 }
-                    //                 case DEFENSE_BATTLE_ITEM: {
-                    //                     break;
-                    //                 }
-                    //                 case RUN_BATTLE_ITEM:
-                    //                 default: {
-                    //                     break;
-                    //                 }
-                    //             }
-                    //
-                    //             const enemies = getSelectorData(selectBattleEnemies);
-                    //             dispatch(setBattleItemsAction([]));
-                    //             dispatch(setBattlePickedItemAction(item));
-                    //             dispatch(setBattleEnemiesPickedItemAction(enemies));
-                    //         })
-                    //     );
-                    // });
+                    enemy.on('pointerdown', () => {
+                        scene.scene.pause('GameScene');
+                        scene.scene.launch('BattleScene');
+                        const {
+                            setBattleItems,
+                            setBattleEnemies,
+                            setBattleOnSelect,
+                            setBattlePickedItem,
+                            setBattleEnemiesPickedItem,
+                        } = store.getState();
+
+                        setBattleItems([
+                            ATTACK_BATTLE_ITEM,
+                            CONFIG_DICE_BATTLE_ITEM,
+                            DEFENSE_BATTLE_ITEM,
+                            RUN_BATTLE_ITEM,
+                        ]);
+
+                        setBattleEnemies([
+                            {
+                                sprite: 'enemy_01',
+                                position: { x: 200, y: 140 },
+                                types: [ROCK_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_02',
+                                position: { x: 300, y: 140 },
+                                types: [PAPER_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_03',
+                                position: { x: 400, y: 160 },
+                                types: [SCISSORS_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                        ]);
+
+                        setBattleOnSelect((item, itemIndex) => {
+                            switch (item) {
+                                case ATTACK_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case CONFIG_DICE_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case DEFENSE_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case RUN_BATTLE_ITEM:
+                                default: {
+                                    break;
+                                }
+                            }
+
+                            const { battle } = store.getState();
+                            const { enemies } = battle;
+
+                            dispatch(setBattleItems([]));
+                            dispatch(setBattlePickedItem(item));
+                            dispatch(setBattleEnemiesPickedItem(enemies));
+                        });
+                    });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
                         enemy,

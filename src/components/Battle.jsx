@@ -14,8 +14,8 @@ import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KE
 // Utils
 import { getTranslationVariables } from '../utils/utils';
 
-// Actions
-import setBattleItemsListDOMAction from '../redux/actions/battle/setBattleItemsListDOMAction';
+// Store
+import { useStore } from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
     battleItemsWrapper: ({ width, height, zoom }) => {
@@ -73,7 +73,7 @@ const Battle = () => {
     const battleListRef = useRef();
 
     // TODO for now only works for four items
-    const battleItems = useSelector(selectBattleItems);
+    const battleItems = useStore(selectBattleItems);
 
     const dispatch = useDispatch();
 
@@ -84,11 +84,12 @@ const Battle = () => {
     });
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-    const onSelected = useSelector(selectBattleOnSelect);
+    const onSelected = useStore(selectBattleOnSelect);
+    const setBattleItemsListDom = useStore((state) => state.setBattleItemsListDom);
 
     useEffect(() => {
-        dispatch(setBattleItemsListDOMAction(battleListRef.current));
-    }, [dispatch, battleListRef]);
+        setBattleItemsListDom(battleListRef.current);
+    }, [dispatch, battleListRef, setBattleItemsListDom]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {

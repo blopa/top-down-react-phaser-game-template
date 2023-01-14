@@ -26,7 +26,7 @@ const ReactWrapper = () => {
     const canvas = useSelector(selectGameCanvasElement);
     const dialogMessages = useSelector(selectDialogMessages);
     const menuItems = useStore(selectMenuItems);
-    const battleItems = useSelector(selectBattleItems);
+    const battleItems = useStore(selectBattleItems);
     const gameTexts = useStore(selectTexts);
     console.log({ gameTexts, menuItems });
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
