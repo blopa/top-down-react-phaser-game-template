@@ -24,7 +24,7 @@ import { selectTexts } from '../redux/selectors/selectText';
 
 const ReactWrapper = () => {
     const canvas = useSelector(selectGameCanvasElement);
-    const dialogMessages = useSelector(selectDialogMessages);
+    const dialogMessages = useStore(selectDialogMessages);
     const menuItems = useStore(selectMenuItems);
     const battleItems = useStore(selectBattleItems);
     const gameTexts = useStore(selectTexts);

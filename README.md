@@ -66,7 +66,7 @@ The Virtual Gamepad will be loaded automatically if the game is being run in a m
 A dialog box will automatically show up whenever the `state.dialog.messages` variable is filled with messages. You can call the `setDialogMessagesAction` Redux action to do this.
 
 ```javascript
-dispatch(setDialogMessagesAction(['hello world', 'hello world 2']));
+dispatch(setDialogMessages(['hello world', 'hello world 2']));
 ```
 
 # Assets by Kenney.nl:

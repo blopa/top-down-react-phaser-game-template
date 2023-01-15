@@ -45,17 +45,14 @@ import {
     selectHeroFacingDirection,
     selectHeroInitialPosition,
 } from '../redux/selectors/selectHeroData';
-import { selectDialogMessages } from '../redux/selectors/selectDialog';
 
 // Actions
 import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
 import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
 import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
-import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
 import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
-import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
 
+// Store
 import store from '../zustand/store';
 
 /**
@@ -399,29 +396,31 @@ export const handleObjectsLayer = (scene) => {
                         scene.heroSprite.actionCollider,
                         (e, a) => {
                             if (Input.Keyboard.JustDown(scene.actionKey)) {
-                                const messages = getSelectorData(selectDialogMessages);
+                                const {
+                                    dialog,
+                                    setDialogAction,
+                                    setDialogMessages,
+                                    setDialogCharacterName,
+                                } = store.getState();
+                                const { messages } = dialog;
 
                                 if (messages.length === 0) {
                                     enemyActionHeroCollider.active = false;
-                                    dispatch(setDialogCharacterNameAction('monster'));
-                                    dispatch(
-                                        setDialogMessagesAction([
-                                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                                            'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
-                                            'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
-                                        ])
-                                    );
-                                    dispatch(
-                                        setDialogActionAction(() => {
-                                            // Do this to not trigger the message again
-                                            // Because whenever you call JustDown once, the second time
-                                            // you call it, it will be false
-                                            Input.Keyboard.JustDown(scene.actionKey);
-                                            dispatch(setDialogCharacterNameAction(''));
-                                            dispatch(setDialogMessagesAction([]));
-                                            dispatch(setDialogActionAction(null));
-                                        })
-                                    );
+                                    setDialogCharacterName('monster');
+                                    setDialogMessages([
+                                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                                        'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
+                                        'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
+                                    ]);
+                                    setDialogAction(() => {
+                                        // Do this to not trigger the message again
+                                        // Because whenever you call JustDown once, the second time
+                                        // you call it, it will be false
+                                        Input.Keyboard.JustDown(scene.actionKey);
+                                        setDialogCharacterName('');
+                                        setDialogMessages([]);
+                                        setDialogAction(null);
+                                    });
 
                                     scene.time.delayedCall(0, () => {
                                         enemyActionHeroCollider.active = true;
