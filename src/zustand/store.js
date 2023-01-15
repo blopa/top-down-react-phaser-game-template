@@ -175,7 +175,7 @@ const store = create((set) => ({
                 locale,
             },
         })),
-    setFacingDirection: (facingDirection) =>
+    setHeroFacingDirection: (facingDirection) =>
         set((state) => ({
             ...state,
             heroData: {
@@ -183,7 +183,7 @@ const store = create((set) => ({
                 facingDirection,
             },
         })),
-    setInitialPosition: (initialPosition) =>
+    setHeroInitialPosition: (initialPosition) =>
         set((state) => ({
             ...state,
             heroData: {
@@ -191,7 +191,7 @@ const store = create((set) => ({
                 initialPosition,
             },
         })),
-    setPreviousPosition: (previousPosition) =>
+    setHeroPreviousPosition: (previousPosition) =>
         set((state) => ({
             ...state,
             heroData: {
@@ -199,7 +199,7 @@ const store = create((set) => ({
                 previousPosition,
             },
         })),
-    setInitialFrame: (initialFrame) =>
+    setHeroInitialFrame: (initialFrame) =>
         set((state) => ({
             ...state,
             heroData: {

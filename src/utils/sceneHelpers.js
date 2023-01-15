@@ -33,24 +33,10 @@ import {
 // Utils
 import {
     getDispatch,
-    getSelectorData,
     getDegreeFromRadians,
     rotateRectangleInsideTile,
     createInteractiveGameObject,
 } from './utils';
-
-// Selectors
-import {
-    selectHeroInitialFrame,
-    selectHeroFacingDirection,
-    selectHeroInitialPosition,
-} from '../redux/selectors/selectHeroData';
-
-// Actions
-import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
 
 // Store
 import store from '../zustand/store';
@@ -190,8 +176,9 @@ export const handleCreateMap = (scene) => {
 };
 
 export const handleCreateHero = (scene) => {
-    const initialFrame = getSelectorData(selectHeroInitialFrame);
-    const { x, y } = getSelectorData(selectHeroInitialPosition);
+    const { heroData } = store.getState();
+    const { initialPosition, initialFrame } = heroData;
+    const { x, y } = initialPosition;
 
     // Create hero sprite
     const heroSprite = scene.physics.add
@@ -228,7 +215,8 @@ export const handleCreateHero = (scene) => {
     // );
 
     const updateActionCollider = ({ top, right, bottom, left, width, height } = heroSprite.body) => {
-        const facingDirection = getSelectorData(selectHeroFacingDirection);
+        const { heroData } = store.getState();
+        const { facingDirection } = heroData;
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
@@ -510,16 +498,23 @@ export const handleObjectsLayer = (scene) => {
                     const overlapCollider = scene.physics.add.overlap(scene.heroSprite, customCollider, () => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
-                        const facingDirection = getSelectorData(selectHeroFacingDirection);
-                        const { setMapKey } = store.getState();
-                        setMapKey(map);
+                        const {
+                            heroData,
+                            setMapKey,
+                            setHeroInitialFrame,
+                            setHeroFacingDirection,
+                            setHeroInitialPosition,
+                            setHeroPreviousPosition,
+                        } = store.getState();
+                        const { facingDirection } = heroData;
 
-                        Promise.all([
-                            dispatch(setHeroFacingDirectionAction(facingDirection)),
-                            dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
-                            dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),
-                            dispatch(setHeroInitialFrameAction(IDLE_FRAME.replace('position', facingDirection))),
-                        ]).then(() => {
+                        setMapKey(map);
+                        setHeroFacingDirection(facingDirection);
+                        setHeroInitialFrame(IDLE_FRAME.replace('position', facingDirection));
+                        setHeroInitialPosition({ x: posX, y: posY });
+                        setHeroPreviousPosition({ x: posX, y: posY });
+
+                        Promise.all([]).then(() => {
                             // scene.scene.restart();
                             changeScene(scene, 'GameScene', {
                                 atlases: ['hero'],
@@ -588,30 +583,30 @@ export const handleCreateHeroAnimations = (scene) => {
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 60) => {
-    const dispatch = getDispatch();
+    const { setHeroFacingDirection, heroData } = store.getState();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(LEFT_DIRECTION));
+        setHeroFacingDirection(LEFT_DIRECTION);
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(RIGHT_DIRECTION));
+        setHeroFacingDirection(RIGHT_DIRECTION);
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(UP_DIRECTION));
+        setHeroFacingDirection(UP_DIRECTION);
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION));
+        setHeroFacingDirection(DOWN_DIRECTION);
     } else {
-        const facingDirection = getSelectorData(selectHeroFacingDirection);
+        const { facingDirection } = heroData;
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();

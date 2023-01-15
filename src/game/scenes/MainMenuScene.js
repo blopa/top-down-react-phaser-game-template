@@ -3,12 +3,6 @@ import { Scene } from 'phaser';
 // Constants
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
-// Actions
-import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
-
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
 import { getDispatch } from '../../utils/utils';
@@ -44,15 +38,16 @@ export default class MainMenuScene extends Scene {
             setMenuItems([]);
             setMenuOnSelect(null);
             setMapKey('sample_map');
+            const { setHeroFacingDirection, setHeroInitialFrame, setHeroPreviousPosition, setHeroInitialPosition } = store.getState();
 
-            return Promise.all([
-                dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-                dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-                dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
-                dispatch(setHeroInitialFrameAction(
-                    IDLE_FRAME.replace('position', DOWN_DIRECTION)
-                )),
-            ]).then(() => {
+            setHeroFacingDirection(DOWN_DIRECTION);
+            setHeroInitialFrame(
+                IDLE_FRAME.replace('position', DOWN_DIRECTION)
+            );
+            setHeroInitialPosition({ x: 30, y: 42 });
+            setHeroPreviousPosition({ x: 30, y: 42 });
+
+            return Promise.all([]).then(() => {
                 changeScene(this, 'GameScene', {
                     // fonts: ['"Press Start 2P"'],
                     atlases: ['hero'],
