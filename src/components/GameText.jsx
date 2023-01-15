@@ -1,6 +1,5 @@
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
-import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 // Selectors
@@ -13,6 +12,9 @@ import {
 
 // Hooks
 import useRect from '../hooks/useRect';
+
+// Store
+import { useStore } from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
     textWrapper: ({ zoom, top, position, domRect }) => ({
@@ -49,10 +51,10 @@ const GameText = ({
     component: Component = 'p',
 }) => {
     // Game
-    const gameWidth = useSelector(selectGameWidth);
-    const gameHeight = useSelector(selectGameHeight);
-    const gameZoom = useSelector(selectGameZoom);
-    const canvas = useSelector(selectGameCanvasElement);
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
+    const canvas = useStore(selectGameCanvasElement);
     const domRect = useRect(canvas);
 
     const {

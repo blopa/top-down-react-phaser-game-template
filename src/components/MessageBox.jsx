@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 // Components
 import Message from './Message';
@@ -20,7 +19,7 @@ const MessageBox = ({
 }) => {
     const dialogMessages = useStore(selectDialogMessages);
     const dialogAction = useStore(selectDialogAction);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameZoom = useStore(selectGameZoom);
     const characterName = useStore(selectDialogCharacterName);
 
     const [currentMessage, setCurrentMessage] = useState(0);

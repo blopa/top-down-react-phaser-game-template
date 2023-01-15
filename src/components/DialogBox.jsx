@@ -1,11 +1,13 @@
 import { makeStyles } from '@mui/styles';
-import { useSelector } from 'react-redux';
 
 // Components
 import MessageBox from './MessageBox';
 
 // Selectors
 import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+
+// Store
+import { useStore } from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
     dialogWindow: ({ width, height, zoom }) => ({
@@ -41,9 +43,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DialogBox = () => {
-    const gameWidth = useSelector(selectGameWidth);
-    const gameHeight = useSelector(selectGameHeight);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
 
     const classes = useStyles({
         width: gameWidth,

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 // Selectors
@@ -68,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Battle = () => {
     // Game
-    const gameWidth = useSelector(selectGameWidth);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameZoom = useStore(selectGameZoom);
     const battleListRef = useRef();
 
     // TODO for now only works for four items

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import { Geom } from 'phaser';
 import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 
 // Images
 import dPadButton from '!!file-loader!../assets/images/d_pad_button.png';
@@ -25,6 +24,9 @@ import {
     ENTER_KEY,
     SPACE_KEY,
 } from '../constants';
+
+// Store
+import { useStore } from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
     buttonsWrapper: ({ zoom, height }) => ({
@@ -88,9 +90,9 @@ const useStyles = makeStyles((theme) => ({
 const VirtualGamepad = () => {
     // TODO redo this with that answer from stackoverflow
     // https://stackoverflow.com/a/70192263/4307769
-    const gameWidth = useSelector(selectGameWidth);
-    const gameHeight = useSelector(selectGameHeight);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
 
     const classes = useStyles({
         width: gameWidth,

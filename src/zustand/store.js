@@ -151,7 +151,7 @@ const store = create((set) => ({
                 zoom,
             },
         })),
-    setGameCanvas: (canvas) =>
+    setGameCanvasElement: (canvas) =>
         set((state) => ({
             ...state,
             game: {
@@ -159,7 +159,7 @@ const store = create((set) => ({
                 canvas,
             },
         })),
-    setGameCameraSizeCallback: (cameraSizeUpdateCallback) =>
+    setGameCameraSizeUpdateCallback: (cameraSizeUpdateCallback) =>
         set((state) => ({
             ...state,
             game: {

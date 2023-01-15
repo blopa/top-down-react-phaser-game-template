@@ -1,10 +1,8 @@
 import { Scene } from 'phaser';
 
 // Utils
-import { getSelectorData } from '../../utils/utils';
 
 // Selectors
-import { selectGameWidth } from '../../redux/selectors/selectGameData';
 import store from '../../zustand/store';
 
 export default class BattleScene extends Scene {
@@ -18,7 +16,8 @@ export default class BattleScene extends Scene {
 
     create() {
         const backgroundImage = this.add.image(0, 0, 'background_grass').setOrigin(0, 0);
-        const gameWidth = getSelectorData(selectGameWidth);
+        const { game } = store.getState();
+        const { width: gameWidth } = game;
         backgroundImage.setScale(gameWidth / backgroundImage.width);
 
         const { battle } = store.getState();

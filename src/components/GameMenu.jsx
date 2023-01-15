@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from '../zustand/store';
 
@@ -64,9 +63,9 @@ const useStyles = makeStyles((theme) => ({
 
 const GameMenu = () => {
     // Game
-    const gameWidth = useSelector(selectGameWidth);
-    const gameHeight = useSelector(selectGameHeight);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
 
     // Menu
     const position = useStore(selectMenuPosition);
