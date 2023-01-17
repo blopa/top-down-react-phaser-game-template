@@ -32,6 +32,7 @@ import {
 
 // Utils
 import {
+    getSelectorData,
     getDegreeFromRadians,
     rotateRectangleInsideTile,
     createInteractiveGameObject,
@@ -39,6 +40,16 @@ import {
 
 // Store
 import store from '../zustand/store';
+
+// Selectors
+import { selectBattleEnemies } from '../zustand/selectors/selectBattle';
+import { selectDialogMessages } from '../zustand/selectors/selectDialog';
+import { selectMapKey, selectTilesets } from '../zustand/selectors/selectMapData';
+import {
+    selectHeroInitialFrame,
+    selectHeroInitialPosition,
+    selectHeroFacingDirection,
+} from '../zustand/selectors/selectHeroData';
 
 /**
  * @param scene
@@ -92,10 +103,8 @@ export const handleCreateGroups = (scene) => {
  * @returns Phaser.GameObjects.Group
  */
 export const handleCreateMap = (scene) => {
-    const { mapData } = store.getState();
-
-    const { mapKey } = mapData;
-    const { tilesets } = mapData;
+    const mapKey = getSelectorData(selectMapKey);
+    const tilesets = getSelectorData(selectTilesets);
     const customColliders = scene.add.group();
 
     // Create the map
@@ -175,8 +184,8 @@ export const handleCreateMap = (scene) => {
 };
 
 export const handleCreateHero = (scene) => {
-    const { heroData } = store.getState();
-    const { initialPosition, initialFrame } = heroData;
+    const initialFrame = getSelectorData(selectHeroInitialFrame);
+    const initialPosition = getSelectorData(selectHeroInitialPosition);
     const { x, y } = initialPosition;
 
     // Create hero sprite
@@ -214,8 +223,7 @@ export const handleCreateHero = (scene) => {
     // );
 
     const updateActionCollider = ({ top, right, bottom, left, width, height } = heroSprite.body) => {
-        const { heroData } = store.getState();
-        const { facingDirection } = heroData;
+        const facingDirection = getSelectorData(selectHeroFacingDirection);
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
@@ -368,8 +376,7 @@ export const handleObjectsLayer = (scene) => {
                                 }
                             }
 
-                            const { battle } = store.getState();
-                            const { enemies } = battle;
+                            const enemies = getSelectorData(selectBattleEnemies);
 
                             setBattleItems([]);
                             setBattlePickedItem(item);
@@ -383,12 +390,11 @@ export const handleObjectsLayer = (scene) => {
                         (e, a) => {
                             if (Input.Keyboard.JustDown(scene.actionKey)) {
                                 const {
-                                    dialog,
                                     setDialogAction,
                                     setDialogMessages,
                                     setDialogCharacterName,
                                 } = store.getState();
-                                const { messages } = dialog;
+                                const messages = getSelectorData(selectDialogMessages);
 
                                 if (messages.length === 0) {
                                     enemyActionHeroCollider.active = false;
@@ -497,14 +503,13 @@ export const handleObjectsLayer = (scene) => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
                         const {
-                            heroData,
                             setMapKey,
                             setHeroInitialFrame,
                             setHeroFacingDirection,
                             setHeroInitialPosition,
                             setHeroPreviousPosition,
                         } = store.getState();
-                        const { facingDirection } = heroData;
+                        const facingDirection = getSelectorData(selectHeroFacingDirection);
 
                         setMapKey(map);
                         setHeroFacingDirection(facingDirection);
@@ -581,7 +586,7 @@ export const handleCreateHeroAnimations = (scene) => {
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 60) => {
-    const { setHeroFacingDirection, heroData } = store.getState();
+    const { setHeroFacingDirection } = store.getState();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
@@ -604,7 +609,7 @@ export const handleHeroMovement = (scene, heroSpeed = 60) => {
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
         setHeroFacingDirection(DOWN_DIRECTION);
     } else {
-        const { facingDirection } = heroData;
+        const facingDirection = getSelectorData(selectHeroFacingDirection);
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();
