@@ -8,8 +8,8 @@ import { useStore } from '../zustand/store';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redux/selectors/selectMenu';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../zustand/selectors/selectMenu';
 
 // Utils
 import { getTranslationVariables } from '../utils/utils';

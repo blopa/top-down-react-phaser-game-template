@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Message from './Message';
 
 // Selectors
-import { selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/selectors/selectDialog';
 
 // Constants
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';

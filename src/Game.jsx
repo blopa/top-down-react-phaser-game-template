@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import isMobile from 'is-mobile';
 
@@ -30,7 +29,7 @@ import VirtualGamepad from './components/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
 
 // Selectors
-import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './redux/selectors/selectGameData';
+import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './zustand/selectors/selectGameData';
 
 // Store
 import { useStore } from './zustand/store';
@@ -38,7 +37,6 @@ import { useStore } from './zustand/store';
 const Game = () => {
     const defaultLocale = 'en';
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
-    const dispatch = useDispatch();
     const [game, setGame] = useState(null);
     const locale = useStore(selectGameLocale) || defaultLocale;
     const cameraSizeUpdateCallback = useStore(selectGameCameraSizeUpdateCallback);
@@ -57,7 +55,7 @@ const Game = () => {
         loadMessages();
     }, [locale]);
 
-    const updateGameReduxState = useCallback((
+    const updateGameGlobalState = useCallback((
         gameWidth,
         gameHeight,
         gameZoom
@@ -114,7 +112,7 @@ const Game = () => {
             backgroundColor: '#000000',
         });
 
-        updateGameReduxState(width, height, zoom);
+        updateGameGlobalState(width, height, zoom);
         setGame(phaserGame);
 
         if (isDevelopment) {
@@ -122,9 +120,8 @@ const Game = () => {
         }
     }, [
         game,
-        dispatch,
         isDevelopment,
-        updateGameReduxState,
+        updateGameGlobalState,
     ]);
 
     useEffect(() => {
@@ -156,7 +153,7 @@ const Game = () => {
                 // game.scale.setGameSize(gameSize.width, gameSize.height);
                 // game.scale.displaySize.resize(gameSize.width, gameSize.height);
                 // game.scale.resize(gameSize.width, gameSize.height).getParentBounds();
-                updateGameReduxState(gameSize.width, gameSize.height, gameSize.zoom);
+                updateGameGlobalState(gameSize.width, gameSize.height, gameSize.zoom);
                 // game.canvas.style.width = `${gameSize.width}px`;
                 // game.canvas.style.height = `${gameSize.height}px`;
                 cameraSizeUpdateCallback?.();
@@ -181,8 +178,7 @@ const Game = () => {
         };
     }, [
         game,
-        dispatch,
-        updateGameReduxState,
+        updateGameGlobalState,
         cameraSizeUpdateCallback,
     ]);
 

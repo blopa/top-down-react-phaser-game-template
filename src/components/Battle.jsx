@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
-import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 // Selectors
-import { selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectBattleItems, selectBattleOnSelect } from '../redux/selectors/selectBattle';
+import { selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectBattleItems, selectBattleOnSelect } from '../zustand/selectors/selectBattle';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
@@ -75,8 +74,6 @@ const Battle = () => {
     // TODO for now only works for four items
     const battleItems = useStore(selectBattleItems);
 
-    const dispatch = useDispatch();
-
     const classes = useStyles({
         width: gameWidth,
         zoom: gameZoom,
@@ -89,7 +86,7 @@ const Battle = () => {
 
     useEffect(() => {
         setBattleItemsListDom(battleListRef.current);
-    }, [dispatch, battleListRef, setBattleItemsListDom]);
+    }, [battleListRef, setBattleItemsListDom]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {

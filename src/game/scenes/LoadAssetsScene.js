@@ -1,25 +1,9 @@
 import { Scene, Display } from 'phaser';
 
-// Actions
-import addLoadedFontAction from '../../redux/actions/loadedAssets/addLoadedFontAction';
-import addLoadedAtlasAction from '../../redux/actions/loadedAssets/addLoadedAtlasAction';
-import addLoadedImageAction from '../../redux/actions/loadedAssets/addLoadedImageAction';
-import addLoadedMapAction from '../../redux/actions/loadedAssets/addLoadedMapAction';
-import addLoadedJSONAction from '../../redux/actions/loadedAssets/addLoadedJSONAction';
-
 // Selectors
-import {
-    selectLoadedAtlases,
-    selectLoadedImages,
-    selectLoadedFonts,
-    selectLoadedJSONs,
-    selectLoadedMaps,
-} from '../../redux/selectors/selectLoadedAssets';
 
 // Utils
 import {
-    getState,
-    getDispatch,
     isMapFileAvailable,
     isImageFileAvailable,
     isTilesetFileAvailable,
@@ -63,9 +47,15 @@ export default class LoadAssetsScene extends Scene {
             mapKey = '',
         } = this.initData?.assets || {};
 
-        const dispatch = getDispatch();
-        const state = getState();
-        const loadedFonts = selectLoadedFonts(state);
+        const {
+            addLoadedAtlas,
+            addLoadedFont,
+            addLoadedImage,
+            addLoadedMap,
+            addLoadedJson,
+            loadedAssets,
+        } = store.getState();
+        const { fonts: loadedFonts } = loadedAssets;
 
         // setup loading bar
         const progressBar = this.add.graphics();
@@ -111,8 +101,8 @@ export default class LoadAssetsScene extends Scene {
                 handleBarProgress(fonts.length - (fonts.length - (idx + 1)));
             }
 
-            // Set font as already loaded in the redux store
-            dispatch(addLoadedFontAction(font));
+            // Set font as already loaded in the zustand store
+            addLoadedFont(font);
             newFontsCount += 1;
             const color = this.game.config.backgroundColor;
             this.add.text(
@@ -126,9 +116,9 @@ export default class LoadAssetsScene extends Scene {
             );
         });
 
-        const loadedAtlases = selectLoadedAtlases(state);
-        const loadedImages = selectLoadedImages(state);
-        const loadedMaps = selectLoadedMaps(state);
+        const { atlases: loadedAtlases } = loadedAssets;
+        const { images: loadedImages } = loadedAssets;
+        const { maps: loadedMaps } = loadedAssets;
         // Load the Tiled map needed for the next scene
         if (
             mapKey
@@ -164,7 +154,7 @@ export default class LoadAssetsScene extends Scene {
                                 const { default: imagePath } =
                                     await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
 
-                                dispatch(addLoadedAtlasAction(spriteName));
+                                addLoadedAtlas(spriteName);
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
                             }
 
@@ -185,7 +175,7 @@ export default class LoadAssetsScene extends Scene {
                                 const { default: imagePath } =
                                     await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
 
-                                dispatch(addLoadedAtlasAction(spriteName));
+                                addLoadedAtlas(spriteName);
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
                             }
 
@@ -200,7 +190,7 @@ export default class LoadAssetsScene extends Scene {
                                 // eslint-disable-next-line no-await-in-loop, import/no-unresolved, import/no-webpack-loader-syntax
                                 const { default: imagePath } = await import('!!file-loader!../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
 
-                                dispatch(addLoadedImageAction(spriteName));
+                                addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
@@ -217,7 +207,7 @@ export default class LoadAssetsScene extends Scene {
                                 const { default: imagePath } =
                                     await import(`!!file-loader!../../assets/images/${spriteName}.png`);
 
-                                dispatch(addLoadedImageAction(spriteName));
+                                addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
@@ -234,7 +224,7 @@ export default class LoadAssetsScene extends Scene {
                                 const { default: imagePath } =
                                     await import(`!!file-loader!../../assets/images/${spriteName}.png`);
 
-                                dispatch(addLoadedImageAction(spriteName));
+                                addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
                             }
 
@@ -252,7 +242,7 @@ export default class LoadAssetsScene extends Scene {
                 });
             });
 
-            const loadedJSONs = selectLoadedJSONs(state);
+            const { jsons: loadedJSONs } = loadedAssets;
             // eslint-disable-next-line no-restricted-syntax
             for (const tilesetName of tilesets) {
                 if (tilesetName && !IGNORED_TILESETS.includes(tilesetName)) {
@@ -262,7 +252,7 @@ export default class LoadAssetsScene extends Scene {
                         const { default: jsonResult } = await import(`../../assets/tilesets/${tilesetName}.json`);
                         tilesetJson = jsonResult;
 
-                        dispatch(addLoadedJSONAction(tilesetName));
+                        addLoadedJson(tilesetName);
                         // eslint-disable-next-line no-await-in-loop
                         await asyncLoader(this.load.json(tilesetName, tilesetJson));
                     } else {
@@ -273,7 +263,7 @@ export default class LoadAssetsScene extends Scene {
                         // eslint-disable-next-line no-await-in-loop
                         const { default: tilesetImage } = await import(`../../assets/tilesets/${tilesetJson.image}`);
 
-                        dispatch(addLoadedImageAction(tilesetName));
+                        addLoadedImage(tilesetName);
                         // eslint-disable-next-line no-await-in-loop
                         await asyncLoader(this.load.image(tilesetName, tilesetImage));
                     }
@@ -303,7 +293,7 @@ export default class LoadAssetsScene extends Scene {
                 }
             }
 
-            dispatch(addLoadedMapAction(mapKey));
+            addLoadedMap(mapKey);
             // Load map with pre-loaded tilesets
             await asyncLoader(this.load.tilemapTiledJSON(mapKey, mapJson));
         }
@@ -330,7 +320,7 @@ export default class LoadAssetsScene extends Scene {
             // eslint-disable-next-line no-await-in-loop
             const { default: imagePath } = await import(`!!file-loader!../../assets/atlases/generated/${imageName}`);
 
-            dispatch(addLoadedAtlasAction(atlas));
+            addLoadedAtlas(atlas);
             // eslint-disable-next-line no-await-in-loop
             await asyncLoader(this.load.atlas(atlas, imagePath, jsonPath));
         }
@@ -349,7 +339,7 @@ export default class LoadAssetsScene extends Scene {
             // eslint-disable-next-line no-await-in-loop
             const { default: imagePath } = await import(`!!file-loader!../../assets/images/${image}.png`);
 
-            dispatch(addLoadedImageAction(image));
+            addLoadedImage(image);
             // eslint-disable-next-line no-await-in-loop
             await asyncLoader(this.load.image(image, imagePath));
         }

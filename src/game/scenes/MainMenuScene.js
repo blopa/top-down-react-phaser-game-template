@@ -5,7 +5,6 @@ import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
-import { getDispatch } from '../../utils/utils';
 
 // Store
 import store from '../../zustand/store';
@@ -20,7 +19,6 @@ export default class MainMenuScene extends Scene {
     }
 
     create() {
-        const dispatch = getDispatch();
         const { setMenuItems, setMenuOnSelect, setMapKey } = store.getState();
 
         setMenuItems(['start_game', 'exit']);

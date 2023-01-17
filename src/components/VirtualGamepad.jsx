@@ -10,7 +10,7 @@ import aButton from '!!file-loader!../assets/images/a_button.png';
 import bButton from '!!file-loader!../assets/images/b_button.png';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
 
 // Utils
 import { simulateKeyEvent } from '../utils/utils';

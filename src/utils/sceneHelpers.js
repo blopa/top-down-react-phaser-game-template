@@ -32,7 +32,6 @@ import {
 
 // Utils
 import {
-    getDispatch,
     getDegreeFromRadians,
     rotateRectangleInsideTile,
     createInteractiveGameObject,
@@ -283,7 +282,6 @@ export const handleCreateHero = (scene) => {
 
 export const handleObjectsLayer = (scene) => {
     // Load game objects like items, enemies, etc
-    const dispatch = getDispatch();
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y, name, width, height } = object;
@@ -373,9 +371,9 @@ export const handleObjectsLayer = (scene) => {
                             const { battle } = store.getState();
                             const { enemies } = battle;
 
-                            dispatch(setBattleItems([]));
-                            dispatch(setBattlePickedItem(item));
-                            dispatch(setBattleEnemiesPickedItem(enemies));
+                            setBattleItems([]);
+                            setBattlePickedItem(item);
+                            setBattleEnemiesPickedItem(enemies);
                         });
                     });
 

@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles';
 import MessageBox from './MessageBox';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
 
 // Store
 import { useStore } from '../zustand/store';

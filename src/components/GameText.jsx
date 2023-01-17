@@ -8,7 +8,7 @@ import {
     selectGameWidth,
     selectGameHeight,
     selectGameCanvasElement,
-} from '../redux/selectors/selectGameData';
+} from '../zustand/selectors/selectGameData';
 
 // Hooks
 import useRect from '../hooks/useRect';
