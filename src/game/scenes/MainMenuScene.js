@@ -3,18 +3,11 @@ import { Scene } from 'phaser';
 // Constants
 import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
 
-// Actions
-import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
-import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
-import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
-import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
-
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
-import { getDispatch } from '../../utils/utils';
+
+// Store
+import store from '../../zustand/store';
 
 export default class MainMenuScene extends Scene {
     constructor() {
@@ -26,37 +19,41 @@ export default class MainMenuScene extends Scene {
     }
 
     create() {
-        const dispatch = getDispatch();
+        const { setMenuItems, setMenuOnSelect, setMapKey } = store.getState();
 
-        dispatch(setMenuItemsAction(['start_game', 'exit']));
-        dispatch(setMenuOnSelectAction((key, item) => {
+        setMenuItems(['start_game', 'exit']);
+        setMenuOnSelect((key, item) => {
             if (key === 'start_game') {
                 handleStartGameSelected();
             } else {
-                dispatch(setMenuItemsAction([]));
-                dispatch(setMenuOnSelectAction(null));
+                setMenuItems([]);
+                setMenuOnSelect(null);
                 window.location.reload();
             }
-        }));
-
-        const handleStartGameSelected = () => Promise.all([
-            dispatch(setMenuItemsAction([])),
-            dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMapKeyAction('sample_map')), // sample_indoor
-            dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroInitialFrameAction(
-                IDLE_FRAME.replace('position', DOWN_DIRECTION)
-            )),
-        ]).then(() => {
-            changeScene(this, 'GameScene', {
-                // fonts: ['"Press Start 2P"'],
-                atlases: ['hero'],
-                images: [],
-                mapKey: 'sample_map',
-                // mapKey: 'sample_indoor',
-            });
         });
+
+        const handleStartGameSelected = () => {
+            setMenuItems([]);
+            setMenuOnSelect(null);
+            setMapKey('sample_map');
+            const { setHeroFacingDirection, setHeroInitialFrame, setHeroPreviousPosition, setHeroInitialPosition } = store.getState();
+
+            setHeroFacingDirection(DOWN_DIRECTION);
+            setHeroInitialFrame(
+                IDLE_FRAME.replace('position', DOWN_DIRECTION)
+            );
+            setHeroInitialPosition({ x: 30, y: 42 });
+            setHeroPreviousPosition({ x: 30, y: 42 });
+
+            return Promise.all([]).then(() => {
+                changeScene(this, 'GameScene', {
+                    // fonts: ['"Press Start 2P"'],
+                    atlases: ['hero'],
+                    images: [],
+                    mapKey: 'sample_map',
+                    // mapKey: 'sample_indoor',
+                });
+            });
+        };
     }
 }

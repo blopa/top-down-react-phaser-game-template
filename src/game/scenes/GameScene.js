@@ -11,14 +11,9 @@ import {
     handleConfigureCamera,
     handleCreateHeroAnimations,
 } from '../../utils/sceneHelpers';
-import { getDispatch } from '../../utils/utils';
-import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';
 
-// Utils
-import { getDispatch } from '../../utils/utils';
-
-// Actions
-import setGameCameraSizeUpdateCallbackAction from '../../redux/actions/game/setGameCameraSizeUpdateCallbackAction';
+// Store
+import store from '../../zustand/store';
 
 export default class GameScene extends Scene {
     constructor() {
@@ -29,7 +24,7 @@ export default class GameScene extends Scene {
         // this.input.on('pointerup', (pointer) => {
         //     console.log('clicky click');
         // });
-        const dispatch = getDispatch();
+        const { setGameCameraSizeUpdateCallback } = store.getState();
 
         // All of these functions need to be called in order
 
@@ -50,9 +45,9 @@ export default class GameScene extends Scene {
 
         // Configure the main camera
         handleConfigureCamera(this);
-        dispatch(setGameCameraSizeUpdateCallbackAction(() => {
+        setGameCameraSizeUpdateCallback(() => {
             handleConfigureCamera(this);
-        }));
+        });
 
         // Hero animations
         handleCreateHeroAnimations(this);

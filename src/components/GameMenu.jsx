@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { useStore } from '../zustand/store';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../redux/selectors/selectMenu';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../zustand/selectors/selectMenu';
 
 // Utils
 import { getTranslationVariables } from '../utils/utils';
@@ -63,14 +63,14 @@ const useStyles = makeStyles((theme) => ({
 
 const GameMenu = () => {
     // Game
-    const gameWidth = useSelector(selectGameWidth);
-    const gameHeight = useSelector(selectGameHeight);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
 
     // Menu
-    const position = useSelector(selectMenuPosition);
-    const items = useSelector(selectMenuItems);
-    const onSelected = useSelector(selectMenuOnSelect);
+    const position = useStore(selectMenuPosition);
+    const items = useStore(selectMenuItems);
+    const onSelected = useStore(selectMenuOnSelect);
 
     const classes = useStyles({
         width: gameWidth,

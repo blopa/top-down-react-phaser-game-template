@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { makeStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 // Selectors
-import { selectGameWidth, selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectBattleItems, selectBattleOnSelect } from '../redux/selectors/selectBattle';
+import { selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectBattleItems, selectBattleOnSelect } from '../zustand/selectors/selectBattle';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
@@ -14,8 +13,8 @@ import { ARROW_DOWN_KEY, ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ENTER_KE
 // Utils
 import { getTranslationVariables } from '../utils/utils';
 
-// Actions
-import setBattleItemsListDOMAction from '../redux/actions/battle/setBattleItemsListDOMAction';
+// Store
+import { useStore } from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
     battleItemsWrapper: ({ width, height, zoom }) => {
@@ -68,14 +67,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Battle = () => {
     // Game
-    const gameWidth = useSelector(selectGameWidth);
-    const gameZoom = useSelector(selectGameZoom);
+    const gameWidth = useStore(selectGameWidth);
+    const gameZoom = useStore(selectGameZoom);
     const battleListRef = useRef();
 
     // TODO for now only works for four items
-    const battleItems = useSelector(selectBattleItems);
-
-    const dispatch = useDispatch();
+    const battleItems = useStore(selectBattleItems);
 
     const classes = useStyles({
         width: gameWidth,
@@ -84,11 +81,12 @@ const Battle = () => {
     });
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-    const onSelected = useSelector(selectBattleOnSelect);
+    const onSelected = useStore(selectBattleOnSelect);
+    const setBattleItemsListDom = useStore((state) => state.setBattleItemsListDom);
 
     useEffect(() => {
-        dispatch(setBattleItemsListDOMAction(battleListRef.current));
-    }, [dispatch, battleListRef]);
+        setBattleItemsListDom(battleListRef.current);
+    }, [battleListRef, setBattleItemsListDom]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {

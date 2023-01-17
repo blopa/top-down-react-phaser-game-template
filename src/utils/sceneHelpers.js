@@ -15,54 +15,30 @@ import {
     LEFT_DIRECTION,
     DOWN_DIRECTION,
     RIGHT_DIRECTION,
-    RUN_BATTLE_ITEM,
     KEY_SPRITE_NAME,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
-    ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
     HEART_SPRITE_NAME,
-    PAPER_BATTLE_ITEM,
-    ATTACK_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
-    DEFENSE_BATTLE_ITEM,
-    SCISSORS_BATTLE_ITEM,
+    ATTACK_BATTLE_ITEM,
     CONFIG_DICE_BATTLE_ITEM,
+    DEFENSE_BATTLE_ITEM,
+    RUN_BATTLE_ITEM,
+    ROCK_BATTLE_ITEM,
+    PAPER_BATTLE_ITEM,
+    SCISSORS_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
 import {
-    getDispatch,
-    getSelectorData,
     getDegreeFromRadians,
     rotateRectangleInsideTile,
     createInteractiveGameObject,
 } from './utils';
 
-// Selectors
-import { selectMapKey, selectTilesets } from '../redux/selectors/selectMapData';
-import {
-    selectHeroInitialFrame,
-    selectHeroFacingDirection,
-    selectHeroInitialPosition,
-} from '../redux/selectors/selectHeroData';
-import { selectDialogMessages } from '../redux/selectors/selectDialog';
-import { selectBattleEnemies } from '../redux/selectors/selectBattle';
-
-// Actions
-import setBattleEnemiesPickedItemAction from '../redux/actions/battle/setBattleEnemiesPickedItemAction';
-import setHeroPreviousPositionAction from '../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroFacingDirectionAction from '../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../redux/actions/heroData/setHeroInitialPositionAction';
-import setDialogCharacterNameAction from '../redux/actions/dialog/setDialogCharacterNameAction';
-import setHeroInitialFrameAction from '../redux/actions/heroData/setHeroInitialFrameAction';
-import setBattlePickedItemAction from '../redux/actions/battle/setBattlePickedItemAction';
-import setBattleOnSelectAction from '../redux/actions/battle/setBattleOnSelectAction';
-import setDialogMessagesAction from '../redux/actions/dialog/setDialogMessagesAction';
-import setBattleEnemiesAction from '../redux/actions/battle/setBattleEnemiesAction';
-import setDialogActionAction from '../redux/actions/dialog/setDialogActionAction';
-import setBattleItemsAction from '../redux/actions/battle/setBattleItemsAction';
-import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
+// Store
+import store from '../zustand/store';
 
 /**
  * @param scene
@@ -71,12 +47,7 @@ import setMapKeyAction from '../redux/actions/mapData/setMapKeyAction';
  * @param frameQuantity
  */
 // eslint-disable-next-line import/prefer-default-export
-export const createWalkingAnimation = (
-    scene,
-    assetKey,
-    animationName,
-    frameQuantity
-) => {
+export const createWalkingAnimation = (scene, assetKey, animationName, frameQuantity) => {
     scene.anims.create({
         key: `${assetKey}_${animationName}`,
         frames: Array.from({ length: frameQuantity }).map((n, index) => ({
@@ -121,8 +92,10 @@ export const handleCreateGroups = (scene) => {
  * @returns Phaser.GameObjects.Group
  */
 export const handleCreateMap = (scene) => {
-    const mapKey = getSelectorData(selectMapKey);
-    const tilesets = getSelectorData(selectTilesets);
+    const { mapData } = store.getState();
+
+    const { mapKey } = mapData;
+    const { tilesets } = mapData;
     const customColliders = scene.add.group();
 
     // Create the map
@@ -137,12 +110,7 @@ export const handleCreateMap = (scene) => {
         layer.layer.data.forEach((tileRows) => {
             tileRows.forEach((tile) => {
                 const { index, tileset, properties } = tile;
-                const {
-                    collideLeft,
-                    collideRight,
-                    collideUp,
-                    collideDown,
-                } = properties;
+                const { collideLeft, collideRight, collideUp, collideDown } = properties;
                 const tilesetCustomColliders = tileset?.getTileData?.(index);
 
                 if (tilesetCustomColliders) {
@@ -177,8 +145,8 @@ export const handleCreateMap = (scene) => {
 
                         const customCollider = createInteractiveGameObject(
                             scene,
-                            (tile.x * TILE_WIDTH) + x,
-                            (tile.y * TILE_HEIGHT) + y,
+                            tile.x * TILE_WIDTH + x,
+                            tile.y * TILE_HEIGHT + y,
                             width,
                             height
                         );
@@ -207,8 +175,9 @@ export const handleCreateMap = (scene) => {
 };
 
 export const handleCreateHero = (scene) => {
-    const initialFrame = getSelectorData(selectHeroInitialFrame);
-    const { x, y } = getSelectorData(selectHeroInitialPosition);
+    const { heroData } = store.getState();
+    const { initialPosition, initialFrame } = heroData;
+    const { x, y } = initialPosition;
 
     // Create hero sprite
     const heroSprite = scene.physics.add
@@ -244,16 +213,13 @@ export const handleCreateHero = (scene) => {
     //     TILE_HEIGHT
     // );
 
-    const updateActionCollider = (
-        { top, right, bottom, left, width, height } = heroSprite.body
-    ) => {
-        const facingDirection = getSelectorData(selectHeroFacingDirection);
+    const updateActionCollider = ({ top, right, bottom, left, width, height } = heroSprite.body) => {
+        const { heroData } = store.getState();
+        const { facingDirection } = heroData;
 
         switch (facingDirection) {
             case DOWN_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
-                );
+                heroSprite.actionCollider.setX(left + actionColliderSizeOffset / 2 - (heroSprite.width - width) / 2);
                 heroSprite.actionCollider.setY(bottom);
 
                 // heroSprite.attackCollider.setX(left);
@@ -263,9 +229,7 @@ export const handleCreateHero = (scene) => {
             }
 
             case UP_DIRECTION: {
-                heroSprite.actionCollider.setX(
-                    left + (actionColliderSizeOffset / 2) - ((heroSprite.width - width) / 2)
-                );
+                heroSprite.actionCollider.setX(left + actionColliderSizeOffset / 2 - (heroSprite.width - width) / 2);
                 heroSprite.actionCollider.setY(top - height + actionColliderSizeOffset - (heroSprite.height - height));
 
                 // heroSprite.attackCollider.setX(left);
@@ -276,9 +240,7 @@ export const handleCreateHero = (scene) => {
 
             case LEFT_DIRECTION: {
                 heroSprite.actionCollider.setX(left - width + actionColliderSizeOffset - (heroSprite.width - width));
-                heroSprite.actionCollider.setY(
-                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
-                );
+                heroSprite.actionCollider.setY(top + actionColliderSizeOffset / 2 - (heroSprite.height - height) / 2);
 
                 // heroSprite.attackCollider.setX(left - width);
                 // heroSprite.attackCollider.setY(top);
@@ -288,9 +250,7 @@ export const handleCreateHero = (scene) => {
 
             case RIGHT_DIRECTION: {
                 heroSprite.actionCollider.setX(right);
-                heroSprite.actionCollider.setY(
-                    top + (actionColliderSizeOffset / 2) - ((heroSprite.height - height) / 2)
-                );
+                heroSprite.actionCollider.setY(top + actionColliderSizeOffset / 2 - (heroSprite.height - height) / 2);
 
                 // heroSprite.attackCollider.setX(right);
                 // heroSprite.attackCollider.setY(top);
@@ -322,13 +282,10 @@ export const handleCreateHero = (scene) => {
 
 export const handleObjectsLayer = (scene) => {
     // Load game objects like items, enemies, etc
-    const dispatch = getDispatch();
     scene.map.objects.forEach((objectLayerData, layerIndex) => {
         objectLayerData?.objects?.forEach((object, objectIndex) => {
             const { gid, properties, x, y, name, width, height } = object;
-            const propertiesObject = Object.fromEntries(
-                properties?.map((curr) => [curr.name, curr.value]) || []
-            );
+            const propertiesObject = Object.fromEntries(properties?.map((curr) => [curr.name, curr.value]) || []);
 
             switch (gid || name) {
                 case ENEMY: {
@@ -345,46 +302,79 @@ export const handleObjectsLayer = (scene) => {
 
                     enemy.setInteractive();
                     enemy.on('pointerdown', () => {
+                        const { setTextTexts } = store.getState();
+                        setTextTexts([{
+                            key: 'game_title',
+                            variables: {},
+                            config: {},
+                        }]);
+                    });
+                    enemy.on('pointerdown', () => {
                         scene.scene.pause('GameScene');
                         scene.scene.launch('BattleScene');
+                        const {
+                            setBattleItems,
+                            setBattleEnemies,
+                            setBattleOnSelect,
+                            setBattlePickedItem,
+                            setBattleEnemiesPickedItem,
+                        } = store.getState();
 
-                        dispatch(setBattleItemsAction([
+                        setBattleItems([
                             ATTACK_BATTLE_ITEM,
                             CONFIG_DICE_BATTLE_ITEM,
                             DEFENSE_BATTLE_ITEM,
                             RUN_BATTLE_ITEM,
-                        ]));
+                        ]);
 
-                        dispatch(setBattleEnemiesAction([
-                            { sprite: 'enemy_01', position: { x: 200, y: 140 }, types: [ROCK_BATTLE_ITEM], health: 100, attack: 10 },
-                            { sprite: 'enemy_02', position: { x: 300, y: 140 }, types: [PAPER_BATTLE_ITEM], health: 100, attack: 10 },
-                            { sprite: 'enemy_03', position: { x: 400, y: 160 }, types: [SCISSORS_BATTLE_ITEM], health: 100, attack: 10 },
-                        ]));
+                        setBattleEnemies([
+                            {
+                                sprite: 'enemy_01',
+                                position: { x: 200, y: 140 },
+                                types: [ROCK_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_02',
+                                position: { x: 300, y: 140 },
+                                types: [PAPER_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_03',
+                                position: { x: 400, y: 160 },
+                                types: [SCISSORS_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                        ]);
 
-                        dispatch(setBattleOnSelectAction(
-                            (item, itemIndex) => {
-                                switch (item) {
-                                    case ATTACK_BATTLE_ITEM: {
-                                        break;
-                                    }
-                                    case CONFIG_DICE_BATTLE_ITEM: {
-                                        break;
-                                    }
-                                    case DEFENSE_BATTLE_ITEM: {
-                                        break;
-                                    }
-                                    case RUN_BATTLE_ITEM:
-                                    default: {
-                                        break;
-                                    }
+                        setBattleOnSelect((item, itemIndex) => {
+                            switch (item) {
+                                case ATTACK_BATTLE_ITEM: {
+                                    break;
                                 }
-
-                                const enemies = getSelectorData(selectBattleEnemies);
-                                dispatch(setBattleItemsAction([]));
-                                dispatch(setBattlePickedItemAction(item));
-                                dispatch(setBattleEnemiesPickedItemAction(enemies));
+                                case CONFIG_DICE_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case DEFENSE_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case RUN_BATTLE_ITEM:
+                                default: {
+                                    break;
+                                }
                             }
-                        ));
+
+                            const { battle } = store.getState();
+                            const { enemies } = battle;
+
+                            setBattleItems([]);
+                            setBattlePickedItem(item);
+                            setBattleEnemiesPickedItem(enemies);
+                        });
                     });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
@@ -392,25 +382,31 @@ export const handleObjectsLayer = (scene) => {
                         scene.heroSprite.actionCollider,
                         (e, a) => {
                             if (Input.Keyboard.JustDown(scene.actionKey)) {
-                                const messages = getSelectorData(selectDialogMessages);
+                                const {
+                                    dialog,
+                                    setDialogAction,
+                                    setDialogMessages,
+                                    setDialogCharacterName,
+                                } = store.getState();
+                                const { messages } = dialog;
 
                                 if (messages.length === 0) {
                                     enemyActionHeroCollider.active = false;
-                                    dispatch(setDialogCharacterNameAction('monster'));
-                                    dispatch(setDialogMessagesAction([
+                                    setDialogCharacterName('monster');
+                                    setDialogMessages([
                                         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                                         'Praesent id neque sodales, feugiat tortor non, fringilla ex.',
                                         'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur',
-                                    ]));
-                                    dispatch(setDialogActionAction(() => {
+                                    ]);
+                                    setDialogAction(() => {
                                         // Do this to not trigger the message again
                                         // Because whenever you call JustDown once, the second time
                                         // you call it, it will be false
                                         Input.Keyboard.JustDown(scene.actionKey);
-                                        dispatch(setDialogCharacterNameAction(''));
-                                        dispatch(setDialogMessagesAction([]));
-                                        dispatch(setDialogActionAction(null));
-                                    }));
+                                        setDialogCharacterName('');
+                                        setDialogMessages([]);
+                                        setDialogAction(null);
+                                    });
 
                                     scene.time.delayedCall(0, () => {
                                         enemyActionHeroCollider.active = true;
@@ -492,29 +488,31 @@ export const handleObjectsLayer = (scene) => {
 
                 case DOOR: {
                     const { type, map, position } = propertiesObject;
-                    const customCollider = createInteractiveGameObject(
-                        scene,
-                        x,
-                        y,
-                        TILE_WIDTH,
-                        TILE_HEIGHT,
-                        { x: 0, y: 1 }
-                    );
+                    const customCollider = createInteractiveGameObject(scene, x, y, TILE_WIDTH, TILE_HEIGHT, {
+                        x: 0,
+                        y: 1,
+                    });
 
                     const overlapCollider = scene.physics.add.overlap(scene.heroSprite, customCollider, () => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
-                        const facingDirection = getSelectorData(selectHeroFacingDirection);
+                        const {
+                            heroData,
+                            setMapKey,
+                            setHeroInitialFrame,
+                            setHeroFacingDirection,
+                            setHeroInitialPosition,
+                            setHeroPreviousPosition,
+                        } = store.getState();
+                        const { facingDirection } = heroData;
 
-                        Promise.all([
-                            dispatch(setMapKeyAction(map)),
-                            dispatch(setHeroFacingDirectionAction(facingDirection)),
-                            dispatch(setHeroInitialPositionAction({ x: posX, y: posY })),
-                            dispatch(setHeroPreviousPositionAction({ x: posX, y: posY })),
-                            dispatch(setHeroInitialFrameAction(
-                                IDLE_FRAME.replace('position', facingDirection)
-                            )),
-                        ]).then(() => {
+                        setMapKey(map);
+                        setHeroFacingDirection(facingDirection);
+                        setHeroInitialFrame(IDLE_FRAME.replace('position', facingDirection));
+                        setHeroInitialPosition({ x: posX, y: posY });
+                        setHeroPreviousPosition({ x: posX, y: posY });
+
+                        Promise.all([]).then(() => {
                             // scene.scene.restart();
                             changeScene(scene, 'GameScene', {
                                 atlases: ['hero'],
@@ -567,62 +565,50 @@ export const handleConfigureCamera = (scene) => {
     );
 
     if (scene.map.widthInPixels < game.scale.gameSize.width) {
-        camera.setPosition(
-            (game.scale.gameSize.width - scene.map.widthInPixels) / 2
-        );
+        camera.setPosition((game.scale.gameSize.width - scene.map.widthInPixels) / 2);
     }
 
     if (scene.map.heightInPixels < game.scale.gameSize.height) {
-        camera.setPosition(
-            camera.x,
-            (game.scale.gameSize.height - scene.map.heightInPixels) / 2
-        );
+        camera.setPosition(camera.x, (game.scale.gameSize.height - scene.map.heightInPixels) / 2);
     }
 };
 
 export const handleCreateHeroAnimations = (scene) => {
     // Animations
     [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION].forEach((direction) => {
-        createWalkingAnimation(
-            scene,
-            HERO_SPRITE_NAME,
-            `walk_${direction}`,
-            3
-        );
+        createWalkingAnimation(scene, HERO_SPRITE_NAME, `walk_${direction}`, 3);
     });
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 60) => {
-    const dispatch = getDispatch();
+    const { setHeroFacingDirection, heroData } = store.getState();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(LEFT_DIRECTION));
+        setHeroFacingDirection(LEFT_DIRECTION);
     } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.body.setVelocityX(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(RIGHT_DIRECTION));
+        setHeroFacingDirection(RIGHT_DIRECTION);
     } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(-heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(UP_DIRECTION));
+        setHeroFacingDirection(UP_DIRECTION);
     } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(heroSpeed);
         scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
-        dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION));
+        setHeroFacingDirection(DOWN_DIRECTION);
     } else {
-        const facingDirection = getSelectorData(selectHeroFacingDirection);
+        const { facingDirection } = heroData;
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();
-        scene.heroSprite.setFrame(
-            IDLE_FRAME.replace('position', facingDirection)
-        );
+        scene.heroSprite.setFrame(IDLE_FRAME.replace('position', facingDirection));
     }
 };
 

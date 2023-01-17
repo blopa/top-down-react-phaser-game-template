@@ -11,7 +11,7 @@ import {
 } from '../constants';
 
 // Store
-import store from '../redux/store';
+import store from '../zustand/store';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
@@ -59,8 +59,6 @@ export const getSelectorData = (selector) => {
 
     return selector(getState());
 };
-
-export const getDispatch = () => store.dispatch;
 
 export const getState = () => store.getState();
 

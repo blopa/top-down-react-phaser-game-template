@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 // Components
 import Message from './Message';
 
 // Selectors
-import { selectGameZoom } from '../redux/selectors/selectGameData';
-import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../redux/selectors/selectDialog';
+import { selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/selectors/selectDialog';
 
 // Constants
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
+import { useStore } from '../zustand/store';
 
 const MessageBox = ({
     showNext = false,
@@ -17,10 +17,10 @@ const MessageBox = ({
     dialogTitleClassname = null,
     dialogFooterClassname = null,
 }) => {
-    const dialogMessages = useSelector(selectDialogMessages);
-    const dialogAction = useSelector(selectDialogAction);
-    const gameZoom = useSelector(selectGameZoom);
-    const characterName = useSelector(selectDialogCharacterName);
+    const dialogMessages = useStore(selectDialogMessages);
+    const dialogAction = useStore(selectDialogAction);
+    const gameZoom = useStore(selectGameZoom);
+    const characterName = useStore(selectDialogCharacterName);
 
     const [currentMessage, setCurrentMessage] = useState(0);
     const [messageEnded, setMessageEnded] = useState(false);

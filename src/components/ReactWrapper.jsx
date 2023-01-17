@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useResizeObserver } from 'beautiful-react-hooks';
+import { useStore } from '../zustand/store';
 
 // Constants
 import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
@@ -15,18 +15,20 @@ import GameText from './GameText';
 import Battle from './Battle';
 
 // Selectors
-import { selectGameCanvasElement } from '../redux/selectors/selectGameData';
-import { selectDialogMessages } from '../redux/selectors/selectDialog';
-import { selectBattleItems } from '../redux/selectors/selectBattle';
-import { selectMenuItems } from '../redux/selectors/selectMenu';
-import { selectTexts } from '../redux/selectors/selectText';
+import { selectGameCanvasElement } from '../zustand/selectors/selectGameData';
+import { selectDialogMessages } from '../zustand/selectors/selectDialog';
+import { selectBattleItems } from '../zustand/selectors/selectBattle';
+import { selectMenuItems } from '../zustand/selectors/selectMenu';
+import { selectTexts } from '../zustand/selectors/selectText';
 
 const ReactWrapper = () => {
-    const canvas = useSelector(selectGameCanvasElement);
-    const dialogMessages = useSelector(selectDialogMessages);
-    const menuItems = useSelector(selectMenuItems);
-    const battleItems = useSelector(selectBattleItems);
-    const gameTexts = useSelector(selectTexts);
+    const canvas = useStore(selectGameCanvasElement);
+    const dialogMessages = useStore(selectDialogMessages);
+    const menuItems = useStore(selectMenuItems);
+    const battleItems = useStore(selectBattleItems);
+    const gameTexts = useStore(selectTexts);
+    // const s = useStore((store) => store);
+    // console.log(s);
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
 
