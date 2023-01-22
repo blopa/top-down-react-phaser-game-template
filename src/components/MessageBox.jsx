@@ -9,6 +9,8 @@ import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } f
 
 // Constants
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
+
+// Store
 import { useStore } from '../zustand/store';
 
 const MessageBox = ({

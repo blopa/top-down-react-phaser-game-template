@@ -1,7 +1,5 @@
 import { Scene, Display } from 'phaser';
 
-// Selectors
-
 // Utils
 import {
     isMapFileAvailable,
@@ -53,7 +51,7 @@ export default class LoadAssetsScene extends Scene {
             addLoadedImage,
             addLoadedMap,
             addLoadedJson,
-            loadedAssets,
+            loadedAssets, // TODO use selector
         } = store.getState();
         const { fonts: loadedFonts } = loadedAssets;
 

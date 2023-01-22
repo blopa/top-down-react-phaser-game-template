@@ -37,6 +37,7 @@ import { useStore } from './zustand/store';
 const Game = () => {
     const defaultLocale = 'en';
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
+
     const [game, setGame] = useState(null);
     const locale = useStore(selectGameLocale) || defaultLocale;
     const cameraSizeUpdateCallback = useStore(selectGameCameraSizeUpdateCallback);

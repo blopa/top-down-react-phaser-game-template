@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+
+// Store
 import { useStore } from '../zustand/store';
 
 // Constants

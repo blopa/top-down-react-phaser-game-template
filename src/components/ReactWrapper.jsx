@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useResizeObserver } from 'beautiful-react-hooks';
+
+// Store
 import { useStore } from '../zustand/store';
 
 // Constants
