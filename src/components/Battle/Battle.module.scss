@@ -24,7 +24,7 @@
     margin: 0.22%;
     text-align: center;
     border: calc(var(--game-zoom) * 1px) solid #000000;
-    min-width: calc(((var(--game-width) * var(--game-zoom) / 2) - (var(--game-zoom) * 2) - (var(--game-width) * var(--game-zoom) * 0.006)) * 1px);
+    min-width: calc(((var(--game-width) * var(--game-zoom) / 2) - (var(--game-zoom) * 2) - (var(--game-width) * var(--game-zoom) * 0.008)) * 1px);
 
     &.fewer-items {
         width: calc(((var(--game-width) * var(--game-zoom)) - (var(--game-zom) * 2)) * 1px);
