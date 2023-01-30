@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 // Components
-import Message from './Message';
+import Message from './Message/Message';
 
 // Selectors
-import { selectGameZoom } from '../zustand/selectors/selectGameData';
 import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/selectors/selectDialog';
 
 // Constants
@@ -21,7 +20,6 @@ const MessageBox = ({
 }) => {
     const dialogMessages = useStore(selectDialogMessages);
     const dialogAction = useStore(selectDialogAction);
-    const gameZoom = useStore(selectGameZoom);
     const characterName = useStore(selectDialogCharacterName);
 
     const [currentMessage, setCurrentMessage] = useState(0);
@@ -63,7 +61,6 @@ const MessageBox = ({
             <Message
                 message={dialogMessages[currentMessage]}
                 key={currentMessage}
-                zoom={gameZoom}
                 forceShowFullMessage={forceShowFullMessage}
                 onMessageEnded={() => {
                     setMessageEnded(true);
