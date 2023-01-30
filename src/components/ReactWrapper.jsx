@@ -11,7 +11,7 @@ import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
 import useMutationObserver from '../hooks/useMutationObserver';
 
 // Components
-import DialogBox from './DialogBox';
+import DialogBox from './DialogBox/DialogBox';
 import GameMenu from './GameMenu/GameMenu';
 import GameText from './GameText';
 import Battle from './Battle/Battle';
