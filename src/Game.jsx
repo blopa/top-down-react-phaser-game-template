@@ -25,7 +25,7 @@ import MainMenuScene from './game/scenes/MainMenuScene';
 import BattleScene from './game/scenes/BattleScene';
 
 // Components
-import VirtualGamepad from './components/VirtualGamepad';
+import VirtualGamepad from './components/VirtualGamepad/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
 
 // Selectors

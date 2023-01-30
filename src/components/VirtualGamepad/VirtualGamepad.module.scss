@@ -1,0 +1,63 @@
+.buttons-wrapper {
+    margin-top: calc(((var(--game-height) * var(--game-zoom)) - (var(--game-zoom) * 100)) * 1px);
+    padding: 0 calc(var(--game-zoom) * 15px);
+    justify-content: space-between;
+    position: relative;
+    user-select: none;
+    user-drag: none;
+    display: flex;
+    z-index: 10;
+}
+
+.button {
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+    user-drag: none;
+    &.is-touched {
+      filter: saturate(300%) brightness(70%);
+    }
+}
+
+.a-button {
+    width: calc(var(--game-zoom) * 40px);
+    height: calc(var(--game-zoom) * 40px);
+}
+
+.b-button {
+    width: calc(var(--game-zoom) * 40px);
+    height: calc(var(--game-zoom) * 40px);
+}
+
+.d-pad-wrapper {
+    width: calc(var(--game-zoom) * 76px);
+    height: calc(var(--game-zoom) * 76px);
+}
+
+.d-pad-left {
+    width: calc(var(--game-zoom) * 38px);
+    height: calc(var(--game-zoom) * 30.5px);
+    margin-bottom: calc(var(--game-zoom) * -19px);
+}
+
+.d-pad-right {
+    transform: rotate(180deg);
+    width: calc(var(--game-zoom) * 38px);
+    height: calc(var(--game-zoom) * 30.5px);
+    margin-bottom: calc(var(--game-zoom) * -19px);
+}
+
+.d-pad-up {
+    transform: rotate(90deg);
+    width: calc(var(--game-zoom) * 38px);
+    height: calc(var(--game-zoom) * 30.5px);
+    margin-left: calc(var(--game-zoom) * -57px);
+}
+
+.d-pad-down {
+    transform: rotate(270deg);
+    width: calc(var(--game-zoom) * 38px);
+    height: calc(var(--game-zoom) * 30.5px);
+    margin-left: calc(var(--game-zoom) * -38px);
+    margin-bottom: calc(var(--game-zoom) * -38px);
+}
