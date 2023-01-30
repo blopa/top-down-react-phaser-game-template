@@ -9,7 +9,6 @@ import { useStore } from '../../zustand/store';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../../constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../../zustand/selectors/selectGameData';
 import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../../zustand/selectors/selectMenu';
 
 // Utils
@@ -19,22 +18,10 @@ import { getTranslationVariables } from '../../utils/utils';
 import styles from './GameMenu.module.scss';
 
 const GameMenu = () => {
-    // Game
-    const gameWidth = useStore(selectGameWidth);
-    const gameHeight = useStore(selectGameHeight);
-    const gameZoom = useStore(selectGameZoom);
-
     // Menu
     const position = useStore(selectMenuPosition);
     const items = useStore(selectMenuItems);
     const onSelected = useStore(selectMenuOnSelect);
-
-    // TODO put this into the main component
-    useEffect(() => {
-        document.documentElement.style.setProperty('--game-zoom', gameZoom);
-        document.documentElement.style.setProperty('--game-height', gameHeight);
-        document.documentElement.style.setProperty('--game-width', gameWidth);
-    }, [gameHeight, gameWidth, gameZoom]);
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 

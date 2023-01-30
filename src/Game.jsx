@@ -29,7 +29,13 @@ import VirtualGamepad from './components/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
 
 // Selectors
-import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './zustand/selectors/selectGameData';
+import {
+    selectGameZoom,
+    selectGameWidth,
+    selectGameHeight,
+    selectGameLocale,
+    selectGameCameraSizeUpdateCallback,
+} from './zustand/selectors/selectGameData';
 
 // Store
 import { useStore } from './zustand/store';
@@ -46,6 +52,17 @@ const Game = () => {
     const setGameHeight = useStore((state) => state.setGameHeight);
     const setGameWidth = useStore((state) => state.setGameWidth);
     const setGameZoom = useStore((state) => state.setGameZoom);
+
+    // Game
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--game-zoom', gameZoom);
+        document.documentElement.style.setProperty('--game-height', gameHeight);
+        document.documentElement.style.setProperty('--game-width', gameWidth);
+    }, [gameHeight, gameWidth, gameZoom]);
 
     useEffect(() => {
         async function loadMessages() {

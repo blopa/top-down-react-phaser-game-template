@@ -14,7 +14,7 @@ import useMutationObserver from '../hooks/useMutationObserver';
 import DialogBox from './DialogBox';
 import GameMenu from './GameMenu/GameMenu';
 import GameText from './GameText';
-import Battle from './Battle';
+import Battle from './Battle/Battle';
 
 // Selectors
 import { selectGameCanvasElement } from '../zustand/selectors/selectGameData';
