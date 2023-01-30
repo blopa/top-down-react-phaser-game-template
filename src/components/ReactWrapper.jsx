@@ -12,7 +12,7 @@ import useMutationObserver from '../hooks/useMutationObserver';
 
 // Components
 import DialogBox from './DialogBox';
-import GameMenu from './GameMenu';
+import GameMenu from './GameMenu/GameMenu';
 import GameText from './GameText';
 import Battle from './Battle';
 

@@ -1,67 +1,22 @@
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 // Store
-import { useStore } from '../zustand/store';
+import { useStore } from '../../zustand/store';
 
 // Constants
-import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../constants';
+import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../../constants';
 
 // Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
-import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../zustand/selectors/selectMenu';
+import { selectGameHeight, selectGameWidth, selectGameZoom } from '../../zustand/selectors/selectGameData';
+import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../../zustand/selectors/selectMenu';
 
 // Utils
-import { getTranslationVariables } from '../utils/utils';
+import { getTranslationVariables } from '../../utils/utils';
 
-const useStyles = makeStyles((theme) => ({
-    menuWrapper: ({ zoom }) => ({
-        fontFamily: '"Press Start 2P"',
-        fontSize: `${10 * zoom}px`,
-        textTransform: 'uppercase',
-        position: 'absolute',
-        transform: 'translate(-50%, 0%)',
-    }),
-    menuPositionWrapper: ({ zoom, position, width, height }) => {
-        const left = window.innerWidth - (width * zoom);
-        const menuWidth = 160 * zoom;
-        if (position === 'center') {
-            return {
-                minWidth: `${menuWidth}px`,
-                left: '50%',
-                top: `${(height * zoom) / 2}px`,
-            };
-        }
-
-        if (position === 'left') {
-            return {
-                minWidth: `${menuWidth}px`,
-                left: `${(95 * zoom) + left / 2}px`,
-                top: `${50 * zoom}px`,
-            };
-        }
-
-        return {};
-    },
-    menuItemsWrapper: {
-        textAlign: 'center',
-        padding: 0,
-    },
-    menuItem: ({ zoom }) => ({
-        cursor: 'pointer',
-        listStyle: 'none',
-        padding: `${5 * zoom}px`,
-        marginBottom: `${5 * zoom}px`,
-        backgroundColor: '#94785c',
-        border: `${zoom}px solid #79584f`,
-    }),
-    selectedMenuItem: ({ zoom }) => ({
-        fontSize: `${11 * zoom}px`,
-        border: `${zoom}px solid #ddd`,
-    }),
-}));
+// Styles
+import styles from './GameMenu.module.scss';
 
 const GameMenu = () => {
     // Game
@@ -74,12 +29,12 @@ const GameMenu = () => {
     const items = useStore(selectMenuItems);
     const onSelected = useStore(selectMenuOnSelect);
 
-    const classes = useStyles({
-        width: gameWidth,
-        height: gameHeight,
-        zoom: gameZoom,
-        position,
-    });
+    // TODO put this into the main component
+    useEffect(() => {
+        document.documentElement.style.setProperty('--game-zoom', gameZoom);
+        document.documentElement.style.setProperty('--game-height', gameHeight);
+        document.documentElement.style.setProperty('--game-width', gameWidth);
+    }, [gameHeight, gameWidth, gameZoom]);
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
@@ -122,8 +77,14 @@ const GameMenu = () => {
     }, [items, onSelected, selectedItemIndex]);
 
     return (
-        <div className={classNames(classes.menuWrapper, classes.menuPositionWrapper)}>
-            <ul className={classes.menuItemsWrapper}>
+        <div
+            className={classNames(styles['menu-wrapper'], {
+                [styles['position-left']]: position === 'left',
+                [styles['position-center']]: position === 'center',
+                [styles['position-right']]: position === 'right',
+            })}
+        >
+            <ul className={styles['menu-items-wrapper']}>
                 {items.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
 
@@ -131,8 +92,8 @@ const GameMenu = () => {
                         // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                         <li
                             key={key}
-                            className={classNames(classes.menuItem, {
-                                [classes.selectedMenuItem]: selectedItemIndex === index,
+                            className={classNames(styles['menu-item'], {
+                                [styles['selected-menu-item']]: selectedItemIndex === index,
                             })}
                             onMouseEnter={() => {
                                 setSelectedItemIndex(index);
