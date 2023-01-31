@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { Fragment } from 'react';
@@ -11,8 +11,9 @@ import './index.css';
 import Game from './Game';
 
 const theme = createTheme();
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-ReactDOM.render(
+root.render(
     <Fragment>
         <Helmet>
             <title>My Phaser Game</title>
@@ -20,7 +21,6 @@ ReactDOM.render(
         <ThemeProvider theme={theme}>
             <Game />
         </ThemeProvider>
-    </Fragment>,
-    document.getElementById('root')
+    </Fragment>
 );
 
