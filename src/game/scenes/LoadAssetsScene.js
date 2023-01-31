@@ -259,7 +259,7 @@ export default class LoadAssetsScene extends Scene {
 
                     if (!loadedImages.includes(tilesetName) && isTilesetFileAvailable(tilesetJson.image)) {
                         // remove the file extension so webpack only pre-load the files with the png extension
-                        const fileName = tilesetJson.image.split('.').at(0);
+                        const fileName = tilesetJson.image.replace(/\.[^/.]+$/, '');
                         // eslint-disable-next-line no-await-in-loop
                         const { default: tilesetImage } = await import(
                             `../../assets/tilesets/${fileName}.png`
@@ -319,7 +319,7 @@ export default class LoadAssetsScene extends Scene {
                 continue;
             }
 
-            const fileName = imageName.split('.').at(0);
+            const fileName = imageName.replace(/\.[^/.]+$/, '');
             // eslint-disable-next-line no-await-in-loop
             const { default: imagePath } = await import(`../../assets/atlases/generated/${fileName}.png`);
 
