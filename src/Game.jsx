@@ -5,6 +5,7 @@ import isMobile from 'is-mobile';
 
 // Utils
 import { calculateGameSize } from './utils/phaser';
+import { isDev } from './utils/utils';
 
 // Constants
 import {
@@ -42,7 +43,7 @@ import { useStore } from './zustand/store';
 
 function Game() {
     const defaultLocale = 'en';
-    const isDevelopment = process?.env?.NODE_ENV !== 'production';
+    const isDevelopment = isDev();
 
     const [game, setGame] = useState(null);
     const locale = useStore(selectGameLocale) || defaultLocale;

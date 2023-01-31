@@ -74,7 +74,7 @@ export default class LoadAssetsScene extends Scene {
         this.load.on('progress', handleBarProgress);
 
         this.load.on('fileprogress', (file) => {
-            console.log(file.key);
+            console.info(file.key);
         });
 
         this.load.on('complete', () => {
@@ -258,8 +258,12 @@ export default class LoadAssetsScene extends Scene {
                     }
 
                     if (!loadedImages.includes(tilesetName) && isTilesetFileAvailable(tilesetJson.image)) {
+                        // remove the file extension so webpack only pre-load the files with the png extension
+                        const fileName = tilesetJson.image.split('.').at(0);
                         // eslint-disable-next-line no-await-in-loop
-                        const { default: tilesetImage } = await import(`../../assets/tilesets/${tilesetJson.image}`);
+                        const { default: tilesetImage } = await import(
+                            `../../assets/tilesets/${fileName}.png`
+                        );
 
                         addLoadedImage(tilesetName);
                         // eslint-disable-next-line no-await-in-loop
@@ -315,8 +319,9 @@ export default class LoadAssetsScene extends Scene {
                 continue;
             }
 
+            const fileName = imageName.split('.').at(0);
             // eslint-disable-next-line no-await-in-loop
-            const { default: imagePath } = await import(`../../assets/atlases/generated/${imageName}`);
+            const { default: imagePath } = await import(`../../assets/atlases/generated/${fileName}.png`);
 
             addLoadedAtlas(atlas);
             // eslint-disable-next-line no-await-in-loop
