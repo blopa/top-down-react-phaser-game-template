@@ -17,12 +17,12 @@ import { useStore } from '../../zustand/store';
 // Styles
 import styles from './GameText.module.scss';
 
-const GameText = ({
+function GameText({
     translationKey,
     variables = {},
     config = {},
     component: Component = 'p',
-}) => {
+}) {
     // Game
     const gameZoom = useStore(selectGameZoom);
     const canvas = useStore(selectGameCanvasElement);
@@ -77,6 +77,6 @@ const GameText = ({
             </Component>
         </div>
     );
-};
+}
 
 export default GameText;

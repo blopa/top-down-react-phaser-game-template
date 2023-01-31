@@ -4,9 +4,9 @@ import { Geom } from 'phaser';
 import classNames from 'classnames';
 
 // Images
-import dPadButton from '!!file-loader!../../assets/images/d_pad_button.png';
-import aButton from '!!file-loader!../../assets/images/a_button.png';
-import bButton from '!!file-loader!../../assets/images/b_button.png';
+import dPadButton from '../../assets/images/d_pad_button.png';
+import aButton from '../../assets/images/a_button.png';
+import bButton from '../../assets/images/b_button.png';
 
 // Utils
 import { simulateKeyEvent } from '../../utils/utils';
@@ -24,7 +24,7 @@ import {
 // Styles
 import styles from './VirtualGamepad.module.scss';
 
-const VirtualGamepad = () => {
+function VirtualGamepad() {
     // TODO redo this with that answer from stackoverflow
     // https://stackoverflow.com/a/70192263/4307769
 
@@ -238,6 +238,6 @@ const VirtualGamepad = () => {
             </div>
         </div>
     );
-};
+}
 
 export default VirtualGamepad;

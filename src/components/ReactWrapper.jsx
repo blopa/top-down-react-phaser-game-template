@@ -23,7 +23,7 @@ import { selectBattleItems } from '../zustand/selectors/selectBattle';
 import { selectMenuItems } from '../zustand/selectors/selectMenu';
 import { selectTexts } from '../zustand/selectors/selectText';
 
-const ReactWrapper = () => {
+function ReactWrapper() {
     const canvas = useStore(selectGameCanvasElement);
     const dialogMessages = useStore(selectDialogMessages);
     const menuItems = useStore(selectMenuItems);
@@ -101,6 +101,6 @@ const ReactWrapper = () => {
             })}
         </div>
     );
-};
+}
 
 export default ReactWrapper;
