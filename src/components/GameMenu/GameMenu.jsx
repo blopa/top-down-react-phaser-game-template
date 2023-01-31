@@ -17,7 +17,7 @@ import { getTranslationVariables } from '../../utils/utils';
 // Styles
 import styles from './GameMenu.module.scss';
 
-const GameMenu = () => {
+function GameMenu() {
     // Menu
     const position = useStore(selectMenuPosition);
     const items = useStore(selectMenuItems);
@@ -99,6 +99,6 @@ const GameMenu = () => {
             </ul>
         </div>
     );
-};
+}
 
 export default GameMenu;

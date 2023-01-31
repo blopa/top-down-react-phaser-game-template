@@ -12,12 +12,12 @@ import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
 // Store
 import { useStore } from '../zustand/store';
 
-const MessageBox = ({
+function MessageBox({
     showNext = false,
     dialogWindowClassname = null,
     dialogTitleClassname = null,
     dialogFooterClassname = null,
-}) => {
+}) {
     const dialogMessages = useStore(selectDialogMessages);
     const dialogAction = useStore(selectDialogAction);
     const characterName = useStore(selectDialogCharacterName);
@@ -76,6 +76,6 @@ const MessageBox = ({
             )}
         </div>
     );
-};
+}
 
 export default MessageBox;

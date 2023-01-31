@@ -4,12 +4,12 @@ import { animated, useTransition } from 'react-spring';
 // Styles
 import styles from './Message.module.scss';
 
-const Message = ({
+function Message({
     message = '',
     trail = 35,
     onMessageEnded = () => {},
     forceShowFullMessage = false,
-}) => {
+}) {
     const items = useMemo(
         () => [...message.trim()].map((letter, index) => ({
             item: letter,
@@ -42,6 +42,6 @@ const Message = ({
             ))}
         </div>
     );
-};
+}
 
 export default Message;

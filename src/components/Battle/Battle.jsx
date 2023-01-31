@@ -23,7 +23,7 @@ import { useStore } from '../../zustand/store';
 // Styles
 import styles from './Battle.module.scss';
 
-const Battle = () => {
+function Battle() {
     const battleListRef = useRef();
 
     // TODO for now only works for four items
@@ -121,6 +121,6 @@ const Battle = () => {
             </ul>
         </div>
     );
-};
+}
 
 export default Battle;

@@ -43,11 +43,14 @@
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-intl": "^6.2.7",
-    "react-router-dom": "~5.3.4",
     "react-scripts": "^5.0.1",
     "react-spring": "^9.6.1",
     "sass": "^1.57.1",
     "zustand": "^4.3.2"
+  },
+  "overrides": {
+    "react-router-dom": "5.3.4",
+    "react-error-overlay": "6.0.9"
   },
   "scripts": {
     "generate-bitmap-font": "node scripts/generate-bitmap-font.js",

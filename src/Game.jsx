@@ -40,7 +40,7 @@ import {
 // Store
 import { useStore } from './zustand/store';
 
-const Game = () => {
+function Game() {
     const defaultLocale = 'en';
     const isDevelopment = process?.env?.NODE_ENV !== 'production';
 
@@ -218,6 +218,6 @@ const Game = () => {
             )}
         </IntlProvider>
     );
-};
+}
 
 export default Game;

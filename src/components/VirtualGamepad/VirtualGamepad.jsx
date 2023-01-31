@@ -24,7 +24,7 @@ import {
 // Styles
 import styles from './VirtualGamepad.module.scss';
 
-const VirtualGamepad = () => {
+function VirtualGamepad() {
     // TODO redo this with that answer from stackoverflow
     // https://stackoverflow.com/a/70192263/4307769
 
@@ -238,6 +238,6 @@ const VirtualGamepad = () => {
             </div>
         </div>
     );
-};
+}
 
 export default VirtualGamepad;
