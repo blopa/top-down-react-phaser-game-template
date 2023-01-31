@@ -1,19 +1,15 @@
 /* eslint-disable import/no-unresolved, import/no-webpack-loader-syntax */
 import { useCallback, useEffect, useRef } from 'react';
 import { Geom } from 'phaser';
-import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 
 // Images
-import dPadButton from '!!file-loader!../assets/images/d_pad_button.png';
-import aButton from '!!file-loader!../assets/images/a_button.png';
-import bButton from '!!file-loader!../assets/images/b_button.png';
-
-// Selectors
-import { selectGameHeight, selectGameWidth, selectGameZoom } from '../zustand/selectors/selectGameData';
+import dPadButton from '../../assets/images/d_pad_button.png';
+import aButton from '../../assets/images/a_button.png';
+import bButton from '../../assets/images/b_button.png';
 
 // Utils
-import { simulateKeyEvent } from '../utils/utils';
+import { simulateKeyEvent } from '../../utils/utils';
 
 // Constants
 import {
@@ -23,82 +19,14 @@ import {
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
     ARROW_RIGHT_KEY,
-} from '../constants';
+} from '../../constants';
 
-// Store
-import { useStore } from '../zustand/store';
+// Styles
+import styles from './VirtualGamepad.module.scss';
 
-const useStyles = makeStyles((theme) => ({
-    buttonsWrapper: ({ zoom, height }) => ({
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: `0 ${15 * zoom}px`,
-        // marginTop: `-${85 * zoom}px`,
-        marginTop: `${Math.ceil(window.innerHeight - (height * zoom) - (100 * zoom))}px`,
-        position: 'relative',
-        userSelect: 'none',
-        userDrag: 'none',
-        zIndex: 10,
-    }),
-    button: ({ zoom, width }) => ({
-        pointerEvents: 'none',
-        '-webkit-touch-callout': 'none',
-        userSelect: 'none',
-        userDrag: 'none',
-        '&.is-touched': {
-            filter: 'saturate(300%) brightness(70%)',
-        },
-    }),
-    aButton: ({ zoom, width }) => ({
-        width: `${40 * zoom}px`,
-        height: `${40 * zoom}px`,
-    }),
-    bButton: ({ zoom, width }) => ({
-        width: `${40 * zoom}px`,
-        height: `${40 * zoom}px`,
-    }),
-    dPadWrapper: ({ zoom, width }) => ({
-        width: `${76 * zoom}px`,
-        height: `${76 * zoom}px`,
-    }),
-    dPadLeft: ({ zoom, width }) => ({
-        width: `${38 * zoom}px`,
-        height: `${30.5 * zoom}px`,
-        marginBottom: `-${19 * zoom}px`,
-    }),
-    dPadRight: ({ zoom, width }) => ({
-        transform: 'rotate(180deg)',
-        width: `${38 * zoom}px`,
-        height: `${30.5 * zoom}px`,
-        marginBottom: `-${19 * zoom}px`,
-    }),
-    dPadUp: ({ zoom, width }) => ({
-        transform: 'rotate(90deg)',
-        width: `${38 * zoom}px`,
-        height: `${30.5 * zoom}px`,
-        marginLeft: `-${57 * zoom}px`,
-    }),
-    dPadDown: ({ zoom, width }) => ({
-        transform: 'rotate(270deg)',
-        width: `${38 * zoom}px`,
-        height: `${30.5 * zoom}px`,
-        marginLeft: `-${38 * zoom}px`,
-        marginBottom: `-${38 * zoom}px`,
-    }),
-}));
-
-const VirtualGamepad = () => {
+function VirtualGamepad() {
     // TODO redo this with that answer from stackoverflow
     // https://stackoverflow.com/a/70192263/4307769
-    const gameWidth = useStore(selectGameWidth);
-    const gameHeight = useStore(selectGameHeight);
-    const gameZoom = useStore(selectGameZoom);
-
-    const classes = useStyles({
-        width: gameWidth,
-        height: gameHeight,
-        zoom: gameZoom,
-    });
 
     const dPadLeftRef = useRef(null);
     const dPadRightRef = useRef(null);
@@ -228,9 +156,9 @@ const VirtualGamepad = () => {
         if (pressedButton && element) {
             simulateKeyEvent(pressedButton, type);
             if (type === 'down') {
-                element.current.classList.add('is-touched');
+                element.current.classList.add(styles['is-touched']);
             } else {
-                element.current.classList.remove('is-touched');
+                element.current.classList.remove(styles['is-touched']);
             }
         }
     }, [getPressedButton]);
@@ -252,7 +180,7 @@ const VirtualGamepad = () => {
             window.removeEventListener('pointerdown', handlePointerDown);
             window.removeEventListener('pointerup', handlePointerUp);
         };
-    }, []);
+    }, [handleButtonPressed]);
 
     const handleContextMenuCallback = useCallback((event) => {
         event.preventDefault();
@@ -261,32 +189,32 @@ const VirtualGamepad = () => {
     }, []);
 
     return (
-        <div className={classes.buttonsWrapper}>
-            <div className={classes.dPadWrapper}>
+        <div className={styles['buttons-wrapper']}>
+            <div className={styles['d-pad-wrapper']}>
                 <img
                     ref={dPadLeftRef}
-                    className={classNames(classes.button, classes.dPadLeft)}
+                    className={classNames(styles.button, styles['d-pad-left'])}
                     src={dPadButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
                 />
                 <img
                     ref={dPadRightRef}
-                    className={classNames(classes.button, classes.dPadRight)}
+                    className={classNames(styles.button, styles['d-pad-right'])}
                     src={dPadButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
                 />
                 <img
                     ref={dPadUpRef}
-                    className={classNames(classes.button, classes.dPadUp)}
+                    className={classNames(styles.button, styles['d-pad-up'])}
                     src={dPadButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
                 />
                 <img
                     ref={dPadDownRef}
-                    className={classNames(classes.button, classes.dPadDown)}
+                    className={classNames(styles.button, styles['d-pad-down'])}
                     src={dPadButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
@@ -295,14 +223,14 @@ const VirtualGamepad = () => {
             <div>
                 <img
                     ref={aButtonRef}
-                    className={classNames(classes.button, classes.aButton)}
+                    className={classNames(styles.button, styles['a-button'])}
                     src={aButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
                 />
                 <img
                     ref={bButtonRef}
-                    className={classNames(classes.button, classes.bButton)}
+                    className={classNames(styles.button, styles['b-button'])}
                     src={bButton}
                     alt="test"
                     onContextMenu={handleContextMenuCallback}
@@ -310,6 +238,6 @@ const VirtualGamepad = () => {
             </div>
         </div>
     );
-};
+}
 
 export default VirtualGamepad;

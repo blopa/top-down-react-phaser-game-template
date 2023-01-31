@@ -5,14 +5,14 @@ import { Scene } from 'phaser';
 import { changeScene } from '../../utils/sceneHelpers';
 
 // TODO move this somewhere else
-import backgroundDesert from '!!file-loader!../../assets/images/background_desert.png';
-import backgroundFall from '!!file-loader!../../assets/images/background_fall.png';
-import backgroundForest from '!!file-loader!../../assets/images/background_forest.png';
-import backgroundGrass from '!!file-loader!../../assets/images/background_grass.png';
-import backgroundWinter from '!!file-loader!../../assets/images/background_winter.png';
-import enemy01 from '!!file-loader!../../assets/images/enemy_01.png';
-import enemy02 from '!!file-loader!../../assets/images/enemy_02.png';
-import enemy03 from '!!file-loader!../../assets/images/enemy_03.png';
+import backgroundDesert from '../../assets/images/background_desert.png';
+import backgroundFall from '../../assets/images/background_fall.png';
+import backgroundForest from '../../assets/images/background_forest.png';
+import backgroundGrass from '../../assets/images/background_grass.png';
+import backgroundWinter from '../../assets/images/background_winter.png';
+import enemy01 from '../../assets/images/enemy_01.png';
+import enemy02 from '../../assets/images/enemy_02.png';
+import enemy03 from '../../assets/images/enemy_03.png';
 
 export default class BootScene extends Scene {
     constructor() {

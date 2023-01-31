@@ -1,0 +1,40 @@
+.menu-wrapper {
+    font-family: "Press Start 2P", serif;
+    font-size: calc(var(--game-zoom) * 10px);
+    text-transform: uppercase;
+    position: absolute;
+    transform: translate(-50%, 0%);
+
+    &.position-center {
+        min-width: calc(var(--game-zoom) * 160px);
+        left: 50%;
+        top: calc((var(--game-height) * var(--game-zoom)) / 2 * 1px);
+    }
+
+    &.position-left {
+        //left: calc(((var(--game-zoom) * 95) + ((100vw - (var(--game-width) * var(--game-zoom))) / 2)) * 1px);
+    }
+
+    &.position-right {
+        // TODO
+    }
+}
+
+.menu-items-wrapper {
+    text-align: center;
+    padding: 0;
+}
+
+.menu-item {
+    cursor: pointer;
+    list-style: none;
+    background-color: #94785c;
+    padding: calc(var(--game-zoom) * 5px);
+    margin-bottom: calc(var(--game-zoom) * 5px);
+    border: calc(var(--game-zoom) * 1px) solid #79584f;
+}
+
+.selected-menu-item {
+    font-size: calc(var(--game-zoom) * 11px);
+    border: calc(var(--game-zoom) * 1px) solid #ddd;
+}

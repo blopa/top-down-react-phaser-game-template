@@ -317,6 +317,7 @@ export const handleObjectsLayer = (scene) => {
                             config: {},
                         }]);
                     });
+
                     enemy.on('pointerdown', () => {
                         scene.scene.pause('GameScene');
                         scene.scene.launch('BattleScene');

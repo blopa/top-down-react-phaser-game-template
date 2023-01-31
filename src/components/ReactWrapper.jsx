@@ -11,10 +11,10 @@ import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
 import useMutationObserver from '../hooks/useMutationObserver';
 
 // Components
-import DialogBox from './DialogBox';
-import GameMenu from './GameMenu';
-import GameText from './GameText';
-import Battle from './Battle';
+import DialogBox from './DialogBox/DialogBox';
+import GameMenu from './GameMenu/GameMenu';
+import GameText from './GameText/GameText';
+import Battle from './Battle/Battle';
 
 // Selectors
 import { selectGameCanvasElement } from '../zustand/selectors/selectGameData';
@@ -23,7 +23,7 @@ import { selectBattleItems } from '../zustand/selectors/selectBattle';
 import { selectMenuItems } from '../zustand/selectors/selectMenu';
 import { selectTexts } from '../zustand/selectors/selectText';
 
-const ReactWrapper = () => {
+function ReactWrapper() {
     const canvas = useStore(selectGameCanvasElement);
     const dialogMessages = useStore(selectDialogMessages);
     const menuItems = useStore(selectMenuItems);
@@ -101,6 +101,6 @@ const ReactWrapper = () => {
             })}
         </div>
     );
-};
+}
 
 export default ReactWrapper;

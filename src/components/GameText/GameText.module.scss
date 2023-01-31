@@ -1,0 +1,23 @@
+.text-wrapper {
+    user-select: none;
+    user-drag: none;
+    position: absolute;
+    text-align: var(--game-text-align);
+    transform: translate(-50%, 0%);
+    top: calc(var(--game-text-top) * 1px);
+    width: calc(100% - (var(--game-text-width) * 1px));
+}
+
+.text-position-wrapper {
+    &.text-center {
+        left: 50%;
+    }
+}
+
+.text {
+    font-size: calc(var(--game-zoom) * var(--game-text-size) * 1px);
+    font-family: "Press Start 2P", serif;
+    color: var(--game-text-color);
+    text-transform: uppercase;
+    margin: 0;
+}

@@ -74,7 +74,7 @@ export default class LoadAssetsScene extends Scene {
         this.load.on('progress', handleBarProgress);
 
         this.load.on('fileprogress', (file) => {
-            console.log(file.key);
+            console.info(file.key);
         });
 
         this.load.on('complete', () => {
@@ -150,7 +150,7 @@ export default class LoadAssetsScene extends Scene {
                                     await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
 
                                 addLoadedAtlas(spriteName);
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
@@ -171,7 +171,7 @@ export default class LoadAssetsScene extends Scene {
                                     await import(`../../assets/atlases/generated/${spriteName}.json`);
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`!!file-loader!../../assets/atlases/generated/${spriteName}.png`);
+                                    await import(`../../assets/atlases/generated/${spriteName}.png`);
 
                                 addLoadedAtlas(spriteName);
                                 await asyncLoader(this.load.atlas(spriteName, imagePath, jsonPath));
@@ -186,7 +186,7 @@ export default class LoadAssetsScene extends Scene {
                                 && !loadedImages.includes(spriteName)
                             ) {
                                 // eslint-disable-next-line no-await-in-loop, import/no-unresolved, import/no-webpack-loader-syntax
-                                const { default: imagePath } = await import('!!file-loader!../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
+                                const { default: imagePath } = await import('../../assets/images/heart_full.png'); // `../../assets/images/${spriteName}.png`
 
                                 addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -203,7 +203,7 @@ export default class LoadAssetsScene extends Scene {
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`!!file-loader!../../assets/images/${spriteName}.png`);
+                                    await import(`../../assets/images/${spriteName}.png`);
 
                                 addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -220,7 +220,7 @@ export default class LoadAssetsScene extends Scene {
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 const { default: imagePath } =
-                                    await import(`!!file-loader!../../assets/images/${spriteName}.png`);
+                                    await import(`../../assets/images/${spriteName}.png`);
 
                                 addLoadedImage(spriteName);
                                 await asyncLoader(this.load.image(spriteName, imagePath));
@@ -258,8 +258,12 @@ export default class LoadAssetsScene extends Scene {
                     }
 
                     if (!loadedImages.includes(tilesetName) && isTilesetFileAvailable(tilesetJson.image)) {
+                        // remove the file extension so webpack only pre-load the files with the png extension
+                        const fileName = tilesetJson.image.replace(/\.[^/.]+$/, '');
                         // eslint-disable-next-line no-await-in-loop
-                        const { default: tilesetImage } = await import(`../../assets/tilesets/${tilesetJson.image}`);
+                        const { default: tilesetImage } = await import(
+                            `../../assets/tilesets/${fileName}.png`
+                        );
 
                         addLoadedImage(tilesetName);
                         // eslint-disable-next-line no-await-in-loop
@@ -315,8 +319,9 @@ export default class LoadAssetsScene extends Scene {
                 continue;
             }
 
+            const fileName = imageName.replace(/\.[^/.]+$/, '');
             // eslint-disable-next-line no-await-in-loop
-            const { default: imagePath } = await import(`!!file-loader!../../assets/atlases/generated/${imageName}`);
+            const { default: imagePath } = await import(`../../assets/atlases/generated/${fileName}.png`);
 
             addLoadedAtlas(atlas);
             // eslint-disable-next-line no-await-in-loop
@@ -335,7 +340,7 @@ export default class LoadAssetsScene extends Scene {
             }
 
             // eslint-disable-next-line no-await-in-loop
-            const { default: imagePath } = await import(`!!file-loader!../../assets/images/${image}.png`);
+            const { default: imagePath } = await import(`../../assets/images/${image}.png`);
 
             addLoadedImage(image);
             // eslint-disable-next-line no-await-in-loop

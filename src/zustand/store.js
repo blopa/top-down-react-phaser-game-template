@@ -324,8 +324,8 @@ const store = create((set) => ({
             ...state,
             text: {
                 ...state.text,
-                texts: [
-                    ...state.text.texts.map((text) => {
+                texts:
+                    state.text.texts.map((text) => {
                         if (text.key === key) {
                             return {
                                 ...text,
@@ -334,8 +334,8 @@ const store = create((set) => ({
                         }
 
                         return text;
-                    }),
-                ],
+                    })
+                ,
             },
         })),
     removeTextTexts: (key) =>
@@ -343,7 +343,7 @@ const store = create((set) => ({
             ...state,
             text: {
                 ...state.text,
-                texts: [...state.text.texts.filter((text) => text.key !== key)],
+                texts: state.text.texts.filter((text) => text.key !== key),
             },
         })),
 }));

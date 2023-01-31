@@ -5,6 +5,7 @@ import isMobile from 'is-mobile';
 
 // Utils
 import { calculateGameSize } from './utils/phaser';
+import { isDev } from './utils/utils';
 
 // Constants
 import {
@@ -25,18 +26,24 @@ import MainMenuScene from './game/scenes/MainMenuScene';
 import BattleScene from './game/scenes/BattleScene';
 
 // Components
-import VirtualGamepad from './components/VirtualGamepad';
+import VirtualGamepad from './components/VirtualGamepad/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
 
 // Selectors
-import { selectGameCameraSizeUpdateCallback, selectGameLocale } from './zustand/selectors/selectGameData';
+import {
+    selectGameZoom,
+    selectGameWidth,
+    selectGameHeight,
+    selectGameLocale,
+    selectGameCameraSizeUpdateCallback,
+} from './zustand/selectors/selectGameData';
 
 // Store
 import { useStore } from './zustand/store';
 
-const Game = () => {
+function Game() {
     const defaultLocale = 'en';
-    const isDevelopment = process?.env?.NODE_ENV !== 'production';
+    const isDevelopment = isDev();
 
     const [game, setGame] = useState(null);
     const locale = useStore(selectGameLocale) || defaultLocale;
@@ -46,6 +53,17 @@ const Game = () => {
     const setGameHeight = useStore((state) => state.setGameHeight);
     const setGameWidth = useStore((state) => state.setGameWidth);
     const setGameZoom = useStore((state) => state.setGameZoom);
+
+    // Game
+    const gameWidth = useStore(selectGameWidth);
+    const gameHeight = useStore(selectGameHeight);
+    const gameZoom = useStore(selectGameZoom);
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--game-zoom', gameZoom);
+        document.documentElement.style.setProperty('--game-height', gameHeight);
+        document.documentElement.style.setProperty('--game-width', gameWidth);
+    }, [gameHeight, gameWidth, gameZoom]);
 
     useEffect(() => {
         async function loadMessages() {
@@ -201,6 +219,6 @@ const Game = () => {
             )}
         </IntlProvider>
     );
-};
+}
 
 export default Game;

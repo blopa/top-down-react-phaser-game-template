@@ -1,26 +1,17 @@
 import { useMemo } from 'react';
 import { animated, useTransition } from 'react-spring';
-import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
-    dialogMessage: ({ zoom }) => ({
-        fontFamily: '"Press Start 2P"',
-        fontSize: `${6 * zoom}px`,
-        textTransform: 'uppercase',
-        lineHeight: `${8 * zoom}px`,
-    }),
-}));
+// Styles
+import styles from './Message.module.scss';
 
-const Message = ({
-    message = [],
+function Message({
+    message = '',
     trail = 35,
-    zoom = 1,
     onMessageEnded = () => {},
     forceShowFullMessage = false,
-}) => {
-    const classes = useStyles({ zoom });
+}) {
     const items = useMemo(
-        () => message.trim().split('').map((letter, index) => ({
+        () => [...message.trim()].map((letter, index) => ({
             item: letter,
             key: index,
         })),
@@ -39,18 +30,18 @@ const Message = ({
     });
 
     return (
-        <div className={classes.dialogMessage}>
+        <div className={styles['dialog-message']}>
             {forceShowFullMessage && (
                 <span>{message}</span>
             )}
 
-            {!forceShowFullMessage && transitions((styles, { item, key }) => (
-                <animated.span key={key} style={styles}>
+            {!forceShowFullMessage && transitions((inlineStyles, { item, key }) => (
+                <animated.span key={key} style={inlineStyles}>
                     {item}
                 </animated.span>
             ))}
         </div>
     );
-};
+}
 
 export default Message;
