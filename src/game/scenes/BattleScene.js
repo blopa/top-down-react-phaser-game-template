@@ -5,7 +5,6 @@ import { getSelectorData } from '../../utils/utils';
 import { selectGameWidth } from '../../zustand/selectors/selectGameData';
 import { selectBattleEnemies } from '../../zustand/selectors/selectBattle';
 
-// eslint-disable-next-line import/no-mutable-exports, prefer-const
 export const scene = {};
 
 export const key = 'BattleScene';

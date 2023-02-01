@@ -39,7 +39,9 @@ import BootScene from './game/scenes/BootScene';
 
 // automatically import all scenes from the scenes folder
 const contextResolver = require.context('./game/scenes/', true, /\.js$/);
-const scenes = contextResolver.keys().map((element) => contextResolver(element));
+const scenes = contextResolver.keys().map(
+    (modulePath) => [contextResolver(modulePath), modulePath]
+);
 
 function Game() {
     const defaultLocale = 'en';
@@ -117,13 +119,9 @@ function Game() {
             },
             scene: [
                 BootScene,
-                ...scenes.map((module) => {
+                ...scenes.map(([module, modulePath]) => {
                     if (Object.getOwnPropertyDescriptor(module.default || {}, 'prototype')) {
                         return module.default;
-                    }
-
-                    if (!module.key) {
-                        throw new Error('Functional Scenes must contain a "key" property');
                     }
 
                     function init(data) {
@@ -140,9 +138,11 @@ function Game() {
                         module.init?.(data);
                     }
 
+                    const key = module.key || modulePath.split('/').pop().split('.').shift();
                     return {
                         ...module,
-                        name: module.key,
+                        name: key,
+                        key,
                         init,
                     };
                 })

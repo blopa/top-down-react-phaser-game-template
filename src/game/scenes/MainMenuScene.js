@@ -7,7 +7,6 @@ import { changeScene } from '../../utils/sceneHelpers';
 // Store
 import store from '../../zustand/store';
 
-// eslint-disable-next-line import/no-mutable-exports, prefer-const
 export const scene = {};
 
 export const key = 'MainMenuScene';

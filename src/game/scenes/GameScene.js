@@ -15,7 +15,6 @@ import store from '../../zustand/store';
 
 export const key = 'GameScene';
 
-// eslint-disable-next-line import/no-mutable-exports, prefer-const
 export const scene = {};
 
 export function create() {
