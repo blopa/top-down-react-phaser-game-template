@@ -129,10 +129,11 @@ function Game() {
                     function init(data) {
                         // eslint-disable-next-line no-undefined
                         if (isObject(module.scene)) {
+                            // when this function is called, "this" will be the scene
                             // eslint-disable-next-line @babel/no-invalid-this
-                            Object.keys(this).forEach((key) => {
-                                // eslint-disable-next-line @babel/no-invalid-this, no-param-reassign, react/no-this-in-sfc
-                                module.scene[key] = this[key];
+                            Object.entries(this).forEach(([key, value]) => {
+                                // eslint-disable-next-line no-param-reassign
+                                module.scene[key] = value;
                             });
                         }
 

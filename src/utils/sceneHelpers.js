@@ -518,13 +518,11 @@ export const handleObjectsLayer = (scene) => {
                         setHeroInitialPosition({ x: posX, y: posY });
                         setHeroPreviousPosition({ x: posX, y: posY });
 
-                        Promise.all([]).then(() => {
-                            // scene.scene.restart();
-                            changeScene(scene, 'GameScene', {
-                                atlases: ['hero'],
-                                images: [],
-                                mapKey: map,
-                            });
+                        // scene.scene.restart();
+                        changeScene(scene, 'GameScene', {
+                            atlases: ['hero'],
+                            images: [],
+                            mapKey: map,
                         });
                     });
 
