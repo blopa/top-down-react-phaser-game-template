@@ -61,12 +61,11 @@ export const getScenesModules = () => {
     // automatically import all scenes from the scenes folder
     const contextResolver = require.context('../game/scenes/', true, /\.js$/);
     const scenes = contextResolver.keys().map(
-        (modulePath) => [contextResolver(modulePath), modulePath]
+        (modulePath) => prepareScene(contextResolver(modulePath), modulePath)
     );
 
     return [
         BootScene,
-        ...scenes.map(([module, modulePath]) => prepareScene(module, modulePath))
-            .filter((scene) => scene.name !== BootScene.name),
+        ...scenes.filter((scene) => scene.name !== BootScene.name),
     ];
 };
