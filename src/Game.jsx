@@ -18,13 +18,6 @@ import {
     RE_RESIZE_THRESHOLD,
 } from './constants';
 
-// Game Scenes
-import GameScene from './game/scenes/GameScene';
-import BootScene from './game/scenes/BootScene';
-import LoadAssetsScene from './game/scenes/LoadAssetsScene';
-import MainMenuScene from './game/scenes/MainMenuScene';
-import BattleScene from './game/scenes/BattleScene';
-
 // Components
 import VirtualGamepad from './components/VirtualGamepad/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
@@ -40,6 +33,13 @@ import {
 
 // Store
 import { useStore } from './zustand/store';
+
+// Game Scenes
+import BootScene from './game/scenes/BootScene';
+
+// automatically import all scenes from the scenes folder
+const contextResolver = require.context('./game/scenes/', true, /\.js$/);
+const scenes = contextResolver.keys().map((element) => contextResolver(element));
 
 function Game() {
     const defaultLocale = 'en';
@@ -117,10 +117,8 @@ function Game() {
             },
             scene: [
                 BootScene,
-                LoadAssetsScene,
-                GameScene,
-                MainMenuScene,
-                BattleScene,
+                ...scenes.map((module) => module.default)
+                    .filter((scene) => scene.name !== 'BootScene'),
             ],
             physics: {
                 default: 'arcade',

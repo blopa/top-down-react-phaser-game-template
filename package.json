@@ -45,7 +45,7 @@
     "react-intl": "^6.2.7",
     "react-scripts": "^5.0.1",
     "react-spring": "^9.6.1",
-    "sass": "^1.57.1",
+    "sass": "^1.58.0",
     "zustand": "^4.3.2"
   },
   "overrides": {
