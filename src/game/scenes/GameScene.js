@@ -15,8 +15,11 @@ import store from '../../zustand/store';
 
 export const key = 'GameScene';
 
+// eslint-disable-next-line import/no-mutable-exports, prefer-const
+export const scene = {};
+
 export function create() {
-    // this.input.on('pointerup', (pointer) => {
+    // scene.input.on('pointerup', (pointer) => {
     //     console.log('clicky click');
     // });
     const { setGameCameraSizeUpdateCallback } = store.getState();
@@ -24,35 +27,35 @@ export function create() {
     // All of these functions need to be called in order
 
     // Create controls
-    handleCreateControls(this);
+    handleCreateControls(scene);
 
     // Create game groups
-    handleCreateGroups(this);
+    handleCreateGroups(scene);
 
     // Create the map
-    const customColliders = handleCreateMap(this);
+    const customColliders = handleCreateMap(scene);
 
     // Create hero sprite
-    handleCreateHero(this);
+    handleCreateHero(scene);
 
     // Load game objects like items, enemies, etc
-    handleObjectsLayer(this);
+    handleObjectsLayer(scene);
 
     // Configure the main camera
-    handleConfigureCamera(this);
+    handleConfigureCamera(scene);
     setGameCameraSizeUpdateCallback(() => {
-        handleConfigureCamera(this);
+        handleConfigureCamera(scene);
     });
 
     // Hero animations
-    handleCreateHeroAnimations(this);
+    handleCreateHeroAnimations(scene);
 
     // Handle collisions
-    this.physics.add.collider(this.heroSprite, this.enemies);
-    this.physics.add.collider(this.heroSprite, customColliders);
+    scene.physics.add.collider(scene.heroSprite, scene.enemies);
+    scene.physics.add.collider(scene.heroSprite, customColliders);
 }
 
 export function update(time, delta) {
-    handleHeroMovement(this);
-    this.heroSprite.update(time, delta);
+    handleHeroMovement(scene);
+    scene.heroSprite.update(time, delta);
 }

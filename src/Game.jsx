@@ -5,7 +5,7 @@ import isMobile from 'is-mobile';
 
 // Utils
 import { calculateGameSize } from './utils/phaser';
-import { isDev } from './utils/utils';
+import { isDev, isObject } from './utils/utils';
 
 // Constants
 import {
@@ -123,12 +123,26 @@ function Game() {
                     }
 
                     if (!module.key) {
-                        throw new Error('Function Scenes must contain a "key" property');
+                        throw new Error('Functional Scenes must contain a "key" property');
+                    }
+
+                    function init(data) {
+                        // eslint-disable-next-line no-undefined
+                        if (isObject(module.scene)) {
+                            // eslint-disable-next-line @babel/no-invalid-this
+                            Object.keys(this).forEach((key) => {
+                                // eslint-disable-next-line @babel/no-invalid-this, no-param-reassign, react/no-this-in-sfc
+                                module.scene[key] = this[key];
+                            });
+                        }
+
+                        module.init?.(data);
                     }
 
                     return {
-                        name: module.key,
                         ...module,
+                        name: module.key,
+                        init,
                     };
                 })
                     .filter((scene) => scene.name !== BootScene.name),
