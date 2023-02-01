@@ -4,8 +4,8 @@ import { IntlProvider } from 'react-intl';
 import isMobile from 'is-mobile';
 
 // Utils
-import { calculateGameSize } from './utils/phaser';
-import { isDev, isObject } from './utils/utils';
+import { calculateGameSize, getScenesModules } from './utils/phaser';
+import { isDev } from './utils/utils';
 
 // Constants
 import {
@@ -33,15 +33,6 @@ import {
 
 // Store
 import { useStore } from './zustand/store';
-
-// Game Scenes
-import BootScene from './game/scenes/BootScene';
-
-// automatically import all scenes from the scenes folder
-const contextResolver = require.context('./game/scenes/', true, /\.js$/);
-const scenes = contextResolver.keys().map(
-    (modulePath) => [contextResolver(modulePath), modulePath]
-);
 
 function Game() {
     const defaultLocale = 'en';
@@ -117,37 +108,7 @@ function Game() {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.NONE,
             },
-            scene: [
-                BootScene,
-                ...scenes.map(([module, modulePath]) => {
-                    if (Object.getOwnPropertyDescriptor(module.default || {}, 'prototype')) {
-                        return module.default;
-                    }
-
-                    function init(data) {
-                        // eslint-disable-next-line no-undefined
-                        if (isObject(module.scene)) {
-                            // when this function is called, "this" will be the scene
-                            // eslint-disable-next-line @babel/no-invalid-this
-                            Object.entries(this).forEach(([key, value]) => {
-                                // eslint-disable-next-line no-param-reassign
-                                module.scene[key] = value;
-                            });
-                        }
-
-                        module.init?.(data);
-                    }
-
-                    const key = module.key || modulePath.split('/').pop().split('.').shift();
-                    return {
-                        ...module,
-                        name: key,
-                        key,
-                        init,
-                    };
-                })
-                    .filter((scene) => scene.name !== BootScene.name),
-            ],
+            scene: getScenesModules(),
             physics: {
                 default: 'arcade',
                 arcade: {
