@@ -117,8 +117,21 @@ function Game() {
             },
             scene: [
                 BootScene,
-                ...scenes.map((module) => module.default)
-                    .filter((scene) => scene.name !== 'BootScene'),
+                ...scenes.map((module) => {
+                    if (Object.getOwnPropertyDescriptor(module.default || {}, 'prototype')) {
+                        return module.default;
+                    }
+
+                    if (!module.key) {
+                        throw new Error('Function Scenes must contain a "key" property');
+                    }
+
+                    return {
+                        name: module.key,
+                        ...module,
+                    };
+                })
+                    .filter((scene) => scene.name !== BootScene.name),
             ],
             physics: {
                 default: 'arcade',

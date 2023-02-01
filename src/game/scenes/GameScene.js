@@ -1,5 +1,3 @@
-import { Scene } from 'phaser';
-
 // Utils
 import {
     handleCreateMap,
@@ -15,50 +13,46 @@ import {
 // Store
 import store from '../../zustand/store';
 
-export default class GameScene extends Scene {
-    constructor() {
-        super('GameScene');
-    }
+export const key = 'GameScene';
 
-    create() {
-        // this.input.on('pointerup', (pointer) => {
-        //     console.log('clicky click');
-        // });
-        const { setGameCameraSizeUpdateCallback } = store.getState();
+export function create() {
+    // this.input.on('pointerup', (pointer) => {
+    //     console.log('clicky click');
+    // });
+    const { setGameCameraSizeUpdateCallback } = store.getState();
 
-        // All of these functions need to be called in order
+    // All of these functions need to be called in order
 
-        // Create controls
-        handleCreateControls(this);
+    // Create controls
+    handleCreateControls(this);
 
-        // Create game groups
-        handleCreateGroups(this);
+    // Create game groups
+    handleCreateGroups(this);
 
-        // Create the map
-        const customColliders = handleCreateMap(this);
+    // Create the map
+    const customColliders = handleCreateMap(this);
 
-        // Create hero sprite
-        handleCreateHero(this);
+    // Create hero sprite
+    handleCreateHero(this);
 
-        // Load game objects like items, enemies, etc
-        handleObjectsLayer(this);
+    // Load game objects like items, enemies, etc
+    handleObjectsLayer(this);
 
-        // Configure the main camera
+    // Configure the main camera
+    handleConfigureCamera(this);
+    setGameCameraSizeUpdateCallback(() => {
         handleConfigureCamera(this);
-        setGameCameraSizeUpdateCallback(() => {
-            handleConfigureCamera(this);
-        });
+    });
 
-        // Hero animations
-        handleCreateHeroAnimations(this);
+    // Hero animations
+    handleCreateHeroAnimations(this);
 
-        // Handle collisions
-        this.physics.add.collider(this.heroSprite, this.enemies);
-        this.physics.add.collider(this.heroSprite, customColliders);
-    }
+    // Handle collisions
+    this.physics.add.collider(this.heroSprite, this.enemies);
+    this.physics.add.collider(this.heroSprite, customColliders);
+}
 
-    update(time, delta) {
-        handleHeroMovement(this);
-        this.heroSprite.update(time, delta);
-    }
+export function update(time, delta) {
+    handleHeroMovement(this);
+    this.heroSprite.update(time, delta);
 }
