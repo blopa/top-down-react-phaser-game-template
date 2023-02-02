@@ -24,6 +24,7 @@ export const KEY = 5;
 export const DOOR = 6;
 
 export const IDLE_FRAME = 'walk_position_02';
+export const IDLE_FRAME_POSITION_KEY = 'position';
 
 // Directions
 export const RIGHT_DIRECTION = 'right';

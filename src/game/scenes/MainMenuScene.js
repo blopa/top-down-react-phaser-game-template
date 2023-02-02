@@ -1,5 +1,5 @@
 // Constants
-import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
+import { DOWN_DIRECTION, IDLE_FRAME, IDLE_FRAME_POSITION_KEY } from '../../constants';
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
@@ -38,7 +38,7 @@ export function create() {
 
         setHeroFacingDirection(DOWN_DIRECTION);
         setHeroInitialFrame(
-            IDLE_FRAME.replace('position', DOWN_DIRECTION)
+            IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, DOWN_DIRECTION)
         );
         setHeroInitialPosition({ x: 30, y: 42 });
         setHeroPreviousPosition({ x: 30, y: 42 });

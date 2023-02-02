@@ -27,6 +27,7 @@ import {
     DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
     SCISSORS_BATTLE_ITEM,
+    IDLE_FRAME_POSITION_KEY,
     CONFIG_DICE_BATTLE_ITEM,
 } from '../constants';
 
@@ -201,7 +202,7 @@ export const handleCreateHero = (scene) => {
 
     // const facingDirection = getSelectorData(selectHeroFacingDirection);
     // heroSprite.setFrame(
-    //     IDLE_FRAME.replace('position', facingDirection)
+    //     IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection)
     // );
 
     scene.physics.add.collider(heroSprite, scene.mapLayers);
@@ -299,7 +300,7 @@ export const handleObjectsLayer = (scene) => {
                 case ENEMY: {
                     const spriteName = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const enemy = scene.physics.add
-                        .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
+                        .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, DOWN_DIRECTION))
                         .setName(spriteName)
                         .setOrigin(0, 1)
                         .setDepth(1);
@@ -514,7 +515,7 @@ export const handleObjectsLayer = (scene) => {
 
                         setMapKey(map);
                         setHeroFacingDirection(facingDirection);
-                        setHeroInitialFrame(IDLE_FRAME.replace('position', facingDirection));
+                        setHeroInitialFrame(IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection));
                         setHeroInitialPosition({ x: posX, y: posY });
                         setHeroPreviousPosition({ x: posX, y: posY });
 
@@ -612,7 +613,9 @@ export const handleHeroMovement = (scene, heroSpeed = 60) => {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();
-        scene.heroSprite.setFrame(IDLE_FRAME.replace('position', facingDirection));
+        scene.heroSprite.setFrame(
+            IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection)
+        );
     }
 };
 
