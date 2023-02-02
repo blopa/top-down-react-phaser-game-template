@@ -9,24 +9,27 @@ This project came from this Medium post: https://javascript.plainenglish.io/i-ma
 # Features
 - Create React App
 - Phaser 3
-- Redux
+- Zustand
 - Material UI
-- React 17 as game UI
+- React 18 as game UI
+- Functional programming
 - Arcade physics
-- Grid Engine for grid movements
 - Automatically resize game when browser window change size
 - Automatically load Tilesets into Tiled maps
-- Automatically pre-load assets with the `LoadAssetsScene` scene
+- Automatically preload assets with the `LoadAssetsScene` scene
 - Automatically load items and enemies from Tiled objects layer
 - Script to automatically generate atlases sheets
 - Adjustable tile sizes
-- Integration between Phaser and React via Redux
+- Integration between Phaser and React via Zustand
 - Dialog system (with React)
 - Game menu (with React)
 - Virtual Gamepad for mobile (with React)
-- Free 2D assets by Kenney.nl (assets God)
+- Free 2D assets by Kenney.nl AKA assets God
 
 # How to use it
+
+## Functional programming approach
+TODO
 
 ## Maps
 Add your Tiled tilesets JSON and images to `/src/assets/tilesets` and your Tiled maps to `/src/assets/maps`. Then call the `LoadAssetsScene` scene like:
@@ -66,7 +69,7 @@ The Virtual Gamepad will be loaded automatically if the game is being run in a m
 A dialog box will automatically show up whenever the `state.dialog.messages` variable is filled with messages. You can call the `setDialogMessagesAction` Redux action to do this.
 
 ```javascript
-dispatch(setDialogMessages(['hello world', 'hello world 2']));
+setDialogMessages(['hello world', 'hello world 2']);
 ```
 
 # Assets by Kenney.nl:
