@@ -58,3 +58,5 @@ export const RUN_BATTLE_ITEM = 'run';
 
 // DOM identifiers
 export const GAME_CONTENT_ID = 'game-content';
+
+export const BOOT_SCENE_NAME = 'BootScene';

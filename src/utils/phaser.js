@@ -1,5 +1,7 @@
-import { isObject } from './utils';
-import BootScene from '../game/scenes/BootScene';
+import { getFileNameWithoutExtension, isObject } from './utils';
+
+// Constants
+import { BOOT_SCENE_NAME } from '../constants';
 
 export const calculateGameSize = (
     width,
@@ -48,7 +50,7 @@ export const prepareScene = (module, modulePath) => {
         module.init?.(data);
     }
 
-    const key = module.key || modulePath.split('/').pop().split('.').shift();
+    const key = module.key || getFileNameWithoutExtension(modulePath);
     return {
         ...module,
         name: key,
@@ -59,13 +61,14 @@ export const prepareScene = (module, modulePath) => {
 
 export const getScenesModules = () => {
     // automatically import all scenes from the scenes folder
-    const contextResolver = require.context('../game/scenes/', true, /\.js$/);
-    const scenes = contextResolver.keys().map(
-        (modulePath) => prepareScene(contextResolver(modulePath), modulePath)
-    );
+    const contextResolver = require.context('../game/scenes/', true, /\.(js|ts)$/);
 
-    return [
-        BootScene,
-        ...scenes.filter((scene) => scene.name !== BootScene.name),
-    ];
+    const modulePaths = contextResolver.keys();
+    const bootScene = modulePaths
+        .find((modulePath) => getFileNameWithoutExtension(modulePath) === BOOT_SCENE_NAME);
+    const otherScenes = modulePaths
+        .filter((modulePath) => getFileNameWithoutExtension(modulePath) !== BOOT_SCENE_NAME);
+
+    return [bootScene, ...otherScenes]
+        .map((modulePath) => prepareScene(contextResolver(modulePath), modulePath));
 };

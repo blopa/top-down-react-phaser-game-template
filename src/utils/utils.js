@@ -167,3 +167,5 @@ export const rotateRectangleInsideTile = (x, y, width, height, degree) => {
 };
 
 export const isDev = () => process.env.NODE_ENV !== 'production';
+
+export const getFileNameWithoutExtension = (filePath) => filePath.split('/').pop().split('.').shift();
