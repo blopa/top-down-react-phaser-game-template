@@ -1,43 +1,40 @@
 # Top-Down Phaser Game with React UI Template
 
-This project came from this Medium post: https://javascript.plainenglish.io/i-made-a-top-down-game-version-of-my-blog-with-phaser-and-react-faf5c28cf768
+This project is based on a Medium post: https://javascript.plainenglish.io/i-made-a-top-down-game-version-of-my-blog-with-phaser-and-react-faf5c28cf768
 
 <img src="/source_files/game_sample.gif?raw=true" width="890px" />
 
-## Test it here: https://blopa.github.io/top-down-react-phaser-game-template/
+## Try it out: https://blopa.github.io/top-down-react-phaser-game-template/
 
-# Features
-- Create React App
-- Phaser 3
-- Zustand
-- Material UI
-- React 18 as game UI
-- Functional programming
+# Key Features
+- Built with Create React App
+- Uses Phaser 3 for game engine
+- State management with Zustand
+- UI with Material UI and React 18
+- Uses functional programming style
 - Arcade physics
-- Automatically resize game when browser window change size
-- Automatically load Tilesets into Tiled maps
-- Automatically preload assets with the `LoadAssetsScene` scene
-- Automatically load items and enemies from Tiled objects layer
-- Script to automatically generate atlases sheets
+- Automatically resizes game to fit browser window
+- Automatically loads Tilesets and assets
+- Generates atlas sheets with included script
 - Adjustable tile sizes
-- Integration between Phaser and React via Zustand
-- Dialog system (with React)
-- Game menu (with React)
-- Virtual Gamepad for mobile (with React)
-- Free 2D assets by Kenney.nl AKA assets God
+- Integrates Phaser and React through Zustand
+- Dialog system (React-based)
+- Game menu (React-based)
+- Virtual Gamepad for mobile devices (React-based)
+- Includes 2D assets from Kenney.nl
 
-# How to use it
+# How to Use
 
-## Automatically load scene files
-The function `getScenesModules` will use the [require.context](https://webpack.js.org/guides/dependency-management/#requirecontext) from Webpack to load all `.js` and `.ts` files from the `/src/assets/games/scenes` directory, so simply add your game scenes there, and they will be loaded into the game.
+## Load Scene Files
+The `getScenesModules` function uses Webpack's [require.context](https://webpack.js.org/guides/dependency-management/#requirecontext) to load all `.js` and `.ts` files from the `/src/assets/games/scenes` directory. Simply add your game scenes there to have them loaded into the game.
 
-The first scene loaded by Phaser JS will be the scene with the name defined in the `constants.js` file in the `BOOT_SCENE_NAME` variable.
+The first scene loaded by Phaser JS is the one defined in the `constants.js` file, in the `BOOT_SCENE_NAME` variable.
 
-## Functional programming approach
-For a better readability of the code, it's possible to implement game scenes by simply exporting functions from the scene file, instead of using the `Phaser.Scene` class.
+## Functional Programming
+Scene code can be written in a functional style for improved readability, by exporting functions instead of using the `Phaser.Scene` class.
 
 ```javascript
-// Export game scene using the regular class way
+// Export scene using class-based approach
 export default class BootScene extends Scene {
     constructor() {
         super('BootScene');
@@ -54,7 +51,7 @@ export default class BootScene extends Scene {
 ```
 
 ```javascript
-// Export game scene in the functional approach
+// Export scene in functional approach
 export const scene = {};
 
 export const key = 'BootScene';
@@ -68,26 +65,26 @@ export function create() {
 }
 ```
 
-The `scene` object that is exported will be the global variable with the `Phaser.Scene` helper functions. You can still access it with `this`, but the idea is to avoid using `this` to improve code readability.
+The exported `scene` object will have all the helper functions of `Phaser.Scene`. While it can still be accessed with `this`, the functional approach is designed to improve code readability.
 
-The magic of using the exported `scene` variable happens in the `prepareScene` function.
+This "magic" is made possible by the `prepareScene` function.
 
 ## Maps
-Add your Tiled tilesets JSON and images to `/src/assets/tilesets` and your Tiled maps to `/src/assets/maps`. Then call the `LoadAssetsScene` scene like:
+To use Tiled maps, add your Tiled tilesets JSON and images to `/src/assets/tilesets` and your Tiled maps to `/src/assets/maps`. Then start the `LoadAssetsScene` like this:
 
 ```javascript
 this.scene.start('LoadAssetsScene', {
-    nextScene: 'GameScene', // scene to be loaded after the assets are loaded
+    nextScene: 'GameScene', // Scene to load after assets are loaded
     assets: {
-        mapKey: 'sample_map', // name of your map, like sample_map.json in this case
+        mapKey: 'sample_map', // Map name, e.g. sample_map.json
     },
 });
 ```
 
-Any tileset inside your `sample_map.json` will be automatically loaded, as long as they are in the `/src/assets/tilesets` directory.
+Any tilesets used in your `sample_map.json` will be automatically loaded from the `/src/assets/tilesets` directory, as long as they are located there.
 
 ## Other assets
-To load any other asset, call the `LoadAssetsScene` with a list of the assets you need it to be automatically loaded.
+To load other assets such as images, fonts, or atlases, call the `LoadAssetsScene` with the following parameters:
 
 ```javascript
 this.scene.start('LoadAssetsScene', {
@@ -101,13 +98,13 @@ this.scene.start('LoadAssetsScene', {
 ```
 
 ## The 'GameScene'
-This file is where the game map is rendered, with all items, enemies, etc. The `create` function is split into smaller functions that can be found in the `sceneHelpers.js` file.
+The `GameScene` file is where the game map is rendered, along with all items, enemies, etc. The `create` function is split into smaller functions for easier readability, which can be found in the `sceneHelpers.js` file.
 
 ## Virtual Gamepad
-The Virtual Gamepad will be loaded automatically if the game is being run in a mobile device. The Virtual Gamepad is a React component that simulate keyboard keys to control que game, using the function `simulateKeyEvent` found in [this GitHub Gist](https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2).
+The virtual gamepad will be automatically loaded when the game is run on a mobile device. The virtual gamepad is a React component that simulates keyboard keys to control the game, using the `simulateKeyEvent` function found in this [GitHub Gist](https://gist.github.com/GlauberF/d8278ce3aa592389e6e3d4e758e6a0c2).
 
 ## Dialog System
-A dialog box will automatically show up whenever the `state.dialog.messages` variable is filled with messages. You can call the `setDialogMessagesAction` Redux action to do this.
+A dialog box will appear automatically whenever the `state.dialog.messages` variable is populated with messages. To accomplish this, you can call the `setDialogMessagesAction` Zustand setter function.
 
 ```javascript
 setDialogMessages(['hello world', 'hello world 2']);
