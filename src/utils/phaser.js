@@ -50,6 +50,12 @@ export const prepareScene = (module, modulePath) => {
         module.init?.(data);
     }
 
+    // Object.keys(Scene.prototype).forEach((key) => {
+    //     if (!module[key]) {
+    //         throw new Error(`Missing "${key}" method`);
+    //     }
+    // });
+
     const key = module.key || getFileNameWithoutExtension(modulePath);
     return {
         ...module,

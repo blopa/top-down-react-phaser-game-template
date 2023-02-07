@@ -28,8 +28,49 @@ This project came from this Medium post: https://javascript.plainenglish.io/i-ma
 
 # How to use it
 
+## Automatically load scene files
+The function `getScenesModules` will use the [require.context](https://webpack.js.org/guides/dependency-management/#requirecontext) from Webpack to load all `.js` and `.ts` files from the `/src/assets/games/scenes` directory, so simply add your game scenes there, and they will be loaded into the game.
+
+The first scene loaded by Phaser JS will be the scene with the name defined in the `constants.js` file in the `BOOT_SCENE_NAME` variable.
+
 ## Functional programming approach
-TODO
+For a better readability of the code, it's possible to implement game scenes by simply exporting functions from the scene file, instead of using the `Phaser.Scene` class.
+
+```javascript
+// Export game scene using the regular class way
+export default class BootScene extends Scene {
+    constructor() {
+        super('BootScene');
+    }
+
+    preload() {
+        this.load.image('background', background);
+    }
+
+    create() {
+        this.add.image(100, 100, 'background');
+    }
+}
+```
+
+```javascript
+// Export game scene in the functional approach
+export const scene = {};
+
+export const key = 'BootScene';
+
+export function preload() {
+    scene.load.image('background', background);
+}
+
+export function create() {
+    scene.add.image(100, 100, 'background');
+}
+```
+
+The `scene` object that is exported will be the global variable with the `Phaser.Scene` helper functions. You can still access it with `this`, but the idea is to avoid using `this` to improve code readability.
+
+The magic of using the exported `scene` variable happens in the `prepareScene` function.
 
 ## Maps
 Add your Tiled tilesets JSON and images to `/src/assets/tilesets` and your Tiled maps to `/src/assets/maps`. Then call the `LoadAssetsScene` scene like:
