@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { animated, useTransition } from 'react-spring';
+import { animated, useTransition } from '@react-spring/web';
 
 // Styles
 import styles from './Message.module.scss';
@@ -35,8 +35,8 @@ function Message({
                 <span>{message}</span>
             )}
 
-            {!forceShowFullMessage && transitions((inlineStyles, { item, key }) => (
-                <animated.span key={key} style={inlineStyles}>
+            {!forceShowFullMessage && transitions((animatedStyles, { item, key }) => (
+                <animated.span key={key} style={animatedStyles}>
                     {item}
                 </animated.span>
             ))}

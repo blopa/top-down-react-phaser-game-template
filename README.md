@@ -11,6 +11,7 @@ This project is based on a Medium post: https://javascript.plainenglish.io/i-mad
 - Uses Phaser 3 for game engine
 - State management with Zustand
 - UI with Material UI and React 18
+- CSS Modules
 - Uses functional programming style
 - Arcade physics
 - Automatically resizes game to fit browser window
