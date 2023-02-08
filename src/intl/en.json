@@ -8,5 +8,7 @@
     "attack": "Attack",
     "defense": "Defense",
     "config_dice": "Config. Dice",
+    "next": "Next",
+    "ok": "Ok",
     "run": "Run"
 }

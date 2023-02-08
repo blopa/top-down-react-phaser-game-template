@@ -1,10 +1,13 @@
+import { animated, useSpring } from '@react-spring/web';
 import { useCallback, useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
 
 // Components
 import Message from './Message/Message';
 
 // Selectors
 import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/selectors/selectDialog';
+import { selectGameHeight, selectGameZoom } from '../zustand/selectors/selectGameData';
 
 // Constants
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
@@ -17,16 +20,45 @@ function MessageBox({
     dialogWindowClassname = null,
     dialogTitleClassname = null,
     dialogFooterClassname = null,
+    show = false,
 }) {
-    const dialogMessages = useStore(selectDialogMessages);
+    const intl = useIntl();
+    const gameZoom = useStore(selectGameZoom);
+    const gameHeight = useStore(selectGameHeight);
     const dialogAction = useStore(selectDialogAction);
+    const dialogMessages = useStore(selectDialogMessages);
     const characterName = useStore(selectDialogCharacterName);
 
     const [currentMessage, setCurrentMessage] = useState(0);
     const [messageEnded, setMessageEnded] = useState(false);
     const [forceShowFullMessage, setForceShowFullMessage] = useState(false);
+    const [shouldShowMessage, setShouldShowMessage] = useState(false);
+
+    const animatedStyles = useSpring({
+        config: { duration: 250 },
+        from: { transform: `translate(-50%, ${gameHeight * gameZoom}px)` },
+        to: { transform: show ? 'translate(-50%, 0%)' : `translate(-50%, ${gameHeight * gameZoom}px)` },
+        onRest: ({ finished }) => {
+            setShouldShowMessage(finished);
+        },
+    });
+
+    const dialogDone = currentMessage === dialogMessages.length - 1 && messageEnded;
+
+    useEffect(() => {
+        if (!show) {
+            setCurrentMessage(0);
+            setMessageEnded(false);
+            setShouldShowMessage(false);
+            setForceShowFullMessage(false);
+        }
+    }, [show]);
 
     const handleClick = useCallback(() => {
+        if (!shouldShowMessage) {
+            return;
+        }
+
         if (messageEnded) {
             setMessageEnded(false);
             setForceShowFullMessage(false);
@@ -40,7 +72,7 @@ function MessageBox({
             setMessageEnded(true);
             setForceShowFullMessage(true);
         }
-    }, [dialogAction, currentMessage, messageEnded, dialogMessages.length]);
+    }, [shouldShowMessage, messageEnded, currentMessage, dialogMessages.length, dialogAction]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
@@ -54,27 +86,29 @@ function MessageBox({
     }, [dialogMessages.length, handleClick]);
 
     return (
-        <div className={dialogWindowClassname}>
+        <animated.div className={dialogWindowClassname} style={animatedStyles}>
             <div className={dialogTitleClassname}>
                 {characterName}
             </div>
-            <Message
-                message={dialogMessages[currentMessage]}
-                key={currentMessage}
-                forceShowFullMessage={forceShowFullMessage}
-                onMessageEnded={() => {
-                    setMessageEnded(true);
-                }}
-            />
+            {shouldShowMessage && (
+                <Message
+                    message={dialogMessages[currentMessage]}
+                    key={currentMessage}
+                    forceShowFullMessage={forceShowFullMessage}
+                    onMessageEnded={() => {
+                        setMessageEnded(true);
+                    }}
+                />
+            )}
             {showNext && (
                 <div
                     onClick={handleClick}
                     className={dialogFooterClassname}
                 >
-                    {(currentMessage === dialogMessages.length - 1 && messageEnded) ? 'Ok' : 'Next'}
+                    {dialogDone ? intl.formatMessage({ id: 'ok' }) : intl.formatMessage({ id: 'next' })}
                 </div>
             )}
-        </div>
+        </animated.div>
     );
 }
 

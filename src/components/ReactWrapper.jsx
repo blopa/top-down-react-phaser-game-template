@@ -38,6 +38,7 @@ function ReactWrapper() {
     const defaultStyles = useMemo(() => ({
         // backgroundColor: '#fff',
         position: 'absolute',
+        overflow: 'hidden',
         ...DOMRect,
     }), [DOMRect]);
 
@@ -81,9 +82,7 @@ function ReactWrapper() {
             {battleItems.length > 0 && (
                 <Battle />
             )}
-            {dialogMessages.length > 0 && (
-                <DialogBox />
-            )}
+            <DialogBox show={dialogMessages.length > 0} />
             {menuItems.length > 0 && (
                 <GameMenu />
             )}

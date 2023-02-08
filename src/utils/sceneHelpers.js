@@ -396,9 +396,9 @@ export const handleObjectsLayer = (scene) => {
                                     setDialogMessages,
                                     setDialogCharacterName,
                                 } = store.getState();
-                                const messages = getSelectorData(selectDialogMessages);
+                                const dialogMessages = getSelectorData(selectDialogMessages);
 
-                                if (messages.length === 0) {
+                                if (dialogMessages.length === 0) {
                                     enemyActionHeroCollider.active = false;
                                     setDialogCharacterName('monster');
                                     setDialogMessages([
@@ -586,6 +586,11 @@ export const handleCreateHeroAnimations = (scene) => {
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 60) => {
+    const dialogMessages = getSelectorData(selectDialogMessages);
+    if (dialogMessages.length > 0) {
+        return;
+    }
+
     const { setHeroFacingDirection } = store.getState();
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
