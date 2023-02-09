@@ -249,7 +249,7 @@ const store = create((set) => ({
             loadedAssets: {
                 ...state.loadedAssets,
                 // TODO make this a Set()
-                jsons: [...state.loadedAssets.jsons, ...json],
+                jsons: [...state.loadedAssets.jsons, json],
             },
         })),
     setMapKey: (mapKey) =>

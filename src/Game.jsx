@@ -7,17 +7,6 @@ import isMobile from 'is-mobile';
 import { calculateGameSize, getScenesModules } from './utils/phaser';
 import { isDev } from './utils/utils';
 
-// Constants
-import {
-    TILE_WIDTH,
-    TILE_HEIGHT,
-    MIN_GAME_WIDTH,
-    GAME_CONTENT_ID,
-    MIN_GAME_HEIGHT,
-    RESIZE_THRESHOLD,
-    RE_RESIZE_THRESHOLD,
-} from './constants';
-
 // Components
 import VirtualGamepad from './components/VirtualGamepad/VirtualGamepad';
 import ReactWrapper from './components/ReactWrapper';
@@ -34,14 +23,26 @@ import {
 // Store
 import { useStore } from './zustand/store';
 
-function Game() {
-    const defaultLocale = 'en';
-    const isDevelopment = isDev();
+// Constants
+import {
+    TILE_WIDTH,
+    TILE_HEIGHT,
+    DEFAULT_LOCALE,
+    MIN_GAME_WIDTH,
+    GAME_CONTENT_ID,
+    MIN_GAME_HEIGHT,
+    RESIZE_THRESHOLD,
+    RE_RESIZE_THRESHOLD,
+} from './constants';
+import defaultMessages from './intl/en.json';
 
+const IS_DEV = isDev();
+
+function Game() {
     const [game, setGame] = useState(null);
-    const locale = useStore(selectGameLocale) || defaultLocale;
+    const locale = useStore(selectGameLocale) || DEFAULT_LOCALE;
     const cameraSizeUpdateCallback = useStore(selectGameCameraSizeUpdateCallback);
-    const [messages, setMessages] = useState({});
+    const [messages, setMessages] = useState(defaultMessages);
     const setGameCanvasElement = useStore((state) => state.setGameCanvasElement);
     const setGameHeight = useStore((state) => state.setGameHeight);
     const setGameWidth = useStore((state) => state.setGameWidth);
@@ -64,7 +65,9 @@ function Game() {
             setMessages(module.default);
         }
 
-        loadMessages();
+        if (locale !== DEFAULT_LOCALE) {
+            loadMessages();
+        }
     }, [locale]);
 
     const updateGameGlobalState = useCallback((
@@ -112,7 +115,7 @@ function Game() {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: isDevelopment,
+                    debug: IS_DEV,
                 },
             },
             backgroundColor: '#000000',
@@ -121,12 +124,11 @@ function Game() {
         updateGameGlobalState(width, height, zoom);
         setGame(phaserGame);
 
-        if (isDevelopment) {
+        if (IS_DEV) {
             window.phaserGame = phaserGame;
         }
     }, [
         game,
-        isDevelopment,
         updateGameGlobalState,
     ]);
 
@@ -192,7 +194,7 @@ function Game() {
         <IntlProvider
             messages={messages}
             locale={locale}
-            defaultLocale={defaultLocale}
+            defaultLocale={DEFAULT_LOCALE}
         >
             <div
                 id={GAME_CONTENT_ID}

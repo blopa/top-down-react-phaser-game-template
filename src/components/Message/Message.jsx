@@ -18,7 +18,6 @@ function Message({
         [message]
     );
 
-    console.log({forceShowFullMessage});
     const transitions = useTransition(items, {
         trail,
         from: { display: 'none' },

@@ -33,17 +33,18 @@ function MessageBox({
     const [messageEnded, setMessageEnded] = useState(false);
     const [forceShowFullMessage, setForceShowFullMessage] = useState(false);
     const [shouldShowMessage, setShouldShowMessage] = useState(false);
+    const dialogDone = currentMessage === dialogMessages.length - 1 && messageEnded;
+
+    const springOnRestCallback = useCallback(({ finished }) => {
+        setShouldShowMessage(finished && show);
+    }, [show]);
 
     const animatedStyles = useSpring({
         config: { duration: 250 },
         from: { transform: `translate(-50%, ${gameHeight * gameZoom}px)` },
         to: { transform: show ? 'translate(-50%, 0%)' : `translate(-50%, ${gameHeight * gameZoom}px)` },
-        onRest: ({ finished }) => {
-            setShouldShowMessage(finished);
-        },
+        onRest: springOnRestCallback,
     });
-
-    const dialogDone = currentMessage === dialogMessages.length - 1 && messageEnded;
 
     useEffect(() => {
         if (!show) {
