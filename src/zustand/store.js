@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { createStore, useStore } from 'zustand';
 
 // Constants
 import { MIN_GAME_HEIGHT, MIN_GAME_WIDTH } from '../constants';
@@ -14,7 +14,7 @@ import setMenu from './menu/setMenu';
 import setText from './text/setText';
 
 // define the store
-const store = create((set) => ({
+const store = createStore((set) => ({
     loadedAssets: {
         fonts: [],
         atlases: [],
@@ -69,6 +69,6 @@ const store = create((set) => ({
     },
 }));
 
-// TODO https://github.com/pmndrs/zustand#using-zustand-without-react
-export const useStore = store;
-export default store;
+export const useGameStore = (selector) => useStore(store, selector);
+
+export const getState = () => store.getState();

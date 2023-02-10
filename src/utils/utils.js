@@ -1,17 +1,17 @@
 import { GameObjects } from 'phaser';
 import {
-    ENTER_KEY,
-    SPACE_KEY,
-    TILE_WIDTH,
-    TILE_HEIGHT,
-    ARROW_UP_KEY,
+    ARROW_RIGHT_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
-    ARROW_RIGHT_KEY,
+    ARROW_UP_KEY,
+    TILE_HEIGHT,
+    TILE_WIDTH,
+    ENTER_KEY,
+    SPACE_KEY,
 } from '../constants';
 
 // Store
-import store from '../zustand/store';
+import { getState } from '../zustand/store';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
@@ -53,8 +53,6 @@ export const getTranslationVariables = (item) => {
 
     return [item, {}];
 };
-
-export const getState = () => store.getState();
 
 export const getSelectorData = (selector) => selector(getState());
 

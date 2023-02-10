@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 // Store
-import { useStore } from '../../zustand/store';
+import { useGameStore } from '../../zustand/store';
 
 // Constants
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../../constants';
@@ -23,9 +23,9 @@ import styles from './GameMenu.module.scss';
 
 function GameMenu() {
     // Menu
-    const position = useStore(selectMenuPosition);
-    const items = useStore(selectMenuItems);
-    const onSelected = useStore(selectMenuOnSelect);
+    const position = useGameStore(selectMenuPosition);
+    const items = useGameStore(selectMenuItems);
+    const onSelected = useGameStore(selectMenuOnSelect);
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 

@@ -22,7 +22,7 @@ import {
 import { getTranslationVariables } from '../../utils/utils';
 
 // Store
-import { useStore } from '../../zustand/store';
+import { useGameStore } from '../../zustand/store';
 
 // Styles
 import styles from './Battle.module.scss';
@@ -31,11 +31,11 @@ function Battle() {
     const battleListRef = useRef();
 
     // TODO for now only works for four items
-    const battleItems = useStore(selectBattleItems);
+    const battleItems = useGameStore(selectBattleItems);
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-    const onSelected = useStore(selectBattleOnSelect);
-    const { setBattleItemsListDom } = useStore(selectBattleSetters);
+    const onSelected = useGameStore(selectBattleOnSelect);
+    const { setBattleItemsListDom } = useGameStore(selectBattleSetters);
 
     useEffect(() => {
         setBattleItemsListDom(battleListRef.current);

@@ -17,7 +17,7 @@ import { selectGameHeight, selectGameZoom } from '../zustand/game/selectGameData
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';
 
 // Store
-import { useStore } from '../zustand/store';
+import { useGameStore } from '../zustand/store';
 
 function MessageBox({
     showNext = false,
@@ -27,11 +27,11 @@ function MessageBox({
     show = false,
 }) {
     const intl = useIntl();
-    const gameZoom = useStore(selectGameZoom);
-    const gameHeight = useStore(selectGameHeight);
-    const dialogAction = useStore(selectDialogAction);
-    const dialogMessages = useStore(selectDialogMessages);
-    const characterName = useStore(selectDialogCharacterName);
+    const gameZoom = useGameStore(selectGameZoom);
+    const gameHeight = useGameStore(selectGameHeight);
+    const dialogAction = useGameStore(selectDialogAction);
+    const dialogMessages = useGameStore(selectDialogMessages);
+    const characterName = useGameStore(selectDialogCharacterName);
 
     const [currentMessage, setCurrentMessage] = useState(0);
     const [messageEnded, setMessageEnded] = useState(false);

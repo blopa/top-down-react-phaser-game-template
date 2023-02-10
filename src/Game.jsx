@@ -21,7 +21,7 @@ import {
 } from './zustand/game/selectGameData';
 
 // Store
-import { useStore } from './zustand/store';
+import { useGameStore } from './zustand/store';
 
 // Constants
 import {
@@ -40,20 +40,20 @@ const IS_DEV = isDev();
 
 function Game() {
     const [game, setGame] = useState(null);
-    const locale = useStore(selectGameLocale) || DEFAULT_LOCALE;
-    const cameraSizeUpdateCallback = useStore(selectGameCameraSizeUpdateCallback);
+    const locale = useGameStore(selectGameLocale) || DEFAULT_LOCALE;
+    const cameraSizeUpdateCallback = useGameStore(selectGameCameraSizeUpdateCallback);
     const [messages, setMessages] = useState(defaultMessages);
     const {
         setGameZoom,
         setGameWidth,
         setGameHeight,
         setGameCanvasElement,
-    } = useStore(selectGameSetters);
+    } = useGameStore(selectGameSetters);
 
     // Game
-    const gameWidth = useStore(selectGameWidth);
-    const gameHeight = useStore(selectGameHeight);
-    const gameZoom = useStore(selectGameZoom);
+    const gameWidth = useGameStore(selectGameWidth);
+    const gameHeight = useGameStore(selectGameHeight);
+    const gameZoom = useGameStore(selectGameZoom);
 
     useEffect(() => {
         document.documentElement.style.setProperty('--game-zoom', gameZoom);
