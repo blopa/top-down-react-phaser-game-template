@@ -6,8 +6,8 @@ import { useIntl } from 'react-intl';
 import Message from './Message/Message';
 
 // Selectors
-import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/selectors/selectDialog';
-import { selectGameHeight, selectGameZoom } from '../zustand/selectors/selectGameData';
+import { selectDialogAction, selectDialogCharacterName, selectDialogMessages } from '../zustand/dialog/selectors/selectDialog';
+import { selectGameHeight, selectGameZoom } from '../zustand/game/selectors/selectGameData';
 
 // Constants
 import { ENTER_KEY, ESCAPE_KEY, SPACE_KEY } from '../constants';

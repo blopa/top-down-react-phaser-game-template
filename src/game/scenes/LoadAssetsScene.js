@@ -2,6 +2,7 @@ import { Display } from 'phaser';
 
 // Utils
 import {
+    getSelectorData,
     isMapFileAvailable,
     isImageFileAvailable,
     isTilesetFileAvailable,
@@ -27,6 +28,15 @@ import {
 // Store
 import store from '../../zustand/store';
 
+// Selectors
+import {
+    selectLoadedAtlases,
+    selectLoadedImages,
+    selectLoadedFonts,
+    selectLoadedJSONs,
+    selectLoadedMaps,
+} from '../../zustand/assets/selectors/selectLoadedAssets';
+
 export const scene = {};
 
 export const key = 'LoadAssetsScene';
@@ -46,9 +56,12 @@ export async function create(initData) {
         addLoadedImage,
         addLoadedMap,
         addLoadedJson,
-        loadedAssets, // TODO use selector
     } = store.getState();
-    const { fonts: loadedFonts } = loadedAssets;
+
+    const loadedAtlases = getSelectorData(selectLoadedAtlases);
+    const loadedImages = getSelectorData(selectLoadedImages);
+    const loadedFonts = getSelectorData(selectLoadedFonts);
+    const loadedMaps = getSelectorData(selectLoadedMaps);
 
     // setup loading bar
     const progressBar = scene.add.graphics();
@@ -69,7 +82,7 @@ export async function create(initData) {
     scene.load.on('progress', handleBarProgress);
 
     scene.load.on('fileprogress', (file) => {
-        console.info(file.key);
+        // console.info(file.key);
     });
 
     scene.load.on('complete', () => {
@@ -109,9 +122,6 @@ export async function create(initData) {
         );
     });
 
-    const { atlases: loadedAtlases } = loadedAssets;
-    const { images: loadedImages } = loadedAssets;
-    const { maps: loadedMaps } = loadedAssets;
     // Load the Tiled map needed for the next scene
     if (
         mapKey
@@ -235,7 +245,7 @@ export async function create(initData) {
             });
         });
 
-        const { jsons: loadedJSONs } = loadedAssets;
+        const loadedJSONs = getSelectorData(selectLoadedJSONs);
         // eslint-disable-next-line no-restricted-syntax
         for (const tilesetName of tilesets) {
             if (tilesetName && !IGNORED_TILESETS.includes(tilesetName)) {

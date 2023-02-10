@@ -18,7 +18,7 @@ import {
     selectGameHeight,
     selectGameLocale,
     selectGameCameraSizeUpdateCallback,
-} from './zustand/selectors/selectGameData';
+} from './zustand/game/selectors/selectGameData';
 
 // Store
 import { useStore } from './zustand/store';

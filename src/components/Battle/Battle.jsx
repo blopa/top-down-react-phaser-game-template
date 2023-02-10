@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 
 // Selectors
-import { selectBattleItems, selectBattleOnSelect } from '../../zustand/selectors/selectBattle';
+import { selectBattleItems, selectBattleOnSelect } from '../../zustand/battle/selectors/selectBattle';
 
 // Constants
 import {

@@ -1,4 +1,4 @@
-import { GAME_CONTENT_ID } from '../../constants';
+import { GAME_CONTENT_ID } from '../../../constants';
 
 export const selectGameWidth = (state) => state.game.width;
 

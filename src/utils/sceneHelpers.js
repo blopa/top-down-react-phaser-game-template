@@ -43,14 +43,14 @@ import {
 import store from '../zustand/store';
 
 // Selectors
-import { selectBattleEnemies } from '../zustand/selectors/selectBattle';
-import { selectDialogMessages } from '../zustand/selectors/selectDialog';
-import { selectMapKey, selectTilesets } from '../zustand/selectors/selectMapData';
+import { selectBattleEnemies } from '../zustand/battle/selectors/selectBattle';
+import { selectDialogMessages } from '../zustand/dialog/selectors/selectDialog';
+import { selectMapKey, selectTilesets } from '../zustand/map/selectors/selectMapData';
 import {
     selectHeroInitialFrame,
     selectHeroInitialPosition,
     selectHeroFacingDirection,
-} from '../zustand/selectors/selectHeroData';
+} from '../zustand/hero/selectors/selectHeroData';
 
 /**
  * @param scene

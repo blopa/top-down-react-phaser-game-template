@@ -17,11 +17,11 @@ import GameText from './GameText/GameText';
 import Battle from './Battle/Battle';
 
 // Selectors
-import { selectGameCanvasElement } from '../zustand/selectors/selectGameData';
-import { selectDialogMessages } from '../zustand/selectors/selectDialog';
-import { selectBattleItems } from '../zustand/selectors/selectBattle';
-import { selectMenuItems } from '../zustand/selectors/selectMenu';
-import { selectTexts } from '../zustand/selectors/selectText';
+import { selectGameCanvasElement } from '../zustand/game/selectors/selectGameData';
+import { selectDialogMessages } from '../zustand/dialog/selectors/selectDialog';
+import { selectBattleItems } from '../zustand/battle/selectors/selectBattle';
+import { selectMenuItems } from '../zustand/menu/selectors/selectMenu';
+import { selectTexts } from '../zustand/text/selectors/selectText';
 
 function ReactWrapper() {
     const canvas = useStore(selectGameCanvasElement);
