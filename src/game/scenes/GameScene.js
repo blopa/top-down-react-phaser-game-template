@@ -9,9 +9,10 @@ import {
     handleConfigureCamera,
     handleCreateHeroAnimations,
 } from '../../utils/sceneHelpers';
+import { getSelectorData } from '../../utils/utils';
 
-// Store
-import store from '../../zustand/store';
+// Selectors
+import { selectGameSetters } from '../../zustand/game/selectGameData';
 
 export const key = 'GameScene';
 
@@ -21,7 +22,7 @@ export function create() {
     // scene.input.on('pointerup', (pointer) => {
     //     console.log('clicky click');
     // });
-    const { setGameCameraSizeUpdateCallback } = store.getState();
+    const { setGameCameraSizeUpdateCallback } = getSelectorData(selectGameSetters);
 
     // All of these functions need to be called in order
 

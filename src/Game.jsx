@@ -17,8 +17,8 @@ import {
     selectGameWidth,
     selectGameHeight,
     selectGameLocale,
-    selectGameCameraSizeUpdateCallback,
-} from './zustand/game/selectors/selectGameData';
+    selectGameCameraSizeUpdateCallback, selectGameSetters,
+} from './zustand/game/selectGameData';
 
 // Store
 import { useStore } from './zustand/store';
@@ -43,10 +43,12 @@ function Game() {
     const locale = useStore(selectGameLocale) || DEFAULT_LOCALE;
     const cameraSizeUpdateCallback = useStore(selectGameCameraSizeUpdateCallback);
     const [messages, setMessages] = useState(defaultMessages);
-    const setGameCanvasElement = useStore((state) => state.setGameCanvasElement);
-    const setGameHeight = useStore((state) => state.setGameHeight);
-    const setGameWidth = useStore((state) => state.setGameWidth);
-    const setGameZoom = useStore((state) => state.setGameZoom);
+    const {
+        setGameZoom,
+        setGameWidth,
+        setGameHeight,
+        setGameCanvasElement,
+    } = useStore(selectGameSetters);
 
     // Game
     const gameWidth = useStore(selectGameWidth);

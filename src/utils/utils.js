@@ -54,13 +54,9 @@ export const getTranslationVariables = (item) => {
     return [item, {}];
 };
 
-export const getSelectorData = (selector) => {
-    const { getState } = store;
-
-    return selector(getState());
-};
-
 export const getState = () => store.getState();
+
+export const getSelectorData = (selector) => selector(getState());
 
 export const createInteractiveGameObject = (
     scene,

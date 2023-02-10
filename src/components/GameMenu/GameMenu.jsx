@@ -9,7 +9,11 @@ import { useStore } from '../../zustand/store';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY } from '../../constants';
 
 // Selectors
-import { selectMenuItems, selectMenuOnSelect, selectMenuPosition } from '../../zustand/menu/selectors/selectMenu';
+import {
+    selectMenuItems,
+    selectMenuOnSelect,
+    selectMenuPosition,
+} from '../../zustand/menu/selectMenu';
 
 // Utils
 import { getTranslationVariables } from '../../utils/utils';

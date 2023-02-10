@@ -2,8 +2,8 @@
 import { getSelectorData } from '../../utils/utils';
 
 // Selectors
-import { selectGameWidth } from '../../zustand/game/selectors/selectGameData';
-import { selectBattleEnemies } from '../../zustand/battle/selectors/selectBattle';
+import { selectGameWidth } from '../../zustand/game/selectGameData';
+import { selectBattleEnemies } from '../../zustand/battle/selectBattle';
 
 export const scene = {};
 

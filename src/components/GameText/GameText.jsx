@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import {
     selectGameZoom,
     selectGameCanvasElement,
-} from '../../zustand/game/selectors/selectGameData';
+} from '../../zustand/game/selectGameData';
 
 // Hooks
 import useRect from '../../hooks/useRect';

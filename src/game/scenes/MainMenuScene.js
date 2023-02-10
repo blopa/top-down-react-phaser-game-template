@@ -3,16 +3,20 @@ import { DOWN_DIRECTION, IDLE_FRAME, IDLE_FRAME_POSITION_KEY } from '../../const
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
+import { getSelectorData } from '../../utils/utils';
 
-// Store
-import store from '../../zustand/store';
+// Selectors
+import { selectHeroSetters } from '../../zustand/hero/selectHeroData';
+import { selectMapSetters } from '../../zustand/map/selectMapData';
+import { selectMenuSetters } from '../../zustand/menu/selectMenu';
 
 export const scene = {};
 
 export const key = 'MainMenuScene';
 
 export function create() {
-    const { setMenuItems, setMenuOnSelect, setMapKey } = store.getState();
+    const { setMapKey } = getSelectorData(selectMapSetters);
+    const { setMenuItems, setMenuOnSelect } = getSelectorData(selectMenuSetters);
 
     setMenuItems(['start_game', 'exit']);
     setMenuOnSelect((key, item) => {
@@ -34,7 +38,7 @@ export function create() {
             setHeroFacingDirection,
             setHeroInitialPosition,
             setHeroInitialFrame,
-        } = store.getState();
+        } = getSelectorData(selectHeroSetters);
 
         setHeroFacingDirection(DOWN_DIRECTION);
         setHeroInitialFrame(

@@ -25,17 +25,16 @@ import {
     CRYSTAL_SPRITE_NAME,
 } from '../../constants';
 
-// Store
-import store from '../../zustand/store';
-
 // Selectors
 import {
     selectLoadedAtlases,
+    selectAssetsSetters,
     selectLoadedImages,
     selectLoadedFonts,
     selectLoadedJSONs,
     selectLoadedMaps,
-} from '../../zustand/assets/selectors/selectLoadedAssets';
+} from '../../zustand/assets/selectLoadedAssets';
+import { selectMapSetters } from '../../zustand/map/selectMapData';
 
 export const scene = {};
 
@@ -56,7 +55,7 @@ export async function create(initData) {
         addLoadedImage,
         addLoadedMap,
         addLoadedJson,
-    } = store.getState();
+    } = getSelectorData(selectAssetsSetters);
 
     const loadedAtlases = getSelectorData(selectLoadedAtlases);
     const loadedImages = getSelectorData(selectLoadedImages);
@@ -295,7 +294,7 @@ export async function create(initData) {
                         return tileset;
                     });
 
-                const { addTileset } = store.getState();
+                const { addTileset } = getSelectorData(selectMapSetters);
                 addTileset(tilesetName);
             }
         }

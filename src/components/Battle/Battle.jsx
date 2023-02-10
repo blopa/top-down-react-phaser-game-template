@@ -3,7 +3,11 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 
 // Selectors
-import { selectBattleItems, selectBattleOnSelect } from '../../zustand/battle/selectors/selectBattle';
+import {
+    selectBattleItems,
+    selectBattleSetters,
+    selectBattleOnSelect,
+} from '../../zustand/battle/selectBattle';
 
 // Constants
 import {
@@ -31,7 +35,7 @@ function Battle() {
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const onSelected = useStore(selectBattleOnSelect);
-    const setBattleItemsListDom = useStore((state) => state.setBattleItemsListDom);
+    const { setBattleItemsListDom } = useStore(selectBattleSetters);
 
     useEffect(() => {
         setBattleItemsListDom(battleListRef.current);

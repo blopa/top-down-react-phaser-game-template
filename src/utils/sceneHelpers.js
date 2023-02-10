@@ -40,17 +40,18 @@ import {
 } from './utils';
 
 // Store
-import store from '../zustand/store';
 
 // Selectors
-import { selectBattleEnemies } from '../zustand/battle/selectors/selectBattle';
-import { selectDialogMessages } from '../zustand/dialog/selectors/selectDialog';
-import { selectMapKey, selectTilesets } from '../zustand/map/selectors/selectMapData';
+import { selectBattleEnemies, selectBattleSetters } from '../zustand/battle/selectBattle';
+import { selectDialogMessages, selectDialogSetters } from '../zustand/dialog/selectDialog';
+import { selectMapKey, selectTilesets, selectMapSetters } from '../zustand/map/selectMapData';
 import {
+    selectHeroSetters,
     selectHeroInitialFrame,
     selectHeroInitialPosition,
     selectHeroFacingDirection,
-} from '../zustand/hero/selectors/selectHeroData';
+} from '../zustand/hero/selectHeroData';
+import { selectTextSetters } from '../zustand/text/selectText';
 
 /**
  * @param scene
@@ -311,7 +312,7 @@ export const handleObjectsLayer = (scene) => {
 
                     enemy.setInteractive();
                     enemy.on('pointerdown', () => {
-                        const { setTextTexts } = store.getState();
+                        const { setTextTexts } = getSelectorData(selectTextSetters);
                         setTextTexts([{
                             key: 'game_title',
                             variables: {},
@@ -328,7 +329,7 @@ export const handleObjectsLayer = (scene) => {
                             setBattleOnSelect,
                             setBattlePickedItem,
                             setBattleEnemiesPickedItem,
-                        } = store.getState();
+                        } = getSelectorData(selectBattleSetters);
 
                         setBattleItems([
                             ATTACK_BATTLE_ITEM,
@@ -395,7 +396,7 @@ export const handleObjectsLayer = (scene) => {
                                     setDialogAction,
                                     setDialogMessages,
                                     setDialogCharacterName,
-                                } = store.getState();
+                                } = getSelectorData(selectDialogSetters);
                                 const dialogMessages = getSelectorData(selectDialogMessages);
 
                                 if (dialogMessages.length === 0) {
@@ -505,12 +506,12 @@ export const handleObjectsLayer = (scene) => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
                         const {
-                            setMapKey,
                             setHeroInitialFrame,
                             setHeroFacingDirection,
                             setHeroInitialPosition,
                             setHeroPreviousPosition,
-                        } = store.getState();
+                        } = getSelectorData(selectHeroSetters);
+                        const { setMapKey } = getSelectorData(selectMapSetters);
                         const facingDirection = getSelectorData(selectHeroFacingDirection);
 
                         setMapKey(map);
@@ -591,7 +592,7 @@ export const handleHeroMovement = (scene, heroSpeed = 60) => {
         return;
     }
 
-    const { setHeroFacingDirection } = store.getState();
+    const { setHeroFacingDirection } = getSelectorData(selectHeroSetters);
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
