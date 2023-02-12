@@ -23665,7 +23665,7 @@
         1388,
         0,
         920,
-        919,
+        0,
         922,
         0,
         634,
@@ -23861,7 +23861,7 @@
         919,
         919,
         1208,
-        919,
+        0,
         922,
         0,
         0,
@@ -50085,66 +50085,67 @@
       "name": "Objects2",
       "objects": [
         {
+          "class": "",
           "gid": 1,
           "height": 16,
           "id": 13,
           "name": "",
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 432,
           "y": 736
         },
         {
+          "class": "",
           "gid": 2,
           "height": 16,
           "id": 14,
           "name": "",
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 448,
           "y": 752
         },
         {
+          "class": "",
           "gid": 3,
           "height": 16,
           "id": 15,
           "name": "",
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 464,
           "y": 768
         },
         {
+          "class": "",
           "gid": 4,
           "height": 16,
           "id": 16,
           "name": "",
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 480,
           "y": 784
         },
         {
+          "class": "",
           "gid": 5,
           "height": 16,
           "id": 17,
           "name": "",
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 496,
           "y": 800
         },
         {
+          "class": "",
           "gid": 6,
           "height": 16,
           "id": 19,
@@ -50158,7 +50159,7 @@
             {
               "name": "position",
               "type": "string",
-              "value": "11;10"
+              "value": "10;10"
             },
             {
               "name": "type",
@@ -50167,11 +50168,21 @@
             }
           ],
           "rotation": 0,
-          "type": "",
           "visible": true,
           "width": 16,
           "x": 480,
           "y": 624
+        },
+        {
+          "class": "",
+          "height": 97.0413180367464,
+          "id": 20,
+          "name": "encounter",
+          "rotation": 0,
+          "visible": true,
+          "width": 107.823686707496,
+          "x": 311.826101958078,
+          "y": 673.251099801604
         }
       ],
       "opacity": 1,
@@ -50182,10 +50193,10 @@
     }
   ],
   "nextlayerid": 8,
-  "nextobjectid": 20,
+  "nextobjectid": 21,
   "orientation": "orthogonal",
   "renderorder": "right-down",
-  "tiledversion": "1.8.2",
+  "tiledversion": "1.9.2",
   "tileheight": 16,
   "tilesets": [
     {
@@ -50203,6 +50214,6 @@
   ],
   "tilewidth": 16,
   "type": "map",
-  "version": "1.8",
+  "version": "1.9",
   "width": 100
 }

@@ -1,17 +1,17 @@
 import { GameObjects } from 'phaser';
 import {
-    ENTER_KEY,
-    SPACE_KEY,
-    TILE_WIDTH,
-    TILE_HEIGHT,
-    ARROW_UP_KEY,
+    ARROW_RIGHT_KEY,
     ARROW_DOWN_KEY,
     ARROW_LEFT_KEY,
-    ARROW_RIGHT_KEY,
+    ARROW_UP_KEY,
+    TILE_HEIGHT,
+    TILE_WIDTH,
+    ENTER_KEY,
+    SPACE_KEY,
 } from '../constants';
 
 // Store
-import store from '../redux/store';
+import { getState } from '../zustand/store';
 
 export const isObject = (obj) =>
     typeof obj === 'object' && obj?.constructor === Object;
@@ -54,15 +54,7 @@ export const getTranslationVariables = (item) => {
     return [item, {}];
 };
 
-export const getSelectorData = (selector) => {
-    const { getState } = store;
-
-    return selector(getState());
-};
-
-export const getDispatch = () => store.dispatch;
-
-export const getState = () => store.getState();
+export const getSelectorData = (selector) => selector(getState());
 
 export const createInteractiveGameObject = (
     scene,
@@ -167,3 +159,7 @@ export const rotateRectangleInsideTile = (x, y, width, height, degree) => {
         }
     }
 };
+
+export const isDev = () => process.env.NODE_ENV !== 'production';
+
+export const getFileNameWithoutExtension = (filePath) => filePath.split('/').pop().split('.').shift();

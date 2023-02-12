@@ -1,11 +1,8 @@
 /* eslint-disable react/jsx-filename-extension */
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
-
-// Store
-import store from './redux/store';
+import { Fragment } from 'react';
 
 // Styles
 import './index.css';
@@ -14,16 +11,16 @@ import './index.css';
 import Game from './Game';
 
 const theme = createTheme();
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-ReactDOM.render(
-    <Provider store={store}>
+root.render(
+    <Fragment>
         <Helmet>
             <title>My Phaser Game</title>
         </Helmet>
         <ThemeProvider theme={theme}>
             <Game />
         </ThemeProvider>
-    </Provider>,
-    document.getElementById('root')
+    </Fragment>
 );
 

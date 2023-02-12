@@ -1462,51 +1462,10 @@
       "width": 22,
       "x": 0,
       "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 5,
-      "name": "Objects",
-      "objects": [
-        {
-          "gid": 6,
-          "height": 16,
-          "id": 1,
-          "name": "",
-          "properties": [
-            {
-              "name": "map",
-              "type": "string",
-              "value": "sample_map"
-            },
-            {
-              "name": "position",
-              "type": "string",
-              "value": "30;40"
-            },
-            {
-              "name": "type",
-              "type": "string",
-              "value": "teleport"
-            }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 16,
-          "x": 176,
-          "y": 224
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
     }
   ],
-  "nextlayerid": 6,
-  "nextobjectid": 2,
+  "nextlayerid": 5,
+  "nextobjectid": 1,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.8.2",
