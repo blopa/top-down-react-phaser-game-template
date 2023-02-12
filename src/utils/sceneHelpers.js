@@ -22,12 +22,13 @@ import {
     ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
     PAPER_BATTLE_ITEM,
+    ITEMS_BATTLE_ITEM,
     HEART_SPRITE_NAME,
     ATTACK_BATTLE_ITEM,
     DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
     SCISSORS_BATTLE_ITEM,
-    CONFIG_DICE_BATTLE_ITEM,
+    IDLE_FRAME_POSITION_KEY,
 } from '../constants';
 
 // Utils
@@ -39,17 +40,18 @@ import {
 } from './utils';
 
 // Store
-import store from '../zustand/store';
 
 // Selectors
-import { selectBattleEnemies } from '../zustand/selectors/selectBattle';
-import { selectDialogMessages } from '../zustand/selectors/selectDialog';
-import { selectMapKey, selectTilesets } from '../zustand/selectors/selectMapData';
+import { selectBattleEnemies, selectBattleSetters } from '../zustand/battle/selectBattle';
+import { selectDialogMessages, selectDialogSetters } from '../zustand/dialog/selectDialog';
+import { selectMapKey, selectTilesets, selectMapSetters } from '../zustand/map/selectMapData';
 import {
+    selectHeroSetters,
     selectHeroInitialFrame,
     selectHeroInitialPosition,
     selectHeroFacingDirection,
-} from '../zustand/selectors/selectHeroData';
+} from '../zustand/hero/selectHeroData';
+import { selectTextSetters } from '../zustand/text/selectText';
 
 /**
  * @param scene
@@ -201,7 +203,7 @@ export const handleCreateHero = (scene) => {
 
     // const facingDirection = getSelectorData(selectHeroFacingDirection);
     // heroSprite.setFrame(
-    //     IDLE_FRAME.replace('position', facingDirection)
+    //     IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection)
     // );
 
     scene.physics.add.collider(heroSprite, scene.mapLayers);
@@ -299,7 +301,7 @@ export const handleObjectsLayer = (scene) => {
                 case ENEMY: {
                     const spriteName = `${ENEMY_SPRITE_NAME}_${layerIndex}${objectIndex}`;
                     const enemy = scene.physics.add
-                        .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace('position', DOWN_DIRECTION))
+                        .sprite(x, y, ENEMY_SPRITE_NAME, IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, DOWN_DIRECTION))
                         .setName(spriteName)
                         .setOrigin(0, 1)
                         .setDepth(1);
@@ -310,7 +312,7 @@ export const handleObjectsLayer = (scene) => {
 
                     enemy.setInteractive();
                     enemy.on('pointerdown', () => {
-                        const { setTextTexts } = store.getState();
+                        const { setTextTexts } = getSelectorData(selectTextSetters);
                         setTextTexts([{
                             key: 'game_title',
                             variables: {},
@@ -319,19 +321,21 @@ export const handleObjectsLayer = (scene) => {
                     });
 
                     enemy.on('pointerdown', () => {
+                        scene.scene.moveBelow('GameScene', 'BattleScene');
                         scene.scene.pause('GameScene');
                         scene.scene.launch('BattleScene');
+
                         const {
                             setBattleItems,
                             setBattleEnemies,
                             setBattleOnSelect,
                             setBattlePickedItem,
                             setBattleEnemiesPickedItem,
-                        } = store.getState();
+                        } = getSelectorData(selectBattleSetters);
 
                         setBattleItems([
                             ATTACK_BATTLE_ITEM,
-                            CONFIG_DICE_BATTLE_ITEM,
+                            ITEMS_BATTLE_ITEM,
                             DEFENSE_BATTLE_ITEM,
                             RUN_BATTLE_ITEM,
                         ]);
@@ -365,7 +369,7 @@ export const handleObjectsLayer = (scene) => {
                                 case ATTACK_BATTLE_ITEM: {
                                     break;
                                 }
-                                case CONFIG_DICE_BATTLE_ITEM: {
+                                case ITEMS_BATTLE_ITEM: {
                                     break;
                                 }
                                 case DEFENSE_BATTLE_ITEM: {
@@ -394,10 +398,10 @@ export const handleObjectsLayer = (scene) => {
                                     setDialogAction,
                                     setDialogMessages,
                                     setDialogCharacterName,
-                                } = store.getState();
-                                const messages = getSelectorData(selectDialogMessages);
+                                } = getSelectorData(selectDialogSetters);
+                                const dialogMessages = getSelectorData(selectDialogMessages);
 
-                                if (messages.length === 0) {
+                                if (dialogMessages.length === 0) {
                                     enemyActionHeroCollider.active = false;
                                     setDialogCharacterName('monster');
                                     setDialogMessages([
@@ -504,27 +508,25 @@ export const handleObjectsLayer = (scene) => {
                         scene.physics.world.removeCollider(overlapCollider);
                         const [posX, posY] = position.split(';');
                         const {
-                            setMapKey,
                             setHeroInitialFrame,
                             setHeroFacingDirection,
                             setHeroInitialPosition,
                             setHeroPreviousPosition,
-                        } = store.getState();
+                        } = getSelectorData(selectHeroSetters);
+                        const { setMapKey } = getSelectorData(selectMapSetters);
                         const facingDirection = getSelectorData(selectHeroFacingDirection);
 
                         setMapKey(map);
                         setHeroFacingDirection(facingDirection);
-                        setHeroInitialFrame(IDLE_FRAME.replace('position', facingDirection));
+                        setHeroInitialFrame(IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection));
                         setHeroInitialPosition({ x: posX, y: posY });
                         setHeroPreviousPosition({ x: posX, y: posY });
 
-                        Promise.all([]).then(() => {
-                            // scene.scene.restart();
-                            changeScene(scene, 'GameScene', {
-                                atlases: ['hero'],
-                                images: [],
-                                mapKey: map,
-                            });
+                        // scene.scene.restart();
+                        changeScene(scene, 'GameScene', {
+                            atlases: ['hero'],
+                            images: [],
+                            mapKey: map,
                         });
                     });
 
@@ -587,7 +589,12 @@ export const handleCreateHeroAnimations = (scene) => {
 };
 
 export const handleHeroMovement = (scene, heroSpeed = 60) => {
-    const { setHeroFacingDirection } = store.getState();
+    const dialogMessages = getSelectorData(selectDialogMessages);
+    if (dialogMessages.length > 0) {
+        return;
+    }
+
+    const { setHeroFacingDirection } = getSelectorData(selectHeroSetters);
 
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
         scene.heroSprite.body.setVelocityY(0);
@@ -614,7 +621,9 @@ export const handleHeroMovement = (scene, heroSpeed = 60) => {
         scene.heroSprite.body.setVelocityX(0);
         scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();
-        scene.heroSprite.setFrame(IDLE_FRAME.replace('position', facingDirection));
+        scene.heroSprite.setFrame(
+            IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection)
+        );
     }
 };
 

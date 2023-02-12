@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useResizeObserver } from 'beautiful-react-hooks';
 
 // Store
-import { useStore } from '../zustand/store';
+import { useGameStore } from '../zustand/store';
 
 // Constants
 import { OVERLAY_DIV_RESIZE_THRESHOLD } from '../constants';
@@ -17,19 +17,19 @@ import GameText from './GameText/GameText';
 import Battle from './Battle/Battle';
 
 // Selectors
-import { selectGameCanvasElement } from '../zustand/selectors/selectGameData';
-import { selectDialogMessages } from '../zustand/selectors/selectDialog';
-import { selectBattleItems } from '../zustand/selectors/selectBattle';
-import { selectMenuItems } from '../zustand/selectors/selectMenu';
-import { selectTexts } from '../zustand/selectors/selectText';
+import { selectGameCanvasElement } from '../zustand/game/selectGameData';
+import { selectDialogMessages } from '../zustand/dialog/selectDialog';
+import { selectBattleItems } from '../zustand/battle/selectBattle';
+import { selectMenuItems } from '../zustand/menu/selectMenu';
+import { selectTexts } from '../zustand/text/selectText';
 
 function ReactWrapper() {
-    const canvas = useStore(selectGameCanvasElement);
-    const dialogMessages = useStore(selectDialogMessages);
-    const menuItems = useStore(selectMenuItems);
-    const battleItems = useStore(selectBattleItems);
-    const gameTexts = useStore(selectTexts);
-    // const s = useStore((store) => store);
+    const canvas = useGameStore(selectGameCanvasElement);
+    const dialogMessages = useGameStore(selectDialogMessages);
+    const menuItems = useGameStore(selectMenuItems);
+    const battleItems = useGameStore(selectBattleItems);
+    const gameTexts = useGameStore(selectTexts);
+    // const s = useGameStore((store) => store);
     // console.log(s);
     const ref = useMemo(() => ({ current: canvas }), [canvas]);
     const DOMRect = useResizeObserver(ref, OVERLAY_DIV_RESIZE_THRESHOLD);
@@ -38,6 +38,7 @@ function ReactWrapper() {
     const defaultStyles = useMemo(() => ({
         // backgroundColor: '#fff',
         position: 'absolute',
+        overflow: 'hidden',
         ...DOMRect,
     }), [DOMRect]);
 
@@ -81,9 +82,7 @@ function ReactWrapper() {
             {battleItems.length > 0 && (
                 <Battle />
             )}
-            {dialogMessages.length > 0 && (
-                <DialogBox />
-            )}
+            <DialogBox show={dialogMessages.length > 0} />
             {menuItems.length > 0 && (
                 <GameMenu />
             )}

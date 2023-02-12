@@ -7,6 +7,8 @@
     "scissors": "Scissors",
     "attack": "Attack",
     "defense": "Defense",
-    "config_dice": "Config. Dice",
+    "items": "Items",
+    "next": "Next",
+    "ok": "Ok",
     "run": "Run"
 }

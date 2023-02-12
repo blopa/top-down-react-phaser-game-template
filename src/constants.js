@@ -24,6 +24,7 @@ export const KEY = 5;
 export const DOOR = 6;
 
 export const IDLE_FRAME = 'walk_position_02';
+export const IDLE_FRAME_POSITION_KEY = 'position';
 
 // Directions
 export const RIGHT_DIRECTION = 'right';
@@ -52,9 +53,13 @@ export const PAPER_BATTLE_ITEM = 'paper';
 export const SCISSORS_BATTLE_ITEM = 'scissors';
 
 export const ATTACK_BATTLE_ITEM = 'attack';
-export const CONFIG_DICE_BATTLE_ITEM = 'config_dice';
+export const ITEMS_BATTLE_ITEM = 'items';
 export const DEFENSE_BATTLE_ITEM = 'defense';
 export const RUN_BATTLE_ITEM = 'run';
 
 // DOM identifiers
 export const GAME_CONTENT_ID = 'game-content';
+
+export const BOOT_SCENE_NAME = 'BootScene';
+
+export const DEFAULT_LOCALE = 'en';

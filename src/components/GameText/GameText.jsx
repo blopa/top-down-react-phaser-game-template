@@ -6,13 +6,13 @@ import classNames from 'classnames';
 import {
     selectGameZoom,
     selectGameCanvasElement,
-} from '../../zustand/selectors/selectGameData';
+} from '../../zustand/game/selectGameData';
 
 // Hooks
 import useRect from '../../hooks/useRect';
 
 // Store
-import { useStore } from '../../zustand/store';
+import { useGameStore } from '../../zustand/store';
 
 // Styles
 import styles from './GameText.module.scss';
@@ -24,8 +24,8 @@ function GameText({
     component: Component = 'p',
 }) {
     // Game
-    const gameZoom = useStore(selectGameZoom);
-    const canvas = useStore(selectGameCanvasElement);
+    const gameZoom = useGameStore(selectGameZoom);
+    const canvas = useGameStore(selectGameCanvasElement);
     const domRect = useRect(canvas);
     const textWrapperRef = useRef(null);
 

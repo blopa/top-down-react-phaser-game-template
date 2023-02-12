@@ -5,3 +5,5 @@ export const selectHeroInitialPosition = (state) => state.heroData.initialPositi
 export const selectHeroPreviousPosition = (state) => state.heroData.previousPosition;
 
 export const selectHeroInitialFrame = (state) => state.heroData.initialFrame;
+
+export const selectHeroSetters = (state) => state.heroData.setters;

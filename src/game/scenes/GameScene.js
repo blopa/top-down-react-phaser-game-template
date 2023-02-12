@@ -1,5 +1,3 @@
-import { Scene } from 'phaser';
-
 // Utils
 import {
     handleCreateMap,
@@ -11,54 +9,53 @@ import {
     handleConfigureCamera,
     handleCreateHeroAnimations,
 } from '../../utils/sceneHelpers';
+import { getSelectorData } from '../../utils/utils';
 
-// Store
-import store from '../../zustand/store';
+// Selectors
+import { selectGameSetters } from '../../zustand/game/selectGameData';
 
-export default class GameScene extends Scene {
-    constructor() {
-        super('GameScene');
-    }
+export const key = 'GameScene';
 
-    create() {
-        // this.input.on('pointerup', (pointer) => {
-        //     console.log('clicky click');
-        // });
-        const { setGameCameraSizeUpdateCallback } = store.getState();
+export const scene = {};
 
-        // All of these functions need to be called in order
+export function create() {
+    // scene.input.on('pointerup', (pointer) => {
+    //     console.log('clicky click');
+    // });
+    const { setGameCameraSizeUpdateCallback } = getSelectorData(selectGameSetters);
 
-        // Create controls
-        handleCreateControls(this);
+    // All of these functions need to be called in order
 
-        // Create game groups
-        handleCreateGroups(this);
+    // Create controls
+    handleCreateControls(scene);
 
-        // Create the map
-        const customColliders = handleCreateMap(this);
+    // Create game groups
+    handleCreateGroups(scene);
 
-        // Create hero sprite
-        handleCreateHero(this);
+    // Create the map
+    const customColliders = handleCreateMap(scene);
 
-        // Load game objects like items, enemies, etc
-        handleObjectsLayer(this);
+    // Create hero sprite
+    handleCreateHero(scene);
 
-        // Configure the main camera
-        handleConfigureCamera(this);
-        setGameCameraSizeUpdateCallback(() => {
-            handleConfigureCamera(this);
-        });
+    // Load game objects like items, enemies, etc
+    handleObjectsLayer(scene);
 
-        // Hero animations
-        handleCreateHeroAnimations(this);
+    // Configure the main camera
+    handleConfigureCamera(scene);
+    setGameCameraSizeUpdateCallback(() => {
+        handleConfigureCamera(scene);
+    });
 
-        // Handle collisions
-        this.physics.add.collider(this.heroSprite, this.enemies);
-        this.physics.add.collider(this.heroSprite, customColliders);
-    }
+    // Hero animations
+    handleCreateHeroAnimations(scene);
 
-    update(time, delta) {
-        handleHeroMovement(this);
-        this.heroSprite.update(time, delta);
-    }
+    // Handle collisions
+    scene.physics.add.collider(scene.heroSprite, scene.enemies);
+    scene.physics.add.collider(scene.heroSprite, customColliders);
+}
+
+export function update(time, delta) {
+    handleHeroMovement(scene);
+    scene.heroSprite.update(time, delta);
 }
