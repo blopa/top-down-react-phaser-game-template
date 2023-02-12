@@ -321,8 +321,10 @@ export const handleObjectsLayer = (scene) => {
                     });
 
                     enemy.on('pointerdown', () => {
+                        scene.scene.moveBelow('GameScene', 'BattleScene');
                         scene.scene.pause('GameScene');
                         scene.scene.launch('BattleScene');
+
                         const {
                             setBattleItems,
                             setBattleEnemies,
