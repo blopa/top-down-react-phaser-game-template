@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktop_down_react_phaser_game_template=self.webpackChunktop_down_react_phaser_game_template||[]).push([[130],{4130:function(e,a,t){e.exports=t.p+"static/media/npc_03.6004023cea111c7a9e0e.png"}}]);

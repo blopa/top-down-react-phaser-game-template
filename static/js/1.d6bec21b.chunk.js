@@ -1,2 +1,0 @@
-(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[1],{56:function(e){e.exports=JSON.parse('{"columns":10,"image":"objects.png","imageheight":80,"imagewidth":160,"margin":0,"name":"objects","spacing":0,"tilecount":50,"tiledversion":"1.7.2","tileheight":16,"tilewidth":16,"type":"tileset","version":"1.6"}')}}]);
-//# sourceMappingURL=1.d6bec21b.chunk.js.map

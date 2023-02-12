@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktop_down_react_phaser_game_template=self.webpackChunktop_down_react_phaser_game_template||[]).push([[829],{1829:function(e,t,a){e.exports=a.p+"static/media/crystal.50eb991d432a03856747.png"}}]);

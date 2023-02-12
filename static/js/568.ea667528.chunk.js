@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktop_down_react_phaser_game_template=self.webpackChunktop_down_react_phaser_game_template||[]).push([[568],{9568:function(e,t,a){e.exports=a.p+"static/media/heart_empty.47d79a15841fc10f969b.png"}}]);

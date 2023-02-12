@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktop_down_react_phaser_game_template=self.webpackChunktop_down_react_phaser_game_template||[]).push([[504],{7504:function(e,t,a){e.exports=a.p+"static/media/enemy.7c0b72b1045be3e0154f.png"}}]);

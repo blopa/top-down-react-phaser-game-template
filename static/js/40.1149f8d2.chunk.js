@@ -1,2 +1,0 @@
-(this["webpackJsonptop-down-react-phaser-game-template"]=this["webpackJsonptop-down-react-phaser-game-template"]||[]).push([[40],{186:function(e){e.exports=JSON.parse('{"game_title":"Game Title","start_game":"Start Game","exit":"Exit"}')}}]);
-//# sourceMappingURL=40.1149f8d2.chunk.js.map
