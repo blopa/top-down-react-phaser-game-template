@@ -28,6 +28,9 @@ const store = createStore((set) => ({
         initialPosition: {},
         previousPosition: {},
         initialFrame: '',
+        inventory: {
+            dice: [],
+        },
         setters: setHeroData(set),
     },
     mapData: {
@@ -40,6 +43,7 @@ const store = createStore((set) => ({
         height: MIN_GAME_HEIGHT,
         zoom: 1,
         locale: 'en',
+        cameraSizeUpdateCallbacks: [],
         setters: setGameData(set),
     },
     dialog: {
@@ -53,8 +57,12 @@ const store = createStore((set) => ({
         enemies: [],
         skills: [],
         onSelect: null,
+        onHover: null,
         pickedItem: null,
+        hoveredItem: null,
         enemiesPickedItem: null,
+        attackDice: [],
+        defenseDice: [],
         setters: setBattle(set),
     },
     menu: {

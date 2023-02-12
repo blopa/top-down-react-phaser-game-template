@@ -6,4 +6,9 @@ export const selectHeroPreviousPosition = (state) => state.heroData.previousPosi
 
 export const selectHeroInitialFrame = (state) => state.heroData.initialFrame;
 
+export const selectHeroInventoryDice = (state) => state.heroData.inventory.dice;
+
+export const selectHeroEquipedInventoryDice = (state) =>
+    selectHeroInventoryDice(state).filter((die) => die.equiped);
+
 export const selectHeroSetters = (state) => state.heroData.setters;

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 // Selectors
 import {
     selectBattleItems,
+    selectBattleOnHover,
     selectBattleSetters,
     selectBattleOnSelect,
 } from '../../zustand/battle/selectBattle';
@@ -27,6 +28,9 @@ import { useGameStore } from '../../zustand/store';
 // Styles
 import styles from './Battle.module.scss';
 
+// Components
+import BattleDiceViewer from '../BattleDiceViewer/BattleDiceViewer';
+
 function Battle() {
     const battleListRef = useRef();
 
@@ -35,11 +39,16 @@ function Battle() {
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const onSelected = useGameStore(selectBattleOnSelect);
+    const onHover = useGameStore(selectBattleOnHover);
     const { setBattleItemsListDom } = useGameStore(selectBattleSetters);
 
     useEffect(() => {
         setBattleItemsListDom(battleListRef.current);
     }, [battleListRef, setBattleItemsListDom]);
+
+    useEffect(() => {
+        onHover?.(selectedItemIndex);
+    }, [onHover, selectedItemIndex]);
 
     useEffect(() => {
         const handleKeyPressed = (e) => {
@@ -95,7 +104,8 @@ function Battle() {
     }, [battleItems, onSelected, selectedItemIndex]);
 
     return (
-        <div>
+        <div className={classNames(styles['battle-wrapper'])}>
+            <BattleDiceViewer />
             <ul ref={battleListRef} className={styles['battle-items-wrapper']}>
                 {battleItems.map((item, index) => {
                     const [key, variables] = getTranslationVariables(item);
@@ -112,7 +122,7 @@ function Battle() {
                                 setSelectedItemIndex(index);
                             }}
                             onClick={() => {
-                                onSelected(item, index);
+                                onSelected?.(item, index);
                             }}
                         >
                             <FormattedMessage

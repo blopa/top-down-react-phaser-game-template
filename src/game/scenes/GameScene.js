@@ -22,7 +22,7 @@ export function create() {
     // scene.input.on('pointerup', (pointer) => {
     //     console.log('clicky click');
     // });
-    const { setGameCameraSizeUpdateCallback } = getSelectorData(selectGameSetters);
+    const { addGameCameraSizeUpdateCallback } = getSelectorData(selectGameSetters);
 
     // All of these functions need to be called in order
 
@@ -43,7 +43,7 @@ export function create() {
 
     // Configure the main camera
     handleConfigureCamera(scene);
-    setGameCameraSizeUpdateCallback(() => {
+    addGameCameraSizeUpdateCallback(() => {
         handleConfigureCamera(scene);
     });
 

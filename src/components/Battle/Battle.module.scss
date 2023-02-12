@@ -1,3 +1,11 @@
+.battle-wrapper {
+    height: 100%;
+
+    &.paused {
+        background-color: rgb(0 0 0 / 70%);
+    }
+}
+
 .battle-items-wrapper {
     user-select: none;
     user-drag: none;

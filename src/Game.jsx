@@ -17,7 +17,8 @@ import {
     selectGameWidth,
     selectGameHeight,
     selectGameLocale,
-    selectGameCameraSizeUpdateCallback, selectGameSetters,
+    selectGameSetters,
+    selectGameCameraSizeUpdateCallbacks,
 } from './zustand/game/selectGameData';
 
 // Store
@@ -41,7 +42,7 @@ const IS_DEV = isDev();
 function Game() {
     const [game, setGame] = useState(null);
     const locale = useGameStore(selectGameLocale) || DEFAULT_LOCALE;
-    const cameraSizeUpdateCallback = useGameStore(selectGameCameraSizeUpdateCallback);
+    const cameraSizeUpdateCallbacks = useGameStore(selectGameCameraSizeUpdateCallbacks);
     const [messages, setMessages] = useState(defaultMessages);
     const {
         setGameZoom,
@@ -148,7 +149,7 @@ function Game() {
         // Create listener to resize the game
         // when the window is resized
         let timeOutFunctionId;
-        const workAfterResizeIsDone = () => {
+        const resizeDoneCallback = () => {
             const scaleGame = () => {
                 const gameSize = calculateGameSize(
                     MIN_GAME_WIDTH,
@@ -166,7 +167,9 @@ function Game() {
                 updateGameGlobalState(gameSize.width, gameSize.height, gameSize.zoom);
                 // game.canvas.style.width = `${gameSize.width}px`;
                 // game.canvas.style.height = `${gameSize.height}px`;
-                cameraSizeUpdateCallback?.();
+                cameraSizeUpdateCallbacks.forEach((cameraSizeUpdateCallback) => {
+                    cameraSizeUpdateCallback?.();
+                });
             };
 
             scaleGame();
@@ -177,7 +180,7 @@ function Game() {
 
         const canvasResizeCallback = () => {
             clearTimeout(timeOutFunctionId);
-            timeOutFunctionId = setTimeout(workAfterResizeIsDone, RESIZE_THRESHOLD);
+            timeOutFunctionId = setTimeout(resizeDoneCallback, RESIZE_THRESHOLD);
         };
 
         // TODO move to the ResizeObserver https://jsfiddle.net/rudiedirkx/p0ckdcnv/
@@ -189,7 +192,7 @@ function Game() {
     }, [
         game,
         updateGameGlobalState,
-        cameraSizeUpdateCallback,
+        cameraSizeUpdateCallbacks,
     ]);
 
     return (

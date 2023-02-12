@@ -7,7 +7,7 @@ export default (set) => ({
                 items,
             },
         })),
-    setBattlePickedAttack: (pickedItem) =>
+    setBattlePickedItem: (pickedItem) =>
         set((state) => ({
             ...state,
             battle: {
@@ -15,7 +15,15 @@ export default (set) => ({
                 pickedItem,
             },
         })),
-    setBattleEnemiesPickedAttack: (enemiesPickedItem) =>
+    setBattleHoveredItem: (hoveredItem) =>
+        set((state) => ({
+            ...state,
+            battle: {
+                ...state.battle,
+                hoveredItem,
+            },
+        })),
+    setBattleEnemiesPickedItem: (enemiesPickedItem) =>
         set((state) => ({
             ...state,
             battle: {
@@ -45,6 +53,14 @@ export default (set) => ({
             battle: {
                 ...state.battle,
                 onSelect,
+            },
+        })),
+    setBattleOnHover: (onHover) =>
+        set((state) => ({
+            ...state,
+            battle: {
+                ...state.battle,
+                onHover,
             },
         })),
     setBattleItemsListDom: (itemsListDOM) =>

@@ -24,6 +24,10 @@ import {
     PAPER_BATTLE_ITEM,
     ITEMS_BATTLE_ITEM,
     HEART_SPRITE_NAME,
+    RETURN_BATTLE_ITEM,
+    DICE_1_BATTLE_ITEM,
+    DICE_2_BATTLE_ITEM,
+    DICE_3_BATTLE_ITEM,
     ATTACK_BATTLE_ITEM,
     DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
@@ -328,10 +332,14 @@ export const handleObjectsLayer = (scene) => {
                         const {
                             setBattleItems,
                             setBattleEnemies,
+                            setBattleOnHover,
                             setBattleOnSelect,
-                            setBattlePickedItem,
-                            setBattleEnemiesPickedItem,
+                            setBattleHoveredItem,
                         } = getSelectorData(selectBattleSetters);
+
+                        const {
+                            addHeroInventoryDice,
+                        } = getSelectorData(selectHeroSetters);
 
                         setBattleItems([
                             ATTACK_BATTLE_ITEM,
@@ -367,6 +375,53 @@ export const handleObjectsLayer = (scene) => {
                         setBattleOnSelect((item, itemIndex) => {
                             switch (item) {
                                 case ATTACK_BATTLE_ITEM: {
+                                    const items = [
+                                        DICE_1_BATTLE_ITEM,
+                                        DICE_2_BATTLE_ITEM,
+                                        DICE_3_BATTLE_ITEM,
+                                        RETURN_BATTLE_ITEM,
+                                    ];
+
+                                    setBattleItems(items);
+                                    setBattleOnHover((itemIndex) => {
+                                        setBattleHoveredItem(itemIndex);
+                                    });
+
+                                    [
+                                        {
+                                            equiped: true,
+                                            faces: [1, 2, 3, 4, 5, 6],
+                                        },
+                                        {
+                                            equiped: true,
+                                            faces: [2, 2, 2, 2, 2, 2],
+                                        },
+                                        {
+                                            equiped: true,
+                                            faces: [3, 3, 3, 3, 3, 3],
+                                        },
+                                    ].forEach((dice) => {
+                                        addHeroInventoryDice(dice);
+                                    });
+
+                                    setBattleOnSelect((item, itemIndex) => {
+                                        switch (item) {
+                                            case DICE_1_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case DICE_2_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case DICE_3_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case RETURN_BATTLE_ITEM:
+                                            default: {
+                                                break;
+                                            }
+                                        }
+                                    });
+
                                     break;
                                 }
                                 case ITEMS_BATTLE_ITEM: {
@@ -381,11 +436,7 @@ export const handleObjectsLayer = (scene) => {
                                 }
                             }
 
-                            const enemies = getSelectorData(selectBattleEnemies);
-
-                            setBattleItems([]);
-                            setBattlePickedItem(item);
-                            setBattleEnemiesPickedItem(enemies);
+                            // setBattleItems([]);
                         });
                     });
 

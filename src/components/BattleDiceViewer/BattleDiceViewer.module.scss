@@ -1,0 +1,16 @@
+.dice-faces-list-wrapper {
+    list-style: none;
+    display: flex;
+}
+
+.dice-faces-wrapper {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    padding-inline-start: 0;
+}
+
+.face {
+    padding: 0;
+}
