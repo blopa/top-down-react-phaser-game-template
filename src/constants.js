@@ -53,7 +53,7 @@ export const PAPER_BATTLE_ITEM = 'paper';
 export const SCISSORS_BATTLE_ITEM = 'scissors';
 
 export const ATTACK_BATTLE_ITEM = 'attack';
-export const CONFIG_DICE_BATTLE_ITEM = 'config_dice';
+export const ITEMS_BATTLE_ITEM = 'items';
 export const DEFENSE_BATTLE_ITEM = 'defense';
 export const RUN_BATTLE_ITEM = 'run';
 

@@ -22,13 +22,13 @@ import {
     ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
     PAPER_BATTLE_ITEM,
+    ITEMS_BATTLE_ITEM,
     HEART_SPRITE_NAME,
     ATTACK_BATTLE_ITEM,
     DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
     SCISSORS_BATTLE_ITEM,
     IDLE_FRAME_POSITION_KEY,
-    CONFIG_DICE_BATTLE_ITEM,
 } from '../constants';
 
 // Utils
@@ -335,7 +335,7 @@ export const handleObjectsLayer = (scene) => {
 
                         setBattleItems([
                             ATTACK_BATTLE_ITEM,
-                            CONFIG_DICE_BATTLE_ITEM,
+                            ITEMS_BATTLE_ITEM,
                             DEFENSE_BATTLE_ITEM,
                             RUN_BATTLE_ITEM,
                         ]);
@@ -369,7 +369,7 @@ export const handleObjectsLayer = (scene) => {
                                 case ATTACK_BATTLE_ITEM: {
                                     break;
                                 }
-                                case CONFIG_DICE_BATTLE_ITEM: {
+                                case ITEMS_BATTLE_ITEM: {
                                     break;
                                 }
                                 case DEFENSE_BATTLE_ITEM: {
