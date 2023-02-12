@@ -1,5 +1,14 @@
 {
     "game_title": "Game Title",
     "start_game": "Start Game",
-    "exit": "Exit"
+    "exit": "Exit",
+    "rock": "Rock",
+    "paper": "Paper",
+    "scissors": "Scissors",
+    "attack": "Attack",
+    "defense": "Defense",
+    "items": "Items",
+    "next": "Next",
+    "ok": "Ok",
+    "run": "Run"
 }

@@ -1,62 +1,58 @@
-import { Scene } from 'phaser';
-
 // Constants
-import { DOWN_DIRECTION, IDLE_FRAME } from '../../constants';
-
-// Actions
-import setMapKeyAction from '../../redux/actions/mapData/setMapKeyAction';
-import setHeroFacingDirectionAction from '../../redux/actions/heroData/setHeroFacingDirectionAction';
-import setHeroInitialPositionAction from '../../redux/actions/heroData/setHeroInitialPositionAction';
-import setHeroPreviousPositionAction from '../../redux/actions/heroData/setHeroPreviousPositionAction';
-import setHeroInitialFrameAction from '../../redux/actions/heroData/setHeroInitialFrameAction';
-import setMenuItemsAction from '../../redux/actions/menu/setMenuItemsAction';
-import setMenuOnSelectAction from '../../redux/actions/menu/setMenuOnSelectAction';
+import { DOWN_DIRECTION, IDLE_FRAME, IDLE_FRAME_POSITION_KEY } from '../../constants';
 
 // Utils
 import { changeScene } from '../../utils/sceneHelpers';
-import { getDispatch } from '../../utils/utils';
+import { getSelectorData } from '../../utils/utils';
 
-export default class MainMenuScene extends Scene {
-    constructor() {
-        super('MainMenuScene');
-    }
+// Selectors
+import { selectHeroSetters } from '../../zustand/hero/selectHeroData';
+import { selectMapSetters } from '../../zustand/map/selectMapData';
+import { selectMenuSetters } from '../../zustand/menu/selectMenu';
 
-    preload() {
-        // TODO
-    }
+export const scene = {};
 
-    create() {
-        const dispatch = getDispatch();
+export const key = 'MainMenuScene';
 
-        dispatch(setMenuItemsAction(['start_game', 'exit']));
-        dispatch(setMenuOnSelectAction((key, item) => {
-            if (key === 'start_game') {
-                handleStartGameSelected();
-            } else {
-                dispatch(setMenuItemsAction([]));
-                dispatch(setMenuOnSelectAction(null));
-                window.location.reload();
-            }
-        }));
+export function create() {
+    const { setMapKey } = getSelectorData(selectMapSetters);
+    const { setMenuItems, setMenuOnSelect } = getSelectorData(selectMenuSetters);
 
-        const handleStartGameSelected = () => Promise.all([
-            dispatch(setMenuItemsAction([])),
-            dispatch(setMenuOnSelectAction(null)),
-            dispatch(setMapKeyAction('sample_map')), // sample_indoor
-            dispatch(setHeroFacingDirectionAction(DOWN_DIRECTION)),
-            dispatch(setHeroInitialPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroPreviousPositionAction({ x: 30, y: 42 })),
-            dispatch(setHeroInitialFrameAction(
-                IDLE_FRAME.replace('position', DOWN_DIRECTION)
-            )),
-        ]).then(() => {
-            changeScene(this, 'GameScene', {
-                // fonts: ['"Press Start 2P"'],
-                atlases: ['hero'],
-                images: [],
-                mapKey: 'sample_map',
-                // mapKey: 'sample_indoor',
-            });
+    setMenuItems(['start_game', 'exit']);
+    setMenuOnSelect((key, item) => {
+        if (key === 'start_game') {
+            handleStartGameSelected();
+        } else {
+            setMenuItems([]);
+            setMenuOnSelect(null);
+            window.location.reload();
+        }
+    });
+
+    const handleStartGameSelected = () => {
+        setMenuItems([]);
+        setMenuOnSelect(null);
+        setMapKey('sample_map');
+        const {
+            setHeroPreviousPosition,
+            setHeroFacingDirection,
+            setHeroInitialPosition,
+            setHeroInitialFrame,
+        } = getSelectorData(selectHeroSetters);
+
+        setHeroFacingDirection(DOWN_DIRECTION);
+        setHeroInitialFrame(
+            IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, DOWN_DIRECTION)
+        );
+        setHeroInitialPosition({ x: 30, y: 42 });
+        setHeroPreviousPosition({ x: 30, y: 42 });
+
+        changeScene(scene, 'GameScene', {
+            // fonts: ['"Press Start 2P"'],
+            atlases: ['hero'],
+            images: [],
+            mapKey: 'sample_map',
+            // mapKey: 'sample_indoor',
         });
-    }
+    };
 }
