@@ -1,16 +1,18 @@
 .dice-faces-list-wrapper {
     list-style: none;
-    display: flex;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: 0;
+    position: absolute;
+    left: 55%;
+    transform: translateX(-25%);
+    width: 100%;
 }
 
 .dice-faces-wrapper {
-    display: flex;
-    margin: 0;
     padding: 0;
-    justify-content: center;
-    padding-inline-start: 0;
 }
 
 .face {
-    padding: 0;
+    position: absolute;
 }

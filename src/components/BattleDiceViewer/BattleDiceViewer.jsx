@@ -8,18 +8,22 @@ import styles from './BattleDiceViewer.module.scss';
 import { useGameStore } from '../../zustand/store';
 
 // Selectors
-import { selectGameZoom } from '../../zustand/game/selectGameData';
+import { selectGameHeight, selectGameZoom } from '../../zustand/game/selectGameData';
 import { selectHeroEquipedInventoryDice } from '../../zustand/hero/selectHeroData';
-import { selectBattleHoveredItem } from '../../zustand/battle/selectBattle';
+import { selectBattleHoveredItem, selectBattleItemsListDOM } from '../../zustand/battle/selectBattle';
 
 function BattleDiceViewer() {
     const equipedDice = useGameStore(selectHeroEquipedInventoryDice);
+    const itemsListDOM = useGameStore(selectBattleItemsListDOM);
     const hoveredItem = useGameStore(selectBattleHoveredItem);
+    const gameHeight = useGameStore(selectGameHeight);
     const gameZoom = useGameStore(selectGameZoom);
+    const availableScreenHeight = useMemo(
+        () => gameHeight - itemsListDOM.offsetHeight || 0,
+        [gameHeight, itemsListDOM.offsetHeight]
+    );
+
     const diceSize = useMemo(() => 40 * gameZoom, [gameZoom]);
-    const faceStyles = useMemo(() => ({
-        marginRight: `-${30 * gameZoom}px`,
-    }), [gameZoom]);
 
     if (equipedDice.length === 0 || hoveredItem === null || hoveredItem === 3) {
         return null;
@@ -30,7 +34,7 @@ function BattleDiceViewer() {
         <div
             className={styles['dice-faces-wrapper']}
             style={{
-                marginTop: `${90 * gameZoom}px`,
+                // marginTop: `${90 * gameZoom}px`,
             }}
         >
             <ul className={styles['dice-faces-list-wrapper']}>
@@ -40,13 +44,20 @@ function BattleDiceViewer() {
                         key={index}
                         className={styles.face}
                         style={{
-                            ...faceStyles,
-                            ...index === 1 && { marginTop: `${50 * gameZoom}px` },
-                            ...index === 2 && {
-                                marginTop: `-${50 * gameZoom}px`,
-                                marginLeft: `-${50 * gameZoom}px`,
+                            ...index === 0 && { marginTop: `${50 * gameZoom}px` },
+                            ...index === 1 && {
+                                marginTop: `${50 * gameZoom}px`,
+                                marginLeft: `${50 * gameZoom}px`,
                             },
-                            ...index === 3 && { marginLeft: `-${50 * gameZoom}px` },
+                            ...index === 2 && {
+                                marginTop: `${100 * gameZoom}px`,
+                                marginLeft: `${50 * gameZoom}px`,
+                            },
+                            ...index === 3 && { marginLeft: `${50 * gameZoom}px` },
+                            ...index > 3 && {
+                                marginLeft: `${50 * gameZoom * (index - 2)}px`,
+                                marginTop: `${50 * gameZoom}px`,
+                            },
                         }}
                     >
                         <Dice
