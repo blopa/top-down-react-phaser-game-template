@@ -43,10 +43,8 @@ import {
     createInteractiveGameObject,
 } from './utils';
 
-// Store
-
 // Selectors
-import { selectBattleEnemies, selectBattleSetters } from '../zustand/battle/selectBattle';
+import { selectBattleSetters } from '../zustand/battle/selectBattle';
 import { selectDialogMessages, selectDialogSetters } from '../zustand/dialog/selectDialog';
 import { selectMapKey, selectTilesets, selectMapSetters } from '../zustand/map/selectMapData';
 import {
@@ -57,13 +55,6 @@ import {
 } from '../zustand/hero/selectHeroData';
 import { selectTextSetters } from '../zustand/text/selectText';
 
-/**
- * @param scene
- * @param assetKey
- * @param animationName
- * @param frameQuantity
- */
-// eslint-disable-next-line import/prefer-default-export
 export const createWalkingAnimation = (scene, assetKey, animationName, frameQuantity) => {
     scene.anims.create({
         key: `${assetKey}_${animationName}`,

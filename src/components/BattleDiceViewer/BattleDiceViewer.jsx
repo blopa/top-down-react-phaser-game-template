@@ -21,7 +21,7 @@ function BattleDiceViewer() {
         marginRight: `-${30 * gameZoom}px`,
     }), [gameZoom]);
 
-    if (equipedDice.length === 0 || !hoveredItem) {
+    if (equipedDice.length === 0 || hoveredItem === null || hoveredItem === 3) {
         return null;
     }
 
