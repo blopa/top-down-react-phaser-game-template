@@ -19,11 +19,16 @@ function BattleDiceViewer() {
     const gameHeight = useGameStore(selectGameHeight);
     const gameZoom = useGameStore(selectGameZoom);
     const availableScreenHeight = useMemo(
-        () => gameHeight - itemsListDOM.offsetHeight || 0,
-        [gameHeight, itemsListDOM.offsetHeight]
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        () => gameHeight - (itemsListDOM?.offsetHeight || 0) / gameZoom,
+        [gameZoom, gameHeight, itemsListDOM?.offsetHeight]
     );
 
-    const diceSize = useMemo(() => 40 * gameZoom, [gameZoom]);
+    const baseDiceSize = useMemo(
+        () => Math.min((availableScreenHeight / 5), 40), [availableScreenHeight]
+    );
+    const diceSize = useMemo(() => baseDiceSize * gameZoom, [gameZoom, baseDiceSize]);
+    const diceMargin = useMemo(() => (diceSize * 1.25), [diceSize]);
 
     if (equipedDice.length === 0 || hoveredItem === null || hoveredItem === 3) {
         return null;
@@ -44,19 +49,19 @@ function BattleDiceViewer() {
                         key={index}
                         className={styles.face}
                         style={{
-                            ...index === 0 && { marginTop: `${50 * gameZoom}px` },
+                            ...index === 0 && { marginTop: `${diceMargin}px` },
                             ...index === 1 && {
-                                marginTop: `${50 * gameZoom}px`,
-                                marginLeft: `${50 * gameZoom}px`,
+                                marginTop: `${diceMargin}px`,
+                                marginLeft: `${diceMargin}px`,
                             },
                             ...index === 2 && {
-                                marginTop: `${100 * gameZoom}px`,
-                                marginLeft: `${50 * gameZoom}px`,
+                                marginTop: `${diceMargin * 2}px`,
+                                marginLeft: `${diceMargin}px`,
                             },
-                            ...index === 3 && { marginLeft: `${50 * gameZoom}px` },
+                            ...index === 3 && { marginLeft: `${diceMargin}px` },
                             ...index > 3 && {
-                                marginLeft: `${50 * gameZoom * (index - 2)}px`,
-                                marginTop: `${50 * gameZoom}px`,
+                                marginLeft: `${diceMargin * (index - 2)}px`,
+                                marginTop: `${diceMargin}px`,
                             },
                         }}
                     >

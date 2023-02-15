@@ -2,7 +2,7 @@
 import { getSelectorData } from '../../utils/utils';
 
 // Selectors
-import { selectGameWidth } from '../../zustand/game/selectGameData';
+import { selectGameSetters, selectGameWidth } from '../../zustand/game/selectGameData';
 import { selectBattleEnemies } from '../../zustand/battle/selectBattle';
 
 export const scene = {};
@@ -10,9 +10,15 @@ export const scene = {};
 export const key = 'BattleScene';
 
 export function create() {
+    const { addGameCameraSizeUpdateCallback } = getSelectorData(selectGameSetters);
     const backgroundImage = scene.add.image(0, 0, 'background_grass').setOrigin(0, 0);
     const gameWidth = getSelectorData(selectGameWidth);
     backgroundImage.setScale(gameWidth / backgroundImage.width);
+
+    addGameCameraSizeUpdateCallback(() => {
+        const gameWidth = getSelectorData(selectGameWidth);
+        backgroundImage.setScale(gameWidth / backgroundImage.width);
+    });
 
     const enemies = getSelectorData(selectBattleEnemies);
     enemies.forEach(({ sprite, position }) => {
