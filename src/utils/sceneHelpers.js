@@ -16,11 +16,22 @@ import {
     DOWN_DIRECTION,
     RIGHT_DIRECTION,
     KEY_SPRITE_NAME,
+    RUN_BATTLE_ITEM,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
+    ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
+    PAPER_BATTLE_ITEM,
+    ITEMS_BATTLE_ITEM,
     HEART_SPRITE_NAME,
+    RETURN_BATTLE_ITEM,
+    DICE_1_BATTLE_ITEM,
+    DICE_2_BATTLE_ITEM,
+    DICE_3_BATTLE_ITEM,
+    ATTACK_BATTLE_ITEM,
+    DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
+    SCISSORS_BATTLE_ITEM,
     IDLE_FRAME_POSITION_KEY,
 } from '../constants';
 
@@ -33,6 +44,7 @@ import {
 } from './utils';
 
 // Selectors
+import { selectBattleSetters } from '../zustand/battle/selectBattle';
 import { selectDialogMessages, selectDialogSetters } from '../zustand/dialog/selectDialog';
 import { selectMapKey, selectTilesets, selectMapSetters } from '../zustand/map/selectMapData';
 import {
@@ -301,6 +313,122 @@ export const handleObjectsLayer = (scene) => {
                             variables: {},
                             config: {},
                         }]);
+                    });
+
+                    enemy.on('pointerdown', () => {
+                        scene.scene.moveBelow('GameScene', 'BattleScene');
+                        scene.scene.pause('GameScene');
+                        scene.scene.launch('BattleScene');
+
+                        const {
+                            setBattleItems,
+                            setBattleEnemies,
+                            setBattleOnHover,
+                            setBattleOnSelect,
+                            setBattleHoveredItem,
+                        } = getSelectorData(selectBattleSetters);
+
+                        const {
+                            addHeroInventoryDice,
+                        } = getSelectorData(selectHeroSetters);
+
+                        setBattleItems([
+                            ATTACK_BATTLE_ITEM,
+                            ITEMS_BATTLE_ITEM,
+                            DEFENSE_BATTLE_ITEM,
+                            RUN_BATTLE_ITEM,
+                        ]);
+
+                        setBattleEnemies([
+                            {
+                                sprite: 'enemy_01',
+                                position: { x: 200, y: 140 },
+                                types: [ROCK_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_02',
+                                position: { x: 300, y: 140 },
+                                types: [PAPER_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                            {
+                                sprite: 'enemy_03',
+                                position: { x: 400, y: 160 },
+                                types: [SCISSORS_BATTLE_ITEM],
+                                health: 100,
+                                attack: 10,
+                            },
+                        ]);
+
+                        setBattleOnSelect((item, itemIndex) => {
+                            switch (item) {
+                                case ATTACK_BATTLE_ITEM: {
+                                    const items = [
+                                        DICE_1_BATTLE_ITEM,
+                                        DICE_2_BATTLE_ITEM,
+                                        DICE_3_BATTLE_ITEM,
+                                        RETURN_BATTLE_ITEM,
+                                    ];
+
+                                    setBattleItems(items);
+                                    setBattleOnHover((itemIndex) => {
+                                        setBattleHoveredItem(itemIndex);
+                                    });
+
+                                    [
+                                        {
+                                            equiped: true,
+                                            faces: [1, 2, 3, 4, 5, 6],
+                                        },
+                                        {
+                                            equiped: true,
+                                            faces: [2, 2, 2, 2, 2, 2],
+                                        },
+                                        {
+                                            equiped: true,
+                                            faces: [3, 3, 3, 3, 3, 3],
+                                        },
+                                    ].forEach((dice) => {
+                                        addHeroInventoryDice(dice);
+                                    });
+
+                                    setBattleOnSelect((item, itemIndex) => {
+                                        switch (item) {
+                                            case DICE_1_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case DICE_2_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case DICE_3_BATTLE_ITEM: {
+                                                break;
+                                            }
+                                            case RETURN_BATTLE_ITEM:
+                                            default: {
+                                                break;
+                                            }
+                                        }
+                                    });
+
+                                    break;
+                                }
+                                case ITEMS_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case DEFENSE_BATTLE_ITEM: {
+                                    break;
+                                }
+                                case RUN_BATTLE_ITEM:
+                                default: {
+                                    break;
+                                }
+                            }
+
+                            // setBattleItems([]);
+                        });
                     });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(

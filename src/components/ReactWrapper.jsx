@@ -14,10 +14,12 @@ import useMutationObserver from '../hooks/useMutationObserver';
 import DialogBox from './DialogBox/DialogBox';
 import GameMenu from './GameMenu/GameMenu';
 import GameText from './GameText/GameText';
+import Battle from './Battle/Battle';
 
 // Selectors
 import { selectGameCanvasElement } from '../zustand/game/selectGameData';
 import { selectDialogMessages } from '../zustand/dialog/selectDialog';
+import { selectBattleItems } from '../zustand/battle/selectBattle';
 import { selectMenuItems } from '../zustand/menu/selectMenu';
 import { selectTexts } from '../zustand/text/selectText';
 
@@ -25,6 +27,7 @@ function ReactWrapper() {
     const canvas = useGameStore(selectGameCanvasElement);
     const dialogMessages = useGameStore(selectDialogMessages);
     const menuItems = useGameStore(selectMenuItems);
+    const battleItems = useGameStore(selectBattleItems);
     const gameTexts = useGameStore(selectTexts);
     // const s = useGameStore((store) => store);
     // console.log(s);
@@ -76,6 +79,9 @@ function ReactWrapper() {
             style={inlineStyles}
             // onClick={handleWrapperClicked}
         >
+            {battleItems.length > 0 && (
+                <Battle />
+            )}
             <DialogBox show={dialogMessages.length > 0} />
             {menuItems.length > 0 && (
                 <GameMenu />

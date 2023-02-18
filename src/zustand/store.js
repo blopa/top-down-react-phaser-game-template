@@ -8,6 +8,7 @@ import setLoadedAssets from './assets/setLoadedAssets';
 import setGameData from './game/setGameData';
 import setHeroData from './hero/setHeroData';
 import setDialog from './dialog/setDialog';
+import setBattle from './battle/setBattle';
 import setMapData from './map/setMapData';
 import setMenu from './menu/setMenu';
 import setText from './text/setText';
@@ -50,6 +51,19 @@ const store = createStore((set) => ({
         action: null,
         characterName: '',
         setters: setDialog(set),
+    },
+    battle: {
+        items: [],
+        enemies: [],
+        skills: [],
+        onSelect: null,
+        onHover: null,
+        pickedItem: null,
+        hoveredItem: null,
+        enemiesPickedItem: null,
+        attackDice: [],
+        defenseDice: [],
+        setters: setBattle(set),
     },
     menu: {
         items: [],
