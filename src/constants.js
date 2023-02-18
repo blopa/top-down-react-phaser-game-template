@@ -43,20 +43,6 @@ export const ARROW_UP_KEY = 'ArrowUp';
 export const ARROW_RIGHT_KEY = 'ArrowRight';
 export const ARROW_DOWN_KEY = 'ArrowDown';
 
-// Battle
-// export const MELEE_ITEM_INDEX = 0;
-// export const MAGIC_ITEM_INDEX = 1;
-// export const DEFEND_ITEM_INDEX = 2;
-// export const RUN_ITEM_INDEX = 3;
-export const ROCK_BATTLE_ITEM = 'rock';
-export const PAPER_BATTLE_ITEM = 'paper';
-export const SCISSORS_BATTLE_ITEM = 'scissors';
-
-export const ATTACK_BATTLE_ITEM = 'attack';
-export const ITEMS_BATTLE_ITEM = 'items';
-export const DEFENSE_BATTLE_ITEM = 'defense';
-export const RUN_BATTLE_ITEM = 'run';
-
 // DOM identifiers
 export const GAME_CONTENT_ID = 'game-content';
 

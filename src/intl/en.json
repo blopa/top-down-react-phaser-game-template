@@ -10,5 +10,9 @@
     "items": "Items",
     "next": "Next",
     "ok": "Ok",
+    "return": "Return",
+    "dice_1": "Dice 1",
+    "dice_2": "Dice 2",
+    "dice_3": "Dice 3",
     "run": "Run"
 }

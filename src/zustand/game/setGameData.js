@@ -31,14 +31,18 @@ export default (set) => ({
                 canvas,
             },
         })),
-    setGameCameraSizeUpdateCallback: (cameraSizeUpdateCallback) =>
+    addGameCameraSizeUpdateCallback: (cameraSizeUpdateCallback) => {
         set((state) => ({
             ...state,
             game: {
                 ...state.game,
-                cameraSizeUpdateCallback,
+                // TODO make this a Set()
+                cameraSizeUpdateCallbacks: [...state.game.cameraSizeUpdateCallbacks, cameraSizeUpdateCallback],
             },
-        })),
+        }));
+
+        return cameraSizeUpdateCallback;
+    },
     setGameLocale: (locale) =>
         set((state) => ({
             ...state,

@@ -16,18 +16,11 @@ import {
     DOWN_DIRECTION,
     RIGHT_DIRECTION,
     KEY_SPRITE_NAME,
-    RUN_BATTLE_ITEM,
     HERO_SPRITE_NAME,
     COIN_SPRITE_NAME,
-    ROCK_BATTLE_ITEM,
     ENEMY_SPRITE_NAME,
-    PAPER_BATTLE_ITEM,
-    ITEMS_BATTLE_ITEM,
     HEART_SPRITE_NAME,
-    ATTACK_BATTLE_ITEM,
-    DEFENSE_BATTLE_ITEM,
     CRYSTAL_SPRITE_NAME,
-    SCISSORS_BATTLE_ITEM,
     IDLE_FRAME_POSITION_KEY,
 } from '../constants';
 
@@ -39,10 +32,7 @@ import {
     createInteractiveGameObject,
 } from './utils';
 
-// Store
-
 // Selectors
-import { selectBattleEnemies, selectBattleSetters } from '../zustand/battle/selectBattle';
 import { selectDialogMessages, selectDialogSetters } from '../zustand/dialog/selectDialog';
 import { selectMapKey, selectTilesets, selectMapSetters } from '../zustand/map/selectMapData';
 import {
@@ -53,13 +43,6 @@ import {
 } from '../zustand/hero/selectHeroData';
 import { selectTextSetters } from '../zustand/text/selectText';
 
-/**
- * @param scene
- * @param assetKey
- * @param animationName
- * @param frameQuantity
- */
-// eslint-disable-next-line import/prefer-default-export
 export const createWalkingAnimation = (scene, assetKey, animationName, frameQuantity) => {
     scene.anims.create({
         key: `${assetKey}_${animationName}`,
@@ -318,75 +301,6 @@ export const handleObjectsLayer = (scene) => {
                             variables: {},
                             config: {},
                         }]);
-                    });
-
-                    enemy.on('pointerdown', () => {
-                        scene.scene.moveBelow('GameScene', 'BattleScene');
-                        scene.scene.pause('GameScene');
-                        scene.scene.launch('BattleScene');
-
-                        const {
-                            setBattleItems,
-                            setBattleEnemies,
-                            setBattleOnSelect,
-                            setBattlePickedItem,
-                            setBattleEnemiesPickedItem,
-                        } = getSelectorData(selectBattleSetters);
-
-                        setBattleItems([
-                            ATTACK_BATTLE_ITEM,
-                            ITEMS_BATTLE_ITEM,
-                            DEFENSE_BATTLE_ITEM,
-                            RUN_BATTLE_ITEM,
-                        ]);
-
-                        setBattleEnemies([
-                            {
-                                sprite: 'enemy_01',
-                                position: { x: 200, y: 140 },
-                                types: [ROCK_BATTLE_ITEM],
-                                health: 100,
-                                attack: 10,
-                            },
-                            {
-                                sprite: 'enemy_02',
-                                position: { x: 300, y: 140 },
-                                types: [PAPER_BATTLE_ITEM],
-                                health: 100,
-                                attack: 10,
-                            },
-                            {
-                                sprite: 'enemy_03',
-                                position: { x: 400, y: 160 },
-                                types: [SCISSORS_BATTLE_ITEM],
-                                health: 100,
-                                attack: 10,
-                            },
-                        ]);
-
-                        setBattleOnSelect((item, itemIndex) => {
-                            switch (item) {
-                                case ATTACK_BATTLE_ITEM: {
-                                    break;
-                                }
-                                case ITEMS_BATTLE_ITEM: {
-                                    break;
-                                }
-                                case DEFENSE_BATTLE_ITEM: {
-                                    break;
-                                }
-                                case RUN_BATTLE_ITEM:
-                                default: {
-                                    break;
-                                }
-                            }
-
-                            const enemies = getSelectorData(selectBattleEnemies);
-
-                            setBattleItems([]);
-                            setBattlePickedItem(item);
-                            setBattleEnemiesPickedItem(enemies);
-                        });
                     });
 
                     const enemyActionHeroCollider = scene.physics.add.overlap(
