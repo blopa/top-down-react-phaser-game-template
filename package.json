@@ -38,7 +38,6 @@
     "beautiful-react-hooks": "^3.12.2",
     "classnames": "^2.3.2",
     "cross-env": "^7.0.3",
-    "cyber-dice": "github:blopa/cyber-dice",
     "is-mobile": "^3.1.1",
     "jest": "^27.5.1",
     "phaser": "^3.55.2",
