@@ -1,0 +1,44 @@
+.battle-wrapper {
+    height: 100%;
+
+    &.paused {
+        background-color: rgb(0 0 0 / 70%);
+    }
+}
+
+.battle-items-wrapper {
+    user-select: none;
+    user-drag: none;
+    position: absolute;
+    font-size: calc(var(--game-zoom) * 10px);
+    list-style: none;
+    image-rendering: pixelated;
+    font-family: "Press Start 2P", serif;
+    text-transform: uppercase;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    bottom: 0;
+    background-color: #83a37d;
+    border: calc(var(--game-zoom) * 1px) solid #53814b;
+    outline-offset: calc(var(--game-zoom) * -1px);
+    justify-content: center;
+}
+
+.battle-item {
+    cursor: pointer;
+    padding: 3% 0;
+    margin: 0.22%;
+    text-align: center;
+    border: calc(var(--game-zoom) * 1px) solid #000000;
+    min-width: calc(((var(--game-width) * var(--game-zoom) / 2) - (var(--game-zoom) * 2) - (var(--game-width) * var(--game-zoom) * 0.008)) * 1px);
+
+    &.fewer-items {
+        width: calc(((var(--game-width) * var(--game-zoom)) - (var(--game-zom) * 2)) * 1px);
+    }
+
+    &.selected-battle-item {
+        background-color: #53814b;
+    }
+}
