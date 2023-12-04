@@ -509,37 +509,65 @@ export const handleHeroMovement = (scene, heroSpeed = 60) => {
     }
 
     const { setHeroFacingDirection } = getSelectorData(selectHeroSetters);
+    let velocityX = 0;
+    let velocityY = 0;
 
+    // Horizontal movement
     if (scene.cursors.left.isDown || scene.wasd[LEFT_DIRECTION].isDown) {
-        scene.heroSprite.body.setVelocityY(0);
-        scene.heroSprite.body.setVelocityX(-heroSpeed);
-        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
-        setHeroFacingDirection(LEFT_DIRECTION);
-    } else if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
-        scene.heroSprite.body.setVelocityY(0);
-        scene.heroSprite.body.setVelocityX(heroSpeed);
-        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
-        setHeroFacingDirection(RIGHT_DIRECTION);
-    } else if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
-        scene.heroSprite.body.setVelocityX(0);
-        scene.heroSprite.body.setVelocityY(-heroSpeed);
-        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
-        setHeroFacingDirection(UP_DIRECTION);
-    } else if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
-        scene.heroSprite.body.setVelocityX(0);
-        scene.heroSprite.body.setVelocityY(heroSpeed);
-        scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
-        setHeroFacingDirection(DOWN_DIRECTION);
+        velocityX = -heroSpeed;
+    }
+
+    if (scene.cursors.right.isDown || scene.wasd[RIGHT_DIRECTION].isDown) {
+        velocityX = heroSpeed;
+    }
+
+    // Vertical movement
+    if (scene.cursors.up.isDown || scene.wasd[UP_DIRECTION].isDown) {
+        velocityY = -heroSpeed;
+    }
+
+    if (scene.cursors.down.isDown || scene.wasd[DOWN_DIRECTION].isDown) {
+        velocityY = heroSpeed;
+    }
+
+    // Normalize diagonal speed
+    if (velocityX !== 0 && velocityY !== 0) {
+        velocityX *= Math.SQRT1_2;
+        velocityY *= Math.SQRT1_2;
+    }
+
+    // Set velocity
+    scene.heroSprite.body.setVelocityX(velocityX);
+    scene.heroSprite.body.setVelocityY(velocityY);
+
+    // Animation logic
+    if (velocityX !== 0 || velocityY !== 0) {
+        if (velocityY < 0) {
+            // If moving up (either up-left or up-right), play 'up' animation
+            scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${UP_DIRECTION}`, true);
+            setHeroFacingDirection(UP_DIRECTION);
+        } else if (velocityY > 0) {
+            // If moving down (either down-left or down-right), play 'down' animation
+            scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${DOWN_DIRECTION}`, true);
+            setHeroFacingDirection(DOWN_DIRECTION);
+        } else if (velocityX < 0) {
+            // Only moving left
+            scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${LEFT_DIRECTION}`, true);
+            setHeroFacingDirection(LEFT_DIRECTION);
+        } else if (velocityX > 0) {
+            // Only moving right
+            scene.heroSprite.anims.play(`${HERO_SPRITE_NAME}_walk_${RIGHT_DIRECTION}`, true);
+            setHeroFacingDirection(RIGHT_DIRECTION);
+        }
     } else {
         const facingDirection = getSelectorData(selectHeroFacingDirection);
-        scene.heroSprite.body.setVelocityX(0);
-        scene.heroSprite.body.setVelocityY(0);
         scene.heroSprite.anims.stop();
         scene.heroSprite.setFrame(
             IDLE_FRAME.replace(IDLE_FRAME_POSITION_KEY, facingDirection)
         );
     }
 };
+
 
 export const changeScene = (scene, nextScene, assets = {}, config = {}) => {
     // const sceneKey = scene.scene.key;
